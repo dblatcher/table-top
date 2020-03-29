@@ -6,7 +6,7 @@ const outputConfig = {
         folder: 'javascripts'
     },
     scss: {
-        ext: 'css',
+        ext: 'css.js',
         folder: 'stylesheets-as-js'
     }
 }
@@ -23,7 +23,6 @@ module.exports = {
           {
             test: /\.js$/i,
             exclude: /node_modules/,
-
           },
           {
             test: /\.s[ac]ss$/i,
@@ -35,7 +34,6 @@ module.exports = {
                         name: 'stylesheets/[name].css'
                     }
                 },
-                 // Compiles Sass to CSS
                 'sass-loader',
             ],
           },
@@ -46,10 +44,7 @@ module.exports = {
     output: {
         filename: chunkData => {
             let ext = chunkData.chunk.entryModule.rawRequest.substring(chunkData.chunk.entryModule.rawRequest.lastIndexOf('.')+1)
-            console.log (ext)
-
             if (!outputConfig[ext]) {return `[name].${ext}`}
-
             return `${outputConfig[ext].folder}/[name].${outputConfig[ext].ext}`
         },
         path: path.resolve(__dirname, 'public/'),
