@@ -13,7 +13,7 @@ const outputConfig = {
 
 module.exports = {
     entry: {
-        demo: './src/js/test-script.js',
+        socket: './src/js/socket.js',
         base: './src/scss/base.scss'
     },
 
