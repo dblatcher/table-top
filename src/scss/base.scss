@@ -1,9 +1,50 @@
 @import './style';
 
-.card {
-    background-color: red;
+$std-space: .5rem;
+
+@mixin card-color ($shade) {
+    $darker-shade : scale-color($shade, $lightness: -50%);
+    background-color: $shade;
 
     h2 {
-        color: aquamarine;
+        background-image: linear-gradient($darker-shade 40%, $shade);
     }
+}
+
+.green {
+    @include card-color(lightgreen);
+}
+
+.red {
+    @include card-color(pink);
+}
+
+.blue {
+    @include card-color(lightblue);
+}
+
+.card {
+    display: inline-block;
+    min-width: 10rem;
+    min-height: 16rem;
+    padding: $std-space;
+    margin: $std-space;
+    border-radius: $std-space/2;
+    box-shadow: 1px 3px 6px 1px black;
+
+    h2 {
+        text-align: center;
+        color: white;
+        margin: (-$std-space) (-$std-space) ($std-space/2) (-$std-space);
+        padding: $std-space 0 ($std-space*2) 0 ;
+        font-size: 1.25rem;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+}
+
+.frame {
+    margin: $std-space;
+    padding: $std-space;
+    border: 4px double black;
 }
