@@ -1,1 +1,11 @@
-body{padding:50px;font:14px "Lucida Grande", Helvetica, Arial, sans-serif}a{color:#00B7FF}.card{background-color:red}.card h2{color:aquamarine}
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+a {
+  color: #00B7FF; }
+
+.card {
+  background-color: red; }
+  .card h2 {
+    color: aquamarine; }
