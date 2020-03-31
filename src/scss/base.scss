@@ -47,4 +47,6 @@ $std-space: .5rem;
     margin: $std-space;
     padding: $std-space;
     border: 4px double black;
+    display: flex;
+    flex-wrap: wrap;
 }

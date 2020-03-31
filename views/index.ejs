@@ -9,16 +9,17 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
 
+    <form data-role="sign-in-form">
+      <label for="userName">User name:</label>
+      <input type="text" name="userName" />
+      <input type="submit" value="go"/>
+    </form>
+
     <div class="frame">
       <article class="red card">
         <h2>heading</h2>
-        <table>
-          <tr>
-            <td>HP</td>
-            <td>30</td>
-          </tr>
-          <div id="test-button">roll d6</div>
-        </table>
+        <div id="test-d6">roll d6</div>
+        <div id="test-d10">roll d10</div>
       </article>
       
       <article class="green card">

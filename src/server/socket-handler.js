@@ -6,8 +6,12 @@ function socketHandler (io) {
         });
 
 
-        socket.on('d6-roll', function(msg){
-            console.log('user rolled a d6: ' + msg);
+        socket.on('roll', function(data){
+            console.log(`user rolled a d${data.number} and got a ${data.result} `);
+        });
+
+        socket.on('sign-in', function(data){
+            console.log(`user signed in with user name ${data.userName} `);
         });
 
 
