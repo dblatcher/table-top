@@ -1,3 +1,6 @@
+var onRoll = require('./on-roll')
+var onSignIn = require('./on-sign-in')
+
 function socketHandler (io) {
     io.on('connection', function(socket){
         console.log('a user connected');
@@ -5,15 +8,8 @@ function socketHandler (io) {
             console.log('user disconnected');
         });
 
-
-        socket.on('roll', function(data){
-            console.log(`user rolled a d${data.number} and got a ${data.result} `);
-        });
-
-        socket.on('sign-in', function(data){
-            console.log(`user signed in with user name ${data.userName} `);
-        });
-
+        socket.on('roll', onRoll);
+        socket.on('sign-in', onSignIn );
 
     });
 }
