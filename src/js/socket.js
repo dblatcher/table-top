@@ -6,9 +6,10 @@ var io = require('../../node_modules/socket.io-client/dist/socket.io')
 console.log('socket script running')
 var socket = io();
 
+let localPlayer = null
 
 onLoad( function() {
     document.querySelector('#test-d6').addEventListener('click', ()=>{roll(6, socket)})
     document.querySelector('#test-d10').addEventListener('click', ()=>{roll(10, socket)})
-    initSignInForm(socket)
+    initSignInForm(socket, localPlayer)
 })
