@@ -1,16 +1,5 @@
 const path = require('path');
 
-const outputConfig = {
-    js: {
-        ext: 'js',
-        folder: 'javascripts'
-    },
-    scss: {
-        ext: 'css.js',
-        folder: 'stylesheets-as-js'
-    }
-}
-
 module.exports = {
     entry: {
         socket: './src/js/socket.js',
@@ -42,11 +31,7 @@ module.exports = {
 
 
     output: {
-        filename: chunkData => {
-            let ext = chunkData.chunk.entryModule.rawRequest.substring(chunkData.chunk.entryModule.rawRequest.lastIndexOf('.')+1)
-            if (!outputConfig[ext]) {return `[name].${ext}`}
-            return `${outputConfig[ext].folder}/[name].${outputConfig[ext].ext}`
-        },
+        filename: `javascripts/[name].js`,
         path: path.resolve(__dirname, 'public/'),
     },
 };
