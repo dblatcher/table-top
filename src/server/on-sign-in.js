@@ -37,7 +37,7 @@ class Refusal {
     }
 }
 
-function onSignIn(state, socketId){
+function onSignIn(state, socket){
     return function (data, callback) {
 
         // TO DO - SANITISE INPUT!!
@@ -51,7 +51,7 @@ function onSignIn(state, socketId){
         }
         
         console.log('adding player to state')
-        const newPlayer = new Player(data.userName, socketId)
+        const newPlayer = new Player(data.userName, socket.id)
         state.users.push(newPlayer)
         console.log(state.users)
         callback(newPlayer.clientSafeVersion)

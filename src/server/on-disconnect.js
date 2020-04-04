@@ -1,6 +1,6 @@
-function onDisconnect(state, socketId){
+function onDisconnect(state, socket){
     return function () {
-        var matchingLoggedInUsers = state.users.filter(user=>user.socketId === socketId)
+        var matchingLoggedInUsers = state.users.filter(user=>user.socketId === socket.id)
         if (matchingLoggedInUsers.length === 0) { 
             console.log('a non logged in user disconnected');
             return
@@ -11,7 +11,7 @@ function onDisconnect(state, socketId){
         }
 
         console.log(`user with '${matchingLoggedInUsers[0].userName}' disconnected `)
-        state.users = state.users.filter(user=>user.socketId !== socketId)
+        state.users = state.users.filter(user=>user.socketId !== socket.id)
     }
 }
 

@@ -1,7 +1,7 @@
-function roll(number, socket) {
+function roll(number, localPlayer, socket) {
     let result = Math.floor((Math.random() * number)+1)
-    console.log(result)
-    socket.emit('roll', {number, result})
+    console.log('I ROLLED:', result, localPlayer)
+    socket.emit('roll', {number,localPlayer, result})
 }
 
 export {roll}

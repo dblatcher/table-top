@@ -1,6 +1,9 @@
-function onRoll (state){
+function onRoll (state, socket){
     return function (data) {
-        console.log(`user rolled a d${data.number} and got a ${data.result} `);
+        let name = data.localPlayer ? data.localPlayer.userName || 'ANON' : 'UNKNOWN PLAYER';
+        let report = `${name} rolled a d${data.number} and got a ${data.result} `
+        console.log(report);
+        socket.broadcast.emit('roll',report);
     }
 }
 
