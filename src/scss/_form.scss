@@ -1,0 +1,8 @@
+.sign-in-form {
+    border: 1px solid black;
+    padding: $std-space;
+
+    &__hidden {
+        display: none;
+    }
+}

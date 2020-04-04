@@ -1,6 +1,16 @@
 const formSelector = '[data-role="sign-in-form"]'
+const userNameSelector = '#user-name-indicator'
 
 
+function updatePlayerStatus (userData, localPlayer) {
+
+    Object.assign(localPlayer,userData)
+
+    const userNameIndicator = document.querySelector(userNameSelector)
+    if (userNameIndicator) {
+        userNameIndicator.innerText = localPlayer.userName;
+    }
+}
 
 function makeSubmitHandler(socket, localPlayer) {
 
@@ -9,18 +19,18 @@ function makeSubmitHandler(socket, localPlayer) {
             alert (response.message)
             return false
         }
-        alert (`Received request to log you in as ${response.userName}`)
-        localPlayer = response
+        updatePlayerStatus(response, localPlayer)
     }
 
     return function (event) {
         event.preventDefault();
 
-        if (localPlayer) {
+        if (localPlayer.userName) {
             alert (`You are already logged in as ${localPlayer.userName}`)
             return false
         }
 
+        // TO DO - SANITISE INPUT!!
         const form = event.target
         const userName = form.elements.userName.value
         socket.emit('sign-in', {userName}, submitHandlerCallBack)
@@ -33,7 +43,6 @@ function initSignInForm(socket, localPlayer) {
 
     const submitHandler = makeSubmitHandler(socket, localPlayer)
     form.addEventListener('submit', submitHandler)
-
 }
 
 export {initSignInForm}

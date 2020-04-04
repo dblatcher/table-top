@@ -39,6 +39,8 @@ class Refusal {
 
 function onSignIn(state, socketId){
     return function (data, callback) {
+
+        // TO DO - SANITISE INPUT!!
         console.log(`user requested sign in with user name ${data.userName} `);
         
         if (state.users.map(item=>item.userName).indexOf (data.userName) > -1 ) {

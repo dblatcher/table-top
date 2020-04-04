@@ -6,10 +6,15 @@
 
   </head>
   <body>
+
+    <div class="status-bar">
+      <p>UserName:<span id="user-name-indicator"></span></p>
+    </div>
+
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
 
-    <form data-role="sign-in-form">
+    <form class="sign-in-form" data-role="sign-in-form">
       <label for="userName">User name:</label>
       <input type="text" name="userName" />
       <input type="submit" value="go"/>
