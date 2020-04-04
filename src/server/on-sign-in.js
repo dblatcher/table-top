@@ -1,7 +1,8 @@
 
 class Player {
-    constructor (userName) {
+    constructor (userName, socketId) {
         this.userName = userName;
+        this.socketId = socketId;
     } 
     get type() {return 'PLAYER'}
 
@@ -36,7 +37,7 @@ class Refusal {
     }
 }
 
-function onSignIn(state){
+function onSignIn(state, socketId){
     return function (data, callback) {
         console.log(`user requested sign in with user name ${data.userName} `);
         
@@ -48,7 +49,7 @@ function onSignIn(state){
         }
         
         console.log('adding player to state')
-        const newPlayer = new Player(data.userName)
+        const newPlayer = new Player(data.userName, socketId)
         state.users.push(newPlayer)
         console.log(state.users)
         callback(newPlayer.clientSafeVersion)
