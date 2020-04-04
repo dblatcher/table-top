@@ -4,35 +4,34 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var appAndState = require('../app');
+var app = appAndState.app;
+var state = appAndState.state
+
 var debug = require('debug')('table-top:server');
 var http = require('http');
+var addSocketHandler = require('../src/server/socket-handler.js')
 
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
- 
 var server = http.createServer(app);
 
 /**
  * Create socket instance, add handler.
  */
- 
 var io = require('socket.io')(server);
-var addSocketHandler = require('../src/server/socket-handler.js')
-addSocketHandler(io)
+addSocketHandler(io, state)
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(port, function(){
   console.log(`listening on *:${port}`);
 });
@@ -44,7 +43,6 @@ server.on('error', onError);
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -64,7 +62,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -92,7 +89,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'

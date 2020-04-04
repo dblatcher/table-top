@@ -1,11 +1,7 @@
 var onRoll = require('./on-roll')
 var onSignIn = require('./on-sign-in')
 
-let state = {
-    users: []
-}
-
-function socketHandler (io) {
+function socketHandler (io, state) {
     io.on('connection', function(socket){
         console.log('a user connected');
         socket.on('disconnect', function(){

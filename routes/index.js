@@ -1,9 +1,15 @@
 var express = require('express');
-var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Table-top' });
-});
+function makeRouter(state) {
+  var router = express.Router();
 
-module.exports = router;
+  /* GET home page. */
+  router.get('/', function(req, res, next) {
+    res.render('index', { title: 'Table-top'});
+  });
+
+  return router
+}
+
+
+module.exports = makeRouter;

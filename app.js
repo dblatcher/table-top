@@ -4,13 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// define app state
+let state = {
+  users: [],
+  foo: 'bar',
+}
 
+var indexRouter = require('./routes/index')(state);
+var usersRouter = require('./routes/users')(state);
 var app = express();
 
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,4 +44,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = {app, state};

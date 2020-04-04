@@ -1,9 +1,15 @@
 var express = require('express');
-var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+function makeRouter(state) {
+  var router = express.Router();
 
-module.exports = router;
+  /* GET users listing. */
+  router.get('/', function(req, res, next) {
+    var output = 'USERS: ' + state.users.map(user => user.userName).toString()
+    res.send(output);
+  });
+
+  return router
+}
+  
+module.exports = makeRouter;
