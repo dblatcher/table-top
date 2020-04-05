@@ -12,20 +12,22 @@
     <p class="new-message">{{ message }}</p>
 
     <div class="roll-button-holder">
-      <p @click="function(){roll(6)}">ROLL d6</p>
-      <p @click="function(){roll(10)}">ROLL d10</p>
-      <p @click="function(){roll(20)}">ROLL d20</p>
+      <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
+      <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
     </div>
 
   </div>
 </template>
 
 <script>
+import DiceButton from './components/DiceButton.vue'
 
 var io = require('../../node_modules/socket.io-client/dist/socket.io')
 
 
 export default {
+  components: {DiceButton},
+
   data() {
     return {
       message: 'Hello World - this is a test Vue app injected into index.ejs by app.js',
@@ -46,14 +48,20 @@ export default {
   },
 
   methods : {
-    onRoll (input) {
-      this.message = input
+
+    log (input) {
+      console.log(input)
     },
 
-    roll(number) {
-      let result = Math.floor((Math.random() * number)+1)
-      this.message = 'I ROLLED:' + result;
-      this.socket.emit('roll', {number, localPlayer:this.localPlayer, result})
+    handleRollReport (report) {
+      this.message = report.localPlayer.userName + " " + report.rollData.message
+    },
+
+    reportRoll(rollData) {
+      const {diceList, results, total, message} = rollData
+      console.log(message)
+
+      this.socket.emit('roll', {localPlayer:this.localPlayer, rollData})
     },
 
     signIn(event) {
@@ -85,7 +93,7 @@ export default {
   },
 
   mounted() {
-    this.socket.on('roll', this.onRoll );
+    this.socket.on('roll', this.handleRollReport );
   }
 
 };
@@ -105,6 +113,7 @@ export default {
   .roll-button-holder  p {
       border: 1px solid black;
       margin: 0 1rem;
-    }
+      cursor: pointer;
+  }
 
 </style>
