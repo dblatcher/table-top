@@ -3,7 +3,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     entry: {
-        socket: './src/js/socket.js',
         base: './src/scss/base.scss',
         app: './src/vue/main.js',
     },

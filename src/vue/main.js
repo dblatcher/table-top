@@ -8,3 +8,4 @@ let app = new Vue({
 
 console.log(app)
 window.app = app
+window.vm = app.$children[0]
