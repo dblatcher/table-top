@@ -1,17 +1,17 @@
 function onDisconnect(state, socket){
     return function () {
-        var matchingLoggedInUsers = state.users.filter(user=>user.socketId === socket.id)
-        if (matchingLoggedInUsers.length === 0) { 
+
+        const removedPlayers = state.removePlayersWhere(user=>user.socketId === socket.id)
+        if (removedPlayers.length === 0) { 
             console.log('a non logged in user disconnected');
             return
         }
-
-        if (matchingLoggedInUsers.length > 1) {
-            console.warn ('multiple log in for same client!', matchingLoggedInUsers)
+        if (removedPlayers.length > 1) { // should not occur - indicates failure to control logins
+            console.warn ('a user with multiple players disconnected!', removedPlayers)
+            return
         }
-
-        console.log(`user with '${matchingLoggedInUsers[0].userName}' disconnected `)
-        state.users = state.users.filter(user=>user.socketId !== socket.id)
+        console.log(`user with '${removedPlayers[0].userName}' disconnected `)
+ 
     }
 }
 

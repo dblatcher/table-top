@@ -4,11 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var GameState = require ('./src/server/state-class')
+
 // define app state
-let state = {
-  users: [],
-  foo: 'bar',
-}
+let state = new GameState() 
 
 var indexRouter = require('./routes/index')(state);
 var usersRouter = require('./routes/users')(state);
