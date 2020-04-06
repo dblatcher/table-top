@@ -13,9 +13,14 @@ export default {
 </script>
 
 <style scoped>
+
+    section {
+        border: 3px double black;
+        background-color: lightslategray;
+    }
+
     ul {
         height: 8rem;
         overflow-y: auto;
-        background-color: aquamarine;
     }
 </style>
