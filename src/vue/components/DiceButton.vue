@@ -31,6 +31,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+    p {
+        border: 1px solid black;
+        margin: 1rem;
+        cursor: pointer;
+    }
 
 </style>
