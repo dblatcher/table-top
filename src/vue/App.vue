@@ -31,7 +31,6 @@ export default {
 
   data() {
     return {
-      message: 'Hello World - this is a test Vue app injected into index.ejs by app.js',
       socket: io(),
       userName : undefined,
       userId : undefined,
@@ -57,6 +56,10 @@ export default {
 
     handleRollReport (report) {
       this.messages.push  (report.localPlayer.userName + " " + report.rollData.message)
+    },
+
+    handleStateUpdate (stateData) {
+      console.log(stateData)
     },
 
     reportRoll(rollData) {
@@ -96,6 +99,7 @@ export default {
 
   mounted() {
     this.socket.on('roll', this.handleRollReport );
+    this.socket.on('state-update', this.handleStateUpdate );
   }
 
 };

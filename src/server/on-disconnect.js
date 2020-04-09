@@ -1,7 +1,9 @@
+sendStateToClients = require ('./sendStateToClients')
+
 function onDisconnect(state, socket){
     return function () {
 
-        const removedPlayers = state.removePlayersWhere(user=>user.socketId === socket.id)
+        const removedPlayers = state.removePlayersWhere(player=>player.socketId === socket.id)
         if (removedPlayers.length === 0) { 
             console.log('a non logged in user disconnected');
             return
@@ -12,6 +14,8 @@ function onDisconnect(state, socket){
         }
         console.log(`user with '${removedPlayers[0].userName}' disconnected `)
  
+        sendStateToClients(state, socket)
+
     }
 }
 

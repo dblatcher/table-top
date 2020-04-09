@@ -43,7 +43,7 @@ class Refusal {
 class GameState {
 
     constructor () {
-        this.users = []
+        this.players = []
         this.foo = 'bar'
 
         let nextPlayerIdKey = 1000
@@ -52,15 +52,23 @@ class GameState {
 
     addPlayer (userName, socketId) { 
         const player = new Player(userName, socketId, this.getNextPlayerId())
-        this.users.push(player)
+        this.players.push(player)
         return player
     }
     makeRefusal (reason, details)    { return new Refusal(reason, details) }
 
     removePlayersWhere(filterFunction) {
-        const matchingPlayers = this.users.filter(filterFunction)
-        this.users = this.users.filter(player => matchingPlayers.indexOf(player) == -1)
+        const matchingPlayers = this.players.filter(filterFunction)
+        this.players = this.players.filter(player => matchingPlayers.indexOf(player) == -1)
         return matchingPlayers
+    }
+
+    get clientSafeVersion () {
+        let safePlayers = this.players.map(player => player.clientSafeVersion)
+
+        return {
+            players: safePlayers,
+        }
     }
 
 }
