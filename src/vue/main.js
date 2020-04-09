@@ -6,6 +6,5 @@ let app = new Vue({
   render: h => h(App),
 });
 
-console.log(app)
 window.app = app
 window.vm = app.$children[0]

@@ -14,27 +14,33 @@
       <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
     </div>
 
+    <PlayersDisplay v-bind:localPlayer="localPlayer" v-bind:otherPlayers="otherPlayers"/>
+
     <MessageBox v-bind:messages="messages" />
 
   </div>
-</template>
+</template> 
 
 <script>
 import DiceButton from './components/DiceButton.vue'
 import MessageBox from './components/MessageBox.vue'
+import PlayersDisplay from './components/PlayersDisplay.vue'
 
 var io = require('../../node_modules/socket.io-client/dist/socket.io')
 
 
 export default {
-  components: {DiceButton, MessageBox},
+  components: {DiceButton, MessageBox, PlayersDisplay},
 
   data() {
     return {
       socket: io(),
       userName : undefined,
-      userId : undefined,
+      playerId : undefined,
       messages: [],
+      gameState: {
+        players: []
+      }
     };
   },
 
@@ -44,8 +50,12 @@ export default {
     },
 
     localPlayer() {
-      return {userName: this.userName, userId:this.userId}
-    }
+      return {userName: this.userName, playerId:this.playerId}
+    },
+
+    otherPlayers() {
+      return this.gameState.players.filter(player => player.playerId !== this.playerId)
+    },
   },
 
   methods : {
@@ -59,7 +69,11 @@ export default {
     },
 
     handleStateUpdate (stateData) {
-      console.log(stateData)
+      this.$set(this.gameState, 'players', stateData.players)
+    },
+
+    requestStateUpdate() {
+      this.socket.emit('request-state')
     },
 
     reportRoll(rollData) {
@@ -73,7 +87,7 @@ export default {
 
       event.preventDefault();
 
-      if (this.userId) {
+      if (this.playerId) {
         this.messages.push (`You are already logged in as ${this.displayName}`)
         return false
       }
@@ -92,7 +106,7 @@ export default {
           return false
         }
         this.userName = response.userName;
-        this.userId = response.userId;
+        this.playerId = response.playerId;
     }
 
   },
@@ -100,6 +114,7 @@ export default {
   mounted() {
     this.socket.on('roll', this.handleRollReport );
     this.socket.on('state-update', this.handleStateUpdate );
+    this.requestStateUpdate();
   }
 
 };
