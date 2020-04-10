@@ -1,4 +1,4 @@
-sendStateToClients = require ('./sendStateToClients')
+sendStateToClients = require ('../sendStateToClients')
 
 function onDisconnect(state, socket){
     return function () {

@@ -1,4 +1,4 @@
-sendStateToClients = require ('./sendStateToClients')
+sendStateToClients = require ('../sendStateToClients')
 
 function onSignIn(state, socket){
     return function (data, callback) {
