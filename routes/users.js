@@ -5,7 +5,7 @@ function makeRouter(state) {
 
   /* GET users listing. */
   router.get('/', function(req, res, next) {
-    var output = 'USERS: ' + state.users.map(user => user.playerName).toString()
+    var output = 'USERS: ' + state.players.map(user => user.playerName).toString()
     res.send(output);
   });
 
