@@ -4,8 +4,8 @@
     <p v-if="isSignedIn">USER NAME:{{ displayName }}</p>
 
     <form v-if="!isSignedIn" @submit="signIn" class="sign-in-form">
-      <label for="userName">User name:</label>
-      <input type="text" name="userName" />
+      <label for="playerName">User name:</label>
+      <input type="text" name="playerName" />
       <input type="submit" value="go"/>
     </form>
 
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       socket: io(),
-      userName : '',
+      playerName : '',
       playerId : undefined,
       messages: [],
       gameState: {
@@ -47,15 +47,15 @@ export default {
   computed : {
 
     isSignedIn() {
-      return !!this.userId
+      return !!this.playerId
     },
 
     displayName() {
-      return this.userName || 'NONE'
+      return this.playerName || 'NONE'
     },
 
     localPlayer() {
-      return {userName: this.userName, playerId:this.playerId}
+      return {playerName: this.playerName, playerId:this.playerId}
     },
 
     otherPlayers() {
@@ -70,7 +70,7 @@ export default {
     },
 
     handleRollReport (report) {
-      this.messages.push  (report.localPlayer.userName + " " + report.rollData.message)
+      this.messages.push  (report.localPlayer.playerName + " " + report.rollData.message)
     },
 
     handleStateUpdate (stateData) {
@@ -99,8 +99,8 @@ export default {
 
       // TO DO - SANITISE INPUT!!
       const form = event.target
-      const userName = form.elements.userName.value
-      this.socket.emit('sign-in', {userName}, this.handleSignInResponse)
+      const playerName = form.elements.playerName.value
+      this.socket.emit('sign-in', {playerName}, this.handleSignInResponse)
 
     },
 
@@ -109,7 +109,7 @@ export default {
           this.messages.push (response.message)
           return false
         }
-        this.userName = response.userName;
+        this.playerName = response.playerName;
         this.playerId = response.playerId;
     },
 
@@ -120,7 +120,7 @@ export default {
 
     handleMessage (messageData) {
       let sendingPlayer
-      this.messages.push(`${messageData.userName}: ${messageData.messageText}`,)
+      this.messages.push(`${messageData.playerName}: ${messageData.messageText}`,)
     }
 
   },

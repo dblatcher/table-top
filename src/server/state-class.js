@@ -1,7 +1,7 @@
 
 class Player {
-    constructor (userName, socketId, playerId) {
-        this.userName = userName;
+    constructor (playerName, socketId, playerId) {
+        this.playerName = playerName;
         this.socketId = socketId;
         this.playerId = playerId;
     } 
@@ -10,7 +10,7 @@ class Player {
     get clientSafeVersion () {
         return {
             type: this.type,
-            userName: this.userName,
+            playerName: this.playerName,
             playerId: this.playerId,
         }
     }
@@ -50,8 +50,8 @@ class GameState {
         this.getNextPlayerId = function() {return `${Math.floor(Math.random()*10000000)}-${nextPlayerIdKey++}` }
     }
 
-    addPlayer (userName, socketId) { 
-        const player = new Player(userName, socketId, this.getNextPlayerId())
+    addPlayer (playerName, socketId) { 
+        const player = new Player(playerName, socketId, this.getNextPlayerId())
         this.players.push(player)
         return player
     }

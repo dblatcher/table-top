@@ -12,7 +12,7 @@ function onDisconnect(state, socket){
             console.warn ('a user with multiple players disconnected!', removedPlayers)
             return
         }
-        console.log(`user with '${removedPlayers[0].userName}' disconnected `)
+        console.log(`user with '${removedPlayers[0].playerName}' disconnected `)
  
         sendStateToClients(state, socket)
 
