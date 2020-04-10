@@ -63,6 +63,16 @@ class GameState {
         return matchingPlayers
     }
 
+    getPlayerById(playerId) {
+        const matchingPlayers = this.players.filter(player => player.playerId === playerId)
+        if (matchingPlayers.length === 0) {return null}
+        if (matchingPlayers.length > 1) {
+            console.warn(`multiple players(${matchingPlayers.length}) with ID ${playerId}`, matchingPlayers)
+            return null
+        }
+        return matchingPlayers[0]
+    }
+
     get clientSafeVersion () {
         let safePlayers = this.players.map(player => player.clientSafeVersion)
 

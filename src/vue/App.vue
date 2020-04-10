@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     
-    <p v-if="this.userName">USER NAME:{{ displayName }}</p>
+    <p v-if="isSignedIn">USER NAME:{{ displayName }}</p>
 
-    <form v-if="!this.userName" @submit="signIn" class="sign-in-form">
+    <form v-if="!isSignedIn" @submit="signIn" class="sign-in-form">
       <label for="userName">User name:</label>
       <input type="text" name="userName" />
       <input type="submit" value="go"/>
@@ -16,7 +16,7 @@
 
     <PlayersDisplay v-bind:localPlayer="localPlayer" v-bind:otherPlayers="otherPlayers"/>
 
-    <MessageBox v-bind:messages="messages" />
+    <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
   </div>
 </template> 
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       socket: io(),
-      userName : undefined,
+      userName : '',
       playerId : undefined,
       messages: [],
       gameState: {
@@ -45,6 +45,11 @@ export default {
   },
 
   computed : {
+
+    isSignedIn() {
+      return !!this.userId
+    },
+
     displayName() {
       return this.userName || 'NONE'
     },
@@ -61,7 +66,7 @@ export default {
   methods : {
 
     log (input) {
-      console.log(input)
+      console.log('LOG:',input)
     },
 
     handleRollReport (report) {
@@ -100,13 +105,22 @@ export default {
     },
 
     handleSignInResponse (response) {
-      console.log(response)
         if (response.type === 'REFUSAL') {
           this.messages.push (response.message)
           return false
         }
         this.userName = response.userName;
         this.playerId = response.playerId;
+    },
+
+    sendMessage (messageText) {
+      this.messages.push(`${'me'}: ${messageText}`,)
+      this.socket.send(this.playerId, messageText)
+    },
+
+    handleMessage (messageData) {
+      let sendingPlayer
+      this.messages.push(`${messageData.userName}: ${messageData.messageText}`,)
     }
 
   },
@@ -114,6 +128,7 @@ export default {
   mounted() {
     this.socket.on('roll', this.handleRollReport );
     this.socket.on('state-update', this.handleStateUpdate );
+    this.socket.on('player-message', this.handleMessage );
     this.requestStateUpdate();
   }
 
