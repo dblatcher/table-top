@@ -15,9 +15,10 @@ function makeRouter(state) {
 
     let game = state.games.filter(game => game.gameName === req.params.gameName)[0]
 
+    console.log('gmView:', req.body.gmView)
     console.log(game)
 
-    res.render('game', { title: 'Table-top', game});
+    res.render('game', { title: 'Table-top', game, gmView:false});
   });
 
   return router

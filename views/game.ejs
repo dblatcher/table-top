@@ -8,9 +8,22 @@
   <body>
 
     <h1><a href="/"><%= title %></a></h1>
-    <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
+    <% if (!gmView) { %>
+      <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
+      <meta id="gameMeta" 
+      gameMasterId="<%= game.masterPlayer.playerId %>" 
+      gameMasterName="<%= game.masterPlayer.playerName %>" 
+      gameId="<%= game.gameId %>" 
+      myStatus="player"/>
+    <% } else { %>
+      <h2>MY GAME: <%= game.gameName %></h2>
+      <meta id="gameMeta" 
+      gameMasterId="<%= game.masterPlayer.playerId %>" 
+      gameMasterName="<%= game.masterPlayer.playerName %>" 
+      gameId="<%= game.gameId %>" 
+      myStatus="GM"/>
+    <% } %>
 
-    <meta id="gameMeta" gameMasterId="<%= game.masterPlayer.playerId %>" gameId="<%= game.gameId %>"/>
     <div id="app"></div>
 
     <script src="/javascripts/app.js"></script>

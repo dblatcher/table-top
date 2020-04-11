@@ -14,7 +14,10 @@
       <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
     </div>
 
-    <PlayersDisplay v-bind:localPlayer="localPlayer" v-bind:gameMaster="gameMaster" v-bind:otherPlayers="otherPlayers"/>
+    <PlayersDisplay 
+    v-bind:players="this.gameState.players" 
+    v-bind:playerId="playerId" 
+    v-bind:gameMasterId="gameMasterId"/>
 
     <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
@@ -37,13 +40,15 @@ export default {
     const metaElement = document.querySelector('#gameMeta')
     const gameId = metaElement ? metaElement.getAttribute('gameId') : undefined
     const gameMasterId = metaElement ? metaElement.getAttribute('gameMasterId') : undefined
+    const amGamemaster = metaElement ? metaElement.getAttribute('myStatus') === "GM" : undefined
 
     return {
       socket: io(),
-      playerName : '',
-      playerId : undefined,
+      amGamemaster,
       gameId,
       gameMasterId,
+      playerId : false,
+      playerName : '',
       messages: [],
       gameState: {
         players: []
@@ -61,19 +66,6 @@ export default {
       return this.playerName || 'NONE'
     },
 
-    localPlayer() {
-      return {playerName: this.playerName, playerId:this.playerId}
-    },
-
-    otherPlayers() {
-      return this.gameState.players.filter(
-        player => player.playerId !== this.playerId && player.playerId !== this.gameMasterId
-      )
-    },
-
-    gameMaster() {
-      return this.gameState.players.filter(player => player.playerId === this.gameMasterId)[0]
-    }
   },
 
   methods : {
@@ -151,6 +143,14 @@ export default {
     this.socket.on('roll', this.handleRollReport );
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('player-message', this.handleMessage );
+
+    if (this.amGamemaster) {
+      console.log('I AM THE GM')
+      this.socket.emit('gm-sign-in', {
+        gameMasterId: this.gameMasterId,
+        gameId:this.gameId
+      }, this.handleSignInResponse)
+    }
 
   }
 
