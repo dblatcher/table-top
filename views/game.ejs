@@ -10,7 +10,7 @@
     <h1><a href="/"><%= title %></a></h1>
     <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
 
-    <meta gm="<%= game.masterPlayer.playerId %>"/>
+    <meta id="gameMeta" gameMasterId="<%= game.masterPlayer.playerId %>" gameId="<%= game.gameId %>"/>
     <div id="app"></div>
 
     <script src="/javascripts/app.js"></script>

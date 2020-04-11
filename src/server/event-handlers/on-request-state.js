@@ -1,7 +1,7 @@
 function onRequestState (state, socket){
-    return function () {
-        console.log('received request for state')
-        socket.emit('state-update', state.clientSafeVersion)
+    return function (gameId) {
+        console.log(`received request for state for game ${gameId}`)
+        socket.emit('state-update', state.getStateOfGame(gameId))
     }
 }
 

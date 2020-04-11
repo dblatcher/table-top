@@ -1,11 +1,7 @@
-function sendStateToClients(state, socket) {
+function sendStateToClients(state, socket, io, gameId) {
 
-    console.log ('sending state to all clients')
-    console.log (state.clientSafeVersion)
-
-    socket.emit('state-update', state.clientSafeVersion)
-    socket.broadcast.emit('state-update',state.clientSafeVersion)
-
+    console.log (`sending state of game ${gameId} to all clients`)
+    io.to(gameId).emit('state-update', state.getStateOfGame(gameId));
 }
 
 module.exports = sendStateToClients

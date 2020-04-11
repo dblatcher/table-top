@@ -11,7 +11,7 @@ function socketHandler (io, state) {
         console.log('a user connected');
 
         eventNames.forEach( eventName => {
-            socket.on(eventName, on[eventName](state,socket))
+            socket.on(eventName, on[eventName](state,socket,io))
         })
 
     });

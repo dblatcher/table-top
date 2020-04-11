@@ -1,6 +1,6 @@
 sendStateToClients = require ('../sendStateToClients')
 
-function onDisconnect(state, socket){
+function onDisconnect(state, socket, io){
     return function () {
 
         const removedPlayers = state.removePlayersWhere(player=>player.socketId === socket.id)
@@ -12,9 +12,9 @@ function onDisconnect(state, socket){
             console.warn ('a user with multiple players disconnected!', removedPlayers)
             return
         }
-        console.log(`user with '${removedPlayers[0].playerName}' disconnected `)
+        console.log(`user with '${removedPlayers[0].playerName}' disconnected from game${removedPlayers[0].gameId}`)
  
-        sendStateToClients(state, socket)
+        sendStateToClients(state, socket, io, removedPlayers[0].gameId)
 
     }
 }

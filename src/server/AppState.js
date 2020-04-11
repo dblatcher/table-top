@@ -16,8 +16,8 @@ class AppState {
         this.getNextGameId = function() {return `${Math.floor(Math.random()*10000000)}-${nextGameIdKey++}` }
     }
 
-    addPlayer (playerName, socketId) { 
-        const player = new Player(playerName, socketId, this.getNextPlayerId())
+    addPlayer (playerName, socketId, gameId) { 
+        const player = new Player(playerName, socketId, gameId, this.getNextPlayerId())
         this.players.push(player)
         return player
     }
@@ -45,9 +45,37 @@ class AppState {
         return game
     }
 
+    getGameById(gameId) {
+        const matchingGames = this.games.filter(game => game.gameId === gameId)
+        if (matchingGames.length === 0) {return null}
+        if (matchingGames.length > 1) {
+            console.warn(`multiple games(${matchingGames.length}) with ID ${gameId}`, matchingGames)
+            return null
+        }
+        return matchingGames[0]
+    }
+
+    getStateOfGame(gameId) {
+
+        const matchingGame = this.getGameById(gameId)
+
+        if (!matchingGame) {
+            return new Refusal('NO MATCHING GAME',{gameId}).clientSafeVersion
+        }
+
+        const safePlayers = this.players
+        .filter (player => player.gameId === gameId)
+        .map(player => player.clientSafeVersion)
+
+        return {
+            game: matchingGame.clientSafeVersion,
+            players: safePlayers
+        }
+    }
+
     get clientSafeVersion () {
-        let safePlayers = this.players.map(player => player.clientSafeVersion)
-        let safeGames = this.games.map(game => game.clientSafeVersion)
+        const safePlayers = this.players.map(player => player.clientSafeVersion)
+        const safeGames = this.games.map(game => game.clientSafeVersion)
 
         return {
             players: safePlayers,

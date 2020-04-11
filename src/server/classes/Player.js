@@ -1,8 +1,9 @@
 class Player {
-    constructor (playerName, socketId, playerId) {
+    constructor (playerName, socketId, gameId, playerId) {
         this.playerName = playerName;
         this.socketId = socketId;
         this.playerId = playerId;
+        this.gameId = gameId;
     } 
     get type() {return 'PLAYER'}
 
@@ -11,6 +12,7 @@ class Player {
             type: this.type,
             playerName: this.playerName,
             playerId: this.playerId,
+            gameId: this.gameId,
         }
     }
 }

@@ -1,8 +1,16 @@
-function onRoll (state, socket){
-    return function (report) {
-        let name = report.localPlayer ? report.localPlayer.playerName || 'ANON' : 'UNKNOWN PLAYER';
-        console.log(name + ' ' + report.rollData.message);
-        socket.broadcast.emit('roll',report);
+function onRoll (state, socket, io){
+    return function (playerId, rollData) {
+
+
+        matchingPlayer = state.getPlayerById(playerId)
+        if (!matchingPlayer) {return false}
+
+        console.log(matchingPlayer.playerName, rollData.message);
+
+        socket.to(matchingPlayer.gameId).emit('roll',{ 
+            player: matchingPlayer.clientSafeVersion,
+            rollData,
+        });
     }
 }
 

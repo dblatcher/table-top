@@ -1,10 +1,13 @@
-function onMessage (state, socket){
+function onMessage (state, socket,io){
     return function (playerId, messageText) {
 
         matchingPlayer = state.getPlayerById(playerId)
         if (!matchingPlayer) {return false}
         console.log(`${matchingPlayer.playerName}(${playerId}): messageText`)
-        socket.broadcast.emit('player-message',{ playerId, playerName:matchingPlayer.playerName, messageText});
+
+
+        socket.to(matchingPlayer.gameId).emit('player-message',{ playerId, playerName:matchingPlayer.playerName, messageText});
+
     }
 }
 
