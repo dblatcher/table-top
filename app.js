@@ -4,15 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var GameState = require ('./src/server/state-class')
+var AppState = require ('./src/server/AppState')
 
 // define app state
-let state = new GameState() 
+let state = new AppState() 
 
 // adding testing state objects
 var testPlayer = state.addPlayer('Comic Book Guy',0)
-var testGame = state.addGame('test-game',{rpg:'AD&D',permission:'OPEN'},testPlayer)
 var testPlayer2 = state.addPlayer('Dweebles',0)
+var testGame = state.addGame('test-game',{rpg:'AD&D',permission:'OPEN'},testPlayer)
 var testGame2 = state.addGame('other-game',{rpg:'Call of Cthulu',permission:'OPEN'},testPlayer2)
 
 

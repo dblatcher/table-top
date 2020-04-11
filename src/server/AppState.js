@@ -1,65 +1,9 @@
 
-class Player {
-    constructor (playerName, socketId, playerId) {
-        this.playerName = playerName;
-        this.socketId = socketId;
-        this.playerId = playerId;
-    } 
-    get type() {return 'PLAYER'}
+const Game = require ('./classes/Game')
+const Player = require ('./classes/Player')
+const Refusal = require ('./classes/Refusal')
 
-    get clientSafeVersion () {
-        return {
-            type: this.type,
-            playerName: this.playerName,
-            playerId: this.playerId,
-        }
-    }
-}
-
-class Game {
-    constructor (gameName, gameDetails, masterPlayer, gameId) {
-        this.gameName = gameName;
-        this.gameId = gameId;
-        this.gameDetails = gameDetails;
-        this.masterPlayer = masterPlayer;
-    }
-    get type() {return 'GAME'}
-
-    get clientSafeVersion () {
-        return {
-            type: this.type,
-            gameName: this.gameName,
-            gameId: this.gameId,
-            masterId: this.masterPlayer.playerId,
-            masterName: this.masterPlayer.playerName,
-        }
-    }
-}
-
-class Refusal {
-    constructor (reason, details) {
-        this.reason = reason
-        this.details = details
-    }
-    get type() {return 'REFUSAL'}
-
-    get message () {
-        if (this.reason === 'NAME_ALREADY_TAKEN') {
-            return `The name '${this.details}' is already in use.`
-        }
-        return this.reason
-    }
-
-    get clientSafeVersion () {
-        return {
-            type: this.type,
-            message: this.message,
-        }
-    }
-}
-
-
-class GameState {
+class AppState {
 
     constructor () {
         this.players = []
@@ -113,4 +57,4 @@ class GameState {
 
 }
 
-module.exports = GameState
+module.exports = AppState
