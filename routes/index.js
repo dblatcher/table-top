@@ -5,7 +5,7 @@ function makeRouter(state) {
 
   /* GET home page. */
   router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Table-top'});
+    res.render('index', { title: 'Table-top', games: state.games });
   });
 
   return router

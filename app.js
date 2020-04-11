@@ -9,8 +9,16 @@ var GameState = require ('./src/server/state-class')
 // define app state
 let state = new GameState() 
 
+// adding testing state objects
+var testPlayer = state.addPlayer('Comic Book Guy',0)
+var testGame = state.addGame('test-game',{rpg:'AD&D',permission:'OPEN'},testPlayer)
+var testPlayer2 = state.addPlayer('Dweebles',0)
+var testGame2 = state.addGame('other-game',{rpg:'Call of Cthulu',permission:'OPEN'},testPlayer2)
+
+
 var indexRouter = require('./routes/index')(state);
 var usersRouter = require('./routes/users')(state);
+var gameRouter = require('./routes/game')(state)
 var app = express();
 
 
@@ -26,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/game', gameRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

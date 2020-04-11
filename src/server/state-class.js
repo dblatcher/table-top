@@ -16,6 +16,25 @@ class Player {
     }
 }
 
+class Game {
+    constructor (gameName, gameDetails, masterPlayer, gameId) {
+        this.gameName = gameName;
+        this.gameId = gameId;
+        this.gameDetails = gameDetails;
+        this.masterPlayer = masterPlayer;
+    }
+    get type() {return 'GAME'}
+
+    get clientSafeVersion () {
+        return {
+            type: this.type,
+            gameName: this.gameName,
+            gameId: this.gameId,
+            masterId: this.masterPlayer.playerId,
+            masterName: this.masterPlayer.playerName,
+        }
+    }
+}
 
 class Refusal {
     constructor (reason, details) {
@@ -44,10 +63,13 @@ class GameState {
 
     constructor () {
         this.players = []
-        this.foo = 'bar'
+        this.games = []
 
         let nextPlayerIdKey = 1000
         this.getNextPlayerId = function() {return `${Math.floor(Math.random()*10000000)}-${nextPlayerIdKey++}` }
+
+        let nextGameIdKey = 1000
+        this.getNextGameId = function() {return `${Math.floor(Math.random()*10000000)}-${nextGameIdKey++}` }
     }
 
     addPlayer (playerName, socketId) { 
@@ -73,11 +95,19 @@ class GameState {
         return matchingPlayers[0]
     }
 
+    addGame (gameName, gameDetails, masterPlayer) {
+        const game = new Game(gameName, gameDetails, masterPlayer, this.getNextGameId())
+        this.games.push(game)
+        return game
+    }
+
     get clientSafeVersion () {
         let safePlayers = this.players.map(player => player.clientSafeVersion)
+        let safeGames = this.games.map(game => game.clientSafeVersion)
 
         return {
             players: safePlayers,
+            games: safeGames,
         }
     }
 

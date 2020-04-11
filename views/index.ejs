@@ -9,28 +9,19 @@
 
     <h1><%= title %></h1>
 
-    <div id="app"></div>
+    <h2>Games running:</h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Game Master</th>
+      </tr>
+      <% games.forEach(function(game){ %>
+        <tr>
+          <td><a href="/game/<%= game.gameName %>"><%= game.gameName %></a></td>
+          <td><%= game.masterPlayer.playerName %> </td>
+        </tr>
+      <% }); %>
+    </table>
 
-
-
-    <!-- <div class="frame">
-      <article class="red card">
-        <h2>heading</h2>
-        <div id="test-d6">roll d6</div>
-        <div id="test-d10">roll d10</div>
-      </article>
-      
-      <article class="green card">
-        <h2>heading</h2>
-      </article>
-
-      <article class="blue card">
-        <h2>heading</h2>
-      </article>
-
-    </div> -->
-
-
-    <script src="./javascripts/app.js"></script>
   </body>
 </html>
