@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> - <%= game %></title>
+    <title><%= title %> - <%= game.gameName %></title>
     <link rel='stylesheet' href='/stylesheets/base.css' />
 
   </head>
   <body>
 
     <h1><a href="/"><%= title %></a></h1>
-    <h2><%= game %></h2>
+    <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
 
+    <meta gm="<%= game.masterPlayer.playerId %>"/>
     <div id="app"></div>
 
     <script src="/javascripts/app.js"></script>
