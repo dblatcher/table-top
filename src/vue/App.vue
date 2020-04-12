@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     
-    <p v-if="isSignedIn">USER NAME:{{ displayName }}</p>
+    <h2>{{gameName}}</h2>
 
     <form v-if="!isSignedIn" @submit="signIn" class="sign-in-form">
       <label for="playerName">User name:</label>
@@ -9,17 +9,21 @@
       <input type="submit" value="go"/>
     </form>
 
-    <div class="roll-button-holder">
-      <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
-      <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
+    <div v-if="isSignedIn">
+      <p>USER NAME:{{ displayName }}</p>
+
+      <div class="roll-button-holder">
+        <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
+        <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
+      </div>
+
+      <PlayersDisplay 
+      v-bind:players="this.gameState.players" 
+      v-bind:playerId="playerId" 
+      v-bind:gameMasterId="gameMasterId"/>
+
+      <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
     </div>
-
-    <PlayersDisplay 
-    v-bind:players="this.gameState.players" 
-    v-bind:playerId="playerId" 
-    v-bind:gameMasterId="gameMasterId"/>
-
-    <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
   </div>
 </template> 
@@ -39,14 +43,13 @@ export default {
 
     const metaElement = document.querySelector('#gameMeta')
     const gameId = metaElement ? metaElement.getAttribute('gameId') : undefined
+    const gameName = metaElement ? metaElement.getAttribute('gameName') : undefined
     const gameMasterId = metaElement ? metaElement.getAttribute('gameMasterId') : undefined
     const amGamemaster = metaElement ? metaElement.getAttribute('myStatus') === "GM" : undefined
 
     return {
       socket: io(),
-      amGamemaster,
-      gameId,
-      gameMasterId,
+      amGamemaster, gameId, gameMasterId, gameName,
       playerId : false,
       playerName : '',
       messages: [],

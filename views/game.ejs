@@ -10,21 +10,22 @@
     <%- include('includes/header'); %>
 
     <main class="content">
-        <% if (!gmView) { %>
-          <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
-          <meta id="gameMeta" 
-          gameMasterId="<%= game.masterPlayer.playerId %>" 
-          gameMasterName="<%= game.masterPlayer.playerName %>" 
-          gameId="<%= game.gameId %>" 
-          myStatus="player"/>
-        <% } else { %>
-          <h2>MY GAME: <%= game.gameName %></h2>
-          <meta id="gameMeta" 
-          gameMasterId="<%= game.masterPlayer.playerId %>" 
-          gameMasterName="<%= game.masterPlayer.playerName %>" 
-          gameId="<%= game.gameId %>" 
-          myStatus="GM"/>
-        <% } %>
+      <% if (!gmView) { %>
+        <p>GM: <%= game.masterPlayer.playerName %></p>
+        <meta id="gameMeta" 
+        gameMasterId="<%= game.masterPlayer.playerId %>" 
+        gameMasterName="<%= game.masterPlayer.playerName %>" 
+        gameId="<%= game.gameId %>" 
+        gameName="<%= game.gameName %>" 
+        myStatus="player"/>
+      <% } else { %>
+        <meta id="gameMeta" 
+        gameMasterId="<%= game.masterPlayer.playerId %>" 
+        gameMasterName="<%= game.masterPlayer.playerName %>" 
+        gameId="<%= game.gameId %>" 
+        gameName="<%= game.gameName %>" 
+        myStatus="GM"/>
+      <% } %>
 
       <div id="app"></div>
     </main>
