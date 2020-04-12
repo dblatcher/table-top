@@ -37,6 +37,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+  .frame {
+      display: flex;
+      flex-wrap: wrap;
+  }
 
 </style>

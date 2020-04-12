@@ -14,18 +14,8 @@ $shadow-1 :1px 3px 6px 1px black;
 @import './form';
 
 
-.status-bar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    background-color: black;
-    color: antiquewhite;
-}
-
 .frame {
     margin: $std-space 0;
     padding: $std-space;
-    border: 4px double black;
-    display: flex;
-    flex-wrap: wrap;
+    border: 4px double $color-text;
 }

@@ -19,7 +19,7 @@ export default {
     },
 
     methods: {
-        roll() {            
+        roll() {
             let results = this.diceList.map (number => Math.floor((Math.random() * number)+1) )
             let total = results.reduce(function(a,b){return a+b})
             let message = `rolled ${this.label} and got ${results.toString()} (total: ${total})`
@@ -35,6 +35,7 @@ export default {
 
     p {
         border: 1px solid black;
+        padding: .5rem;
         margin: 1rem;
         cursor: pointer;
     }
