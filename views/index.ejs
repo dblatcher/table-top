@@ -3,12 +3,13 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/base.css' />
-
+    <script src="/javascripts/homepage.js"></script>
   </head>
   <body>
 
     <h1><%= title %></h1>
 
+    <!-- TO DO - live updates on the table. VUE app using socket? -->
     <h2>Games running:</h2>
     <table>
       <tr>
@@ -25,7 +26,7 @@
 
     <h2>Create new Game</h2>
 
-    <form data-role="create-game-form" action="/create" method="POST">
+    <form data-role="create-game-form" method="POST">
       <div>
         <label>Game Master's Name:</label>
         <input name="gmName" id="gmName" type="text"/>
