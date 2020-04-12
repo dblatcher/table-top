@@ -3,28 +3,33 @@
   <head>
     <title><%= title %> - <%= game.gameName %></title>
     <link rel='stylesheet' href='/stylesheets/base.css' />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
 
-    <h1><a href="/"><%= title %></a></h1>
-    <% if (!gmView) { %>
-      <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
-      <meta id="gameMeta" 
-      gameMasterId="<%= game.masterPlayer.playerId %>" 
-      gameMasterName="<%= game.masterPlayer.playerName %>" 
-      gameId="<%= game.gameId %>" 
-      myStatus="player"/>
-    <% } else { %>
-      <h2>MY GAME: <%= game.gameName %></h2>
-      <meta id="gameMeta" 
-      gameMasterId="<%= game.masterPlayer.playerId %>" 
-      gameMasterName="<%= game.masterPlayer.playerName %>" 
-      gameId="<%= game.gameId %>" 
-      myStatus="GM"/>
-    <% } %>
+    <%- include('includes/header'); %>
 
-    <div id="app"></div>
+    <main class="content">
+        <% if (!gmView) { %>
+          <h2><%= game.gameName %>, GM: <%= game.masterPlayer.playerName %></h2>
+          <meta id="gameMeta" 
+          gameMasterId="<%= game.masterPlayer.playerId %>" 
+          gameMasterName="<%= game.masterPlayer.playerName %>" 
+          gameId="<%= game.gameId %>" 
+          myStatus="player"/>
+        <% } else { %>
+          <h2>MY GAME: <%= game.gameName %></h2>
+          <meta id="gameMeta" 
+          gameMasterId="<%= game.masterPlayer.playerId %>" 
+          gameMasterName="<%= game.masterPlayer.playerName %>" 
+          gameId="<%= game.gameId %>" 
+          myStatus="GM"/>
+        <% } %>
+
+      <div id="app"></div>
+    </main>
+
+    <%- include('includes/footer'); %>
 
     <script src="/javascripts/app.js"></script>
   </body>

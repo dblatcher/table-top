@@ -1,7 +1,15 @@
+
+$color-shade: #9B1B30;
+$color-text: #0F2003;
+$color-page: #EDE0DE;
+$color-contrast: #3C7218;
+$font-main: "Lucida Grande", Helvetica, Arial, sans-serif;
+$font-heading: Georgia, serif;
+
 $std-space: .5rem;
 $shadow-1 :1px 3px 6px 1px black;
 
-@import './style';
+@import './page';
 @import './card';
 @import './form';
 
@@ -15,7 +23,7 @@ $shadow-1 :1px 3px 6px 1px black;
 }
 
 .frame {
-    margin: $std-space;
+    margin: $std-space 0;
     padding: $std-space;
     border: 4px double black;
     display: flex;

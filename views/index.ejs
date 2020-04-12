@@ -4,43 +4,47 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/base.css' />
     <script src="/javascripts/homepage.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-
-    <h1><%= title %></h1>
+    <%- include('includes/header'); %>
 
     <!-- TO DO - live updates on the table. VUE app using socket? -->
-    <h2>Games running:</h2>
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Game Master</th>
-      </tr>
-      <% games.forEach(function(game){ %>
+    <section class="content">
+      <h2>Games Running</h2>
+      <table>
         <tr>
-          <td><a href="/game/<%= game.gameName %>"><%= game.gameName %></a></td>
-          <td><%= game.masterPlayer.playerName %> </td>
+          <th>Name</th>
+          <th>Game Master</th>
         </tr>
-      <% }); %>
-    </table>
+        <% games.forEach(function(game){ %>
+          <tr>
+            <td><a href="/game/<%= game.gameName %>"><%= game.gameName %></a></td>
+            <td><%= game.masterPlayer.playerName %> </td>
+          </tr>
+          <% }); %>
+        </table>
+      </section>
 
-    <h2>Create new Game</h2>
+    <section class="content">
+      <h2>Create New Game</h2>
+      <form data-role="create-game-form" method="POST">
+        <div>
+          <label>Game Master's Name:</label>
+          <input name="gmName" id="gmName" type="text"/>
+        </div>
+        <div>
+          <label>Game Name:</label>
+          <input name="gameName" id="gameName" type="text"/>
+        </div>
+        <div>
+          <label>What game are you playing?</label>
+          <input name="rpgName" id="rpgName" type="text"/>
+        </div>
+        <input type="submit"/>
+      </form>
+    </section>
 
-    <form data-role="create-game-form" method="POST">
-      <div>
-        <label>Game Master's Name:</label>
-        <input name="gmName" id="gmName" type="text"/>
-      </div>
-      <div>
-        <label>Game Name:</label>
-        <input name="gameName" id="gameName" type="text"/>
-      </div>
-      <div>
-        <label>What game are you playing?</label>
-        <input name="rpgName" id="rpgName" type="text"/>
-      </div>
-      <input type="submit"/>
-    </form>
-
+    <%- include('includes/footer'); %>
   </body>
 </html>
