@@ -1,0 +1,11 @@
+.button {
+    display: inline-block;
+    min-width: 6em;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    padding: ($std-space/2);
+    margin: ($std-space/2) $std-space;
+    background-color: $color-shade;
+    box-shadow: $shadow-1;
+}
