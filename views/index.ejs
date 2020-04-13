@@ -9,22 +9,9 @@
   <body>
     <%- include('includes/header'); %>
 
-    <!-- TO DO - live updates on the table. VUE app using socket? -->
     <section class="content">
-      <h2>Games Running</h2>
-      <table>
-        <tr>
-          <th>Name</th>
-          <th>Game Master</th>
-        </tr>
-        <% games.forEach(function(game){ %>
-          <tr>
-            <td><a href="/game/<%= game.gameName %>"><%= game.gameName %></a></td>
-            <td><%= game.masterPlayer.playerName %> </td>
-          </tr>
-          <% }); %>
-        </table>
-      </section>
+      <div id="app"></div>
+    </section>
 
     <section class="content">
       <h2>Create New Game</h2>
