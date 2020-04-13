@@ -13,8 +13,23 @@ function onDisconnect(state, socket, io){
             return
         }
         console.log(`user with '${removedPlayers[0].playerName}' disconnected from game${removedPlayers[0].gameId}`)
- 
-        sendStateToClients(state, socket, io, removedPlayers[0].gameId)
+
+        const matchingGame = state.getGameById(removedPlayers[0].gameId)
+
+        //player left an already closed game
+        if (!matchingGame) {
+            return
+        }
+
+        //disconnecting player was the gm of an active game
+        if (matchingGame.masterPlayer === removedPlayers[0]) {
+            io.to(matchingGame.gameId).emit('game-closed', matchingGame.gameId);
+            state.closeGame(matchingGame.gameId)
+            return
+        }
+
+        //non-gm player left an active game
+        sendStateToClients(state, socket, io, matchingGame.gameId)
 
     }
 }
