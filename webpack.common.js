@@ -5,7 +5,7 @@ module.exports = {
     entry: {
         base: './src/scss/base.scss',
         homepage: './src/js/homepage.js',
-        app: './src/vue/main.js',
+        "game-app": './src/vue/game-main.js',
     },
 
     module: {
