@@ -56,9 +56,7 @@ class AppState {
     }
 
     getStateOfGame(gameId) {
-
         const matchingGame = this.getGameById(gameId)
-
         if (!matchingGame) {
             return new Refusal('NO MATCHING GAME',{gameId}).clientSafeVersion
         }
@@ -71,6 +69,10 @@ class AppState {
             game: matchingGame.clientSafeVersion,
             players: safePlayers
         }
+    }
+
+    closeGame(gameId) {
+        this.games = this.games.filter(game => game.gameId !== gameId)
     }
 
     get clientSafeVersion () {

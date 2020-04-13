@@ -1,4 +1,4 @@
-const eventNames = ["sign-in", "roll","disconnect","request-state","message", "gm-sign-in"]
+const eventNames = ["sign-in", "roll","disconnect","request-state","message", "gm-sign-in", "gm-closing-game"]
 
 var on = {}
 eventNames.forEach( eventName => {

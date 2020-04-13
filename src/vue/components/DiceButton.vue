@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p @click="roll">{{label}}</p>
+    <p class="button" @click="roll">{{label}}</p>
   </div>
 </template>
 
@@ -33,11 +33,5 @@ export default {
 
 <style scoped>
 
-    p {
-        border: 1px solid black;
-        padding: .5rem;
-        margin: 1rem;
-        cursor: pointer;
-    }
 
 </style>

@@ -3,14 +3,27 @@
     
     <h2>{{gameName}}</h2>
 
-    <form v-if="!isSignedIn" @submit="signIn" class="sign-in-form">
+    <form v-if="!isSignedIn && !amGamemaster" 
+    @submit="signIn" 
+    class="sign-in-form">
       <label for="playerName">User name:</label>
       <input type="text" name="playerName" />
       <input type="submit" value="go"/>
     </form>
 
+    <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
+      <div class="modal-content">
+        <p>GAME CLOSED</p>
+        <p><a href="/">return to homepage</a></p>
+      </div>
+    </div>
+
+    <CloseGameButton v-if="isSignedIn && amGamemaster"  @close-game="requestGameClose"/>
+
     <div v-if="isSignedIn">
+
       <p>USER NAME:{{ displayName }}</p>
+
 
       <div class="roll-button-holder">
         <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
@@ -32,12 +45,13 @@
 import DiceButton from './components/DiceButton.vue'
 import MessageBox from './components/MessageBox.vue'
 import PlayersDisplay from './components/PlayersDisplay.vue'
+import CloseGameButton from './components/CloseGameButton.vue'
 
 var io = require('../../node_modules/socket.io-client/dist/socket.io')
 
 
 export default {
-  components: {DiceButton, MessageBox, PlayersDisplay},
+  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton},
 
   data() {
 
@@ -55,7 +69,8 @@ export default {
       messages: [],
       gameState: {
         players: []
-      }
+      },
+      gameHasClosed:false,
     };
   },
 
@@ -138,7 +153,18 @@ export default {
     handleMessage (messageData) {
       let sendingPlayer
       this.messages.push(`${messageData.playerName}: ${messageData.messageText}`,)
-    }
+    },
+
+    requestGameClose() {
+      const {gameId, playerId} = this
+      console.log('requesting game close...')
+      this.socket.emit('gm-closing-game',{gameId, playerId})
+    },
+
+    handleGameClosing (data) {
+      console.log('game closing:', data)
+      this.gameHasClosed = true;
+    },
 
   },
 
@@ -146,6 +172,7 @@ export default {
     this.socket.on('roll', this.handleRollReport );
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('player-message', this.handleMessage );
+    this.socket.on('game-closed', this.handleGameClosing );
 
     if (this.amGamemaster) {
       console.log('I AM THE GM')
