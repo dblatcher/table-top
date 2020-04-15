@@ -1,0 +1,24 @@
+
+table {
+
+    border-collapse: collapse;
+
+    td, th {
+        padding: .5em .75em;
+        text-align: left;
+        border: 1px solid $color-shade;
+    }
+
+    th {
+        font-weight: 700;
+        background-color: $color-shade;
+        color: $color-page;
+    }
+
+    caption {
+        caption-side: bottom;
+        text-align: left;
+        padding-left: .75em;
+        min-width: 12rem;
+    }
+}

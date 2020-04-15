@@ -1,8 +1,9 @@
 <template>
 <div>
 
-  <table>
-      <tr>
+  <table class="game-list">
+      <caption>{{captionText}}</caption>
+      <tr v-if="info.games.length > 0">
           <th>Game Name</th>
           <th>Game Master</th>
           <th>System</th>
@@ -13,7 +14,7 @@
           <td>{{game.details.rpgName}}</td>
       </tr>
   </table>
-  <p>{{info.games.length}}</p>
+
 </div>
 </template>
 
@@ -27,6 +28,14 @@ data : function () {
         info : {games: [] },
         timer: undefined,
     }
+},
+
+computed : {
+    captionText() {
+        if (this.info.games.length === 0) { return 'no games running'}
+        if (this.info.games.length === 1) { return '1 game running'}
+        return `${this.info.games.length} games running`
+    },
 },
 
 methods : {
@@ -43,7 +52,7 @@ methods : {
 
     getLink(game) {
         return `/game/${game.gameName}`
-    }
+    },
 },
 
 mounted() {
