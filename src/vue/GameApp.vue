@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     
-    <h2>{{gameName}}</h2>
+    <h2>{{config.gameName}}</h2>
 
-    <form v-if="!isSignedIn && !amGamemaster" 
+    <form v-if="!isSignedIn && !config.amGamemaster" 
     @submit="signIn" 
     class="sign-in-form">
       <label for="playerName">User name:</label>
@@ -18,12 +18,11 @@
       </div>
     </div>
 
-    <CloseGameButton v-if="isSignedIn && amGamemaster"  @close-game="requestGameClose"/>
+    <CloseGameButton v-if="isSignedIn && config.amGamemaster"  @close-game="requestGameClose"/>
 
     <div v-if="isSignedIn">
 
       <p>USER NAME:{{ displayName }}</p>
-
 
       <div class="roll-button-holder">
         <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
@@ -33,7 +32,7 @@
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
       v-bind:playerId="playerId" 
-      v-bind:gameMasterId="gameMasterId"/>
+      v-bind:gameMasterId="config.gameMasterId"/>
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
     </div>
@@ -47,23 +46,13 @@ import MessageBox from './components/MessageBox.vue'
 import PlayersDisplay from './components/PlayersDisplay.vue'
 import CloseGameButton from './components/CloseGameButton.vue'
 
-var io = require('../../node_modules/socket.io-client/dist/socket.io')
-
-
 export default {
   components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton},
 
+  props: ['config', 'socket'],
+
   data() {
-
-    const metaElement = document.querySelector('#gameMeta')
-    const gameId = metaElement ? metaElement.getAttribute('gameId') : undefined
-    const gameName = metaElement ? metaElement.getAttribute('gameName') : undefined
-    const gameMasterId = metaElement ? metaElement.getAttribute('gameMasterId') : undefined
-    const amGamemaster = metaElement ? metaElement.getAttribute('myStatus') === "GM" : undefined
-
     return {
-      socket: io(),
-      amGamemaster, gameId, gameMasterId, gameName,
       playerId : false,
       playerName : '',
       messages: [],
@@ -107,7 +96,7 @@ export default {
     },
 
     requestStateUpdate() {
-      this.socket.emit('request-state',this.gameId)
+      this.socket.emit('request-state',this.config.gameId)
     },
 
     reportRoll(rollData) {
@@ -129,7 +118,7 @@ export default {
       // TO DO - SANITISE INPUT!!
       const form = event.target
       const playerName = form.elements.playerName.value
-      this.socket.emit('sign-in', {playerName, gameId:this.gameId}, this.handleSignInResponse)
+      this.socket.emit('sign-in', {playerName, gameId:this.config.gameId}, this.handleSignInResponse)
 
     },
 
@@ -156,7 +145,9 @@ export default {
     },
 
     requestGameClose() {
-      const {gameId, playerId} = this
+      const {playerId} = this
+      const {gameId} = this.config
+
       console.log('requesting game close...')
       this.socket.emit('gm-closing-game',{gameId, playerId})
     },
@@ -174,11 +165,11 @@ export default {
     this.socket.on('player-message', this.handleMessage );
     this.socket.on('game-closed', this.handleGameClosing );
 
-    if (this.amGamemaster) {
+    if (this.config.amGamemaster) {
       console.log('I AM THE GM')
       this.socket.emit('gm-sign-in', {
-        gameMasterId: this.gameMasterId,
-        gameId:this.gameId
+        gameMasterId: this.config.gameMasterId,
+        gameId:this.config.gameId
       }, this.handleSignInResponse)
     }
 
