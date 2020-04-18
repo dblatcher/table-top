@@ -45,6 +45,16 @@ class AppState {
         return matchingPlayers[0]
     }
 
+    getPlayerByCookies(cookies) {
+        const matchingPlayers = this.players.filter(player => player.matches(cookies))
+        if (matchingPlayers.length === 0) {return null}
+        if (matchingPlayers.length > 1) {
+            console.warn(`multiple players(${matchingPlayers.length}) with matching cookies`, matchingPlayers)
+            return null
+        }
+        return matchingPlayers[0]
+    }
+
     addGame (gameName, gameDetails, masterPlayer) {
         const game = new Game(gameName, gameDetails, masterPlayer, this.getNextGameId())
         this.games.push(game)

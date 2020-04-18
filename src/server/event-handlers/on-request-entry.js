@@ -1,23 +1,27 @@
 sendStateToClients = require ('../sendStateToClients')
+const cookie = require('cookie');
 
 function onRequestEntry(state, socket, io){
     return function (data, callback) {
 
-        // TO DO - SANITISE INPUT!!
-        console.log(`user requested entry to game${data.gameId} with user name ${data.playerName} `);
-        
-        if (state.players.map(item=>item.playerName).indexOf (data.playerName) > -1 ) {
-            console.log('refusing: NAME_ALREADY_TAKEN')
-            const refusal = state.makeRefusal ('NAME_ALREADY_TAKEN', data.playerName)
+        const cookies = cookie.parse(socket.request.headers.cookie || '');
+        const matchingPlayer = state.getPlayerByCookies(cookies)
+
+        if (!matchingPlayer) {
+            console.log('refusing: NOT_SIGNED_IN')
+            const refusal = state.makeRefusal ('NOT_SIGNED_IN')
             callback( refusal.clientSafeVersion )
             return false
         }
 
-        const newPlayer = state.addPlayer(data.playerName, socket.id, data.gameId)
-        socket.join(data.gameId)
-        console.log(`added player to game ${data.gameId}`, newPlayer)
+        // TO DO - SANITISE INPUT!!
+        console.log(`${matchingPlayer.playerName} requested entry to game ${data.gameId}`);
 
-        callback(newPlayer.clientSafeVersion)
+        matchingPlayer.gameId = data.gameId
+        socket.join(data.gameId)
+        console.log(`added ${matchingPlayer.playerName} to game ${data.gameId}`)
+
+        callback(matchingPlayer.clientSafeVersion)
         sendStateToClients(state, socket, io, data.gameId)
     }
 }
