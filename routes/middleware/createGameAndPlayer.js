@@ -7,7 +7,8 @@ function makeMiddleware(state) {
   return function(req, res, next) {
 
     console.log('IN CREATE GAME AND PLAYER MIDDLEWARE', req.body, req.cookies)
-    const {gameName, gmName, rpgName} = req.body;
+    const {gameName, gmName, rpgName, player} = req.body;
+
 
     //TO DO - check inputs
     const errors = getInputErrors (req.body)
@@ -17,13 +18,22 @@ function makeMiddleware(state) {
     }
 
 
-    var newGm = state.addPlayer(gmName ,0,undefined)
-    var newGame = state.addGame (gameName,{rpgName}, newGm)
-    newGm.gameId = newGame.gameId
-    req.body.newGame = newGame
-    res.cookie('token', newGm.token)
-    res.cookie('playerName', newGm.playerName)
-    res.cookie('playerId',newGm.playerId)
+    if (player) {
+      var newGame = state.addGame (gameName,{rpgName}, player)
+      player.gameId = newGame.gameId
+      req.body.newGame = newGame
+    }
+
+    else {
+      var newGm = state.addPlayer(gmName ,0,undefined)
+      var newGame = state.addGame (gameName,{rpgName}, newGm)
+      newGm.gameId = newGame.gameId
+      req.body.newGame = newGame
+      res.cookie('token', newGm.token)
+      res.cookie('playerName', newGm.playerName)
+      res.cookie('playerId',newGm.playerId)
+    }
+
 
     next()
   };

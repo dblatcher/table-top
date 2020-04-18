@@ -10,6 +10,9 @@
       <div id="app"></div>
     </section>
 
+
+    <% if (!player) { %>
+
     <section class="content">
       <h2>Sign in</h2>
       <form data-role="sign-in-form" method="POST" action="/">
@@ -25,7 +28,7 @@
     </section>
 
     <section class="content">
-      <h2>Create New Game</h2>
+      <h2>Sign in and Create New Game</h2>
       <form data-role="create-game-form" method="POST">
         <div>
           <label>Game Master's Name:</label>
@@ -42,6 +45,25 @@
         <input type="submit"/>
       </form>
     </section>
+
+    <% } else { %>
+
+      <section class="content">
+        <h2>Create New Game</h2>
+        <form data-role="create-game-form" method="POST">
+          <div>
+            <label>Game Name:</label>
+            <input name="gameName" id="gameName" type="text"/>
+          </div>
+          <div>
+            <label>What game are you playing?</label>
+            <input name="rpgName" id="rpgName" type="text"/>
+          </div>
+          <input type="submit"/>
+        </form>
+      </section>
+
+    <% } %>
 
     <%- include('includes/footer'); %>
   </body>

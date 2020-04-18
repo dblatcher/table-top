@@ -5,8 +5,8 @@ var getPlayer = require('./middleware/getPlayer')
 function makeRouter(state) {
   var router = express.Router();
 
+  router.use('/:gameName', getPlayer(state) )
   router.post('/:gameName', createGameAndPlayer(state) )
-  router.get('/:gameName', getPlayer(state) )
   router.use('/:gameName', function(req, res, next) {
 
     console.log('IN GAME ROUTER', req.body, req.cookies)

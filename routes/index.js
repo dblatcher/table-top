@@ -7,7 +7,7 @@ function makeRouter(state) {
 
   /* GET home page. */
 
-  router.get('/', getPlayer(state));
+  router.use('/', getPlayer(state));
   router.post('/', createPlayer(state));
 
   router.all('/', function(req, res, next) {

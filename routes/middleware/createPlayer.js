@@ -11,12 +11,16 @@ function getInputErrors(input,state) {
 function makeMiddleware(state) {
   return function(req, res, next) {
 
-    console.log('IN CREATE PLAYER MIDDLEWARE', req.body, req.cookies)
-    const {playerName} = req.body;
+    console.log('IN CREATE PLAYER MIDDLEWARE')
+    const {playerName, player} = req.body;
 
     //TO DO - check inputs
     const errors = getInputErrors (req.body, state)
-    if (errors.length > 0) {
+
+    if (player) {
+      console.log('ALREADY SIGNED IN')
+    }
+    else if (errors.length > 0) {
       req.body.formErrors = errors
       req.body.nameOfFormWithErrors = 'createPlayer'
       console.log('ADDED ERRRORS TO REQ')
