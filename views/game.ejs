@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %> - <%= game.gameName %></title>
-    <link rel='stylesheet' href='/stylesheets/base.css' />
-    <script src="/javascripts/gamepage.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
+  <%- include('includes/head', {title:`${title} - ${game.gameName}` , scripts:['gamepage.js']}); %>
+
   <body>
 
     <%- include('includes/header'); %>

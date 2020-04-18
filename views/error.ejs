@@ -1,11 +1,17 @@
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel='stylesheet' href='/stylesheets/base.css' />
-<%- include('includes/header'); %>
+<!DOCTYPE html>
+<html>
+    <%- include('includes/head', {title:`ERROR - ${error.status}` , scripts:[]}); %>
 
-<div class="content">
-    <h1><%= message %></h1>
-    <h2><%= error.status %></h2>
-</div>
-<%- include('includes/footer'); %>
+    <body>
+        <%- include('includes/header'); %>
 
-<pre><%= error.stack %></pre>
+        <div class="content">
+            <h1><%= message %></h1>
+            <h2><%= error.status %></h2>
+        </div>
+        <%- include('includes/footer'); %>
+
+        <pre><%= error.stack %></pre>
+
+    </body>
+</html>
