@@ -3,9 +3,9 @@
     
     <h2>{{config.gameName}}</h2>
 
-    <form v-if="!isSignedIn && !config.amGamemaster" 
+    <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
-    class="sign-in-form">
+    class="enter-game-form">
       <label for="playerName">User name:</label>
       <input type="text" name="playerName" />
       <input type="submit" value="go"/>
@@ -18,9 +18,9 @@
       </div>
     </div>
 
-    <CloseGameButton v-if="isSignedIn && config.amGamemaster"  @close-game="requestGameClose"/>
+    <CloseGameButton v-if="hasEnteredGame && config.amGamemaster"  @close-game="requestGameClose"/>
 
-    <div v-if="isSignedIn">
+    <div v-if="hasEnteredGame">
 
       <p>USER NAME:{{ displayName }}</p>
 
@@ -65,7 +65,7 @@ export default {
 
   computed : {
 
-    isSignedIn() {
+    hasEnteredGame() {
       return !!this.playerId
     },
 
