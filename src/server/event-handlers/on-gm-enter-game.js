@@ -6,16 +6,13 @@ function onGmEnterGame(state, socket, io){
     return function (data, callback) {
 
         // TO DO - SANITISE INPUT!!
-        console.log(`user entering game${data.gameId} AS GM with player ID ${data.gameMasterId} `);
 
+        const {gameId} = data
         const cookies = cookie.parse(socket.request.headers.cookie || '');
-        console.log('token:', cookies.token);
+        const matchingPlayer = state.getPlayerByCookies(cookies)
+        const matchingGame = state.getGameById(gameId)
 
-        const matchingPlayer = state.getPlayerById(data.gameMasterId)
-        console.log('gm matches:', matchingPlayer )
-
-        const matchingGame = state.getGameById(data.gameId)
-        console.log('game matches:', matchingGame )
+        console.log('onGmEnterGame', {matchingPlayer, matchingGame} )
 
         if(!matchingPlayer || !matchingGame) {
             const refusal = state.makeRefusal ('FAILED_GM_SIGN_IN', 0)
@@ -34,11 +31,12 @@ function onGmEnterGame(state, socket, io){
         }
 
         matchingPlayer.socketId = socket.id
-        socket.join(data.gameId)
+        matchingPlayer.gameId = gameId
+        socket.join(gameId)
         console.log(`${matchingPlayer.playerName} JOINED as GM of ${matchingGame.gameName}(${matchingGame.gameId})`)
 
         callback(matchingPlayer.clientSafeVersion)
-        sendStateToClients(state, socket, io, data.gameId)
+        sendStateToClients(state, socket, io, gameId)
     }
 }
 

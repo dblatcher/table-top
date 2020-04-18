@@ -5,18 +5,14 @@ function getInputErrors(input) {
 
 function makeMiddleware(state) {
   return function(req, res, next) {
-
-    console.log('IN CREATE GAME AND PLAYER MIDDLEWARE', req.body, req.cookies)
     const {gameName, gmName, rpgName, player} = req.body;
-
 
     //TO DO - check inputs
     const errors = getInputErrors (req.body)
     if (errors.length > 0) {
-        res.json(JSON.stringify(errors))
-        return
+      res.json(JSON.stringify(errors))
+      return
     }
-
 
     if (player) {
       var newGame = state.addGame (gameName,{rpgName}, player)
@@ -29,11 +25,11 @@ function makeMiddleware(state) {
       var newGame = state.addGame (gameName,{rpgName}, newGm)
       newGm.gameId = newGame.gameId
       req.body.newGame = newGame
+      req.body.player = newGm
       res.cookie('token', newGm.token)
       res.cookie('playerName', newGm.playerName)
       res.cookie('playerId',newGm.playerId)
     }
-
 
     next()
   };

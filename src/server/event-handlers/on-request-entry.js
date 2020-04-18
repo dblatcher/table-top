@@ -4,6 +4,7 @@ const cookie = require('cookie');
 function onRequestEntry(state, socket, io){
     return function (data, callback) {
 
+        const {gameId} = data
         const cookies = cookie.parse(socket.request.headers.cookie || '');
         const matchingPlayer = state.getPlayerByCookies(cookies)
 
@@ -14,15 +15,13 @@ function onRequestEntry(state, socket, io){
             return false
         }
 
-        // TO DO - SANITISE INPUT!!
-        console.log(`${matchingPlayer.playerName} requested entry to game ${data.gameId}`);
-
-        matchingPlayer.gameId = data.gameId
-        socket.join(data.gameId)
-        console.log(`added ${matchingPlayer.playerName} to game ${data.gameId}`)
+        console.log(`${matchingPlayer.playerName} requested entry to game ${gameId}`);
+        matchingPlayer.gameId = gameId
+        socket.join(gameId)
+        console.log(`added ${matchingPlayer.playerName} to game ${gameId}`)
 
         callback(matchingPlayer.clientSafeVersion)
-        sendStateToClients(state, socket, io, data.gameId)
+        sendStateToClients(state, socket, io, gameId)
     }
 }
 

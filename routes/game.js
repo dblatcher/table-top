@@ -7,33 +7,34 @@ function makeRouter(state) {
 
   router.use('/:gameName', getPlayer(state) )
   router.post('/:gameName', createGameAndPlayer(state) )
+
   router.use('/:gameName', function(req, res, next) {
 
-    console.log('IN GAME ROUTER', req.body, req.cookies)
 
-    let game, gmView, player=null;
 
-    if (!req.body.newGame) { 
-      if (state.games.map(game => game.gameName).indexOf(req.params.gameName) === -1) {
-        res.render('error',{
-          message: `There is no game running called ${req.params.gameName}`,
-          error: {status:404, stack:"invalid game name"}
-        })
-        return
-      }
-      game = state.games.filter(game => game.gameName === req.params.gameName)[0]
-      gmView = false
-      player = req.body.player || null
-    } else {
-      game = req.body.newGame
-      player = req.body.newGame.masterPlayer
-      gmView = true
+    const {gameName} = req.params
+    const {newGame, player} = req.body
+    let gmView
+
+    console.log(`IN GAME ROUTER for ${gameName}, which is ${newGame ? 'new' : 'existing'}. Player is ${player ? player.playerName : 'NOT SIGNED IN'}`)
+
+    const matchingGame = state.games.filter(game => game.gameName === gameName)[0]
+
+    if (!matchingGame) {
+      res.render('error',{
+        message: `There is no game running called ${gameName}`,
+        error: {status:404, stack:"invalid game name"}
+      })
+      return
     }
 
+    gmView = matchingGame.masterPlayer === player
+
+    console.log({gmView})
 
     res.render('game', { 
       title: 'Table-top', 
-      game, 
+      game:matchingGame, 
       gmView, 
       player});
   });

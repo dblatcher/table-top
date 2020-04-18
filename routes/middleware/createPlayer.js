@@ -1,29 +1,24 @@
 function getInputErrors(input,state) {
-    const errors = []
-      const playersWithSameName = state.players.filter(player => player.playerName === input.playerName)
-      if (state.players.filter(player=>player.playerName === input.playerName).length > 0 ) {
-        errors.push ('NAME IS TAKEN')
-      }
+  const errors = []
+  if (state.players.filter(player=>player.playerName === input.playerName).length > 0 ) {
+    errors.push ('NAME IS TAKEN')
+  }
 
-    return errors
+  return errors
 }
 
 function makeMiddleware(state) {
   return function(req, res, next) {
-
-    console.log('IN CREATE PLAYER MIDDLEWARE')
     const {playerName, player} = req.body;
 
-    //TO DO - check inputs
+    //TO DO - check inputs properly
     const errors = getInputErrors (req.body, state)
 
     if (player) {
-      console.log('ALREADY SIGNED IN')
     }
     else if (errors.length > 0) {
       req.body.formErrors = errors
       req.body.nameOfFormWithErrors = 'createPlayer'
-      console.log('ADDED ERRRORS TO REQ')
     }
     else {
       var newPlayer = state.addPlayer(playerName ,0,undefined)

@@ -11,7 +11,6 @@ function makeRouter(state) {
   router.post('/', createPlayer(state));
 
   router.all('/', function(req, res, next) {
-    console.log('index router', req.body)
     res.render('index', { 
       title: 'Table-top', 
       games: state.games, 

@@ -6,8 +6,6 @@
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
     class="enter-game-form">
-      <label for="playerName">User name:</label>
-      <input type="text" name="playerName" />
       <input type="submit" value="go"/>
     </form>
 
@@ -114,11 +112,8 @@ export default {
         this.messages.push (`You are already logged in as ${this.displayName}`)
         return false
       }
-
-      // TO DO - SANITISE INPUT!!
       const form = event.target
-      const playerName = form.elements.playerName.value
-      this.socket.emit('request-entry', {playerName, gameId:this.config.gameId}, this.handleRequestEntryResponse)
+      this.socket.emit('request-entry', {gameId:this.config.gameId}, this.handleRequestEntryResponse)
 
     },
 
