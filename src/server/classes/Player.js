@@ -8,6 +8,10 @@ class Player {
     } 
     get type() {return 'PLAYER'}
 
+    matches (cookies) {
+        return (this.playerName === cookies.playerName && this.playerId === cookies.playerId && this.token === cookies.token)
+    }
+
     get clientSafeVersion () {
         return {
             type: this.type,

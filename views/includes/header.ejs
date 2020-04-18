@@ -1,3 +1,8 @@
 <header>
     <h1><a href="/">TableTop</a></h1>
+
+    <% if (typeof player === 'object' && player) { %>
+        <p>Player: <%= player.playerName %></p>
+    <% } %>
+
 </header>

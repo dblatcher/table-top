@@ -4,7 +4,7 @@
 
   <body>
 
-    <%- include('includes/header'); %>
+    <%- include('includes/header', {player: (typeof player !== 'undefined' ? player : null ) }); %>
 
     <main class="content">
       <% if (!gmView) { %>

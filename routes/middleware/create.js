@@ -22,6 +22,8 @@ function makeMiddleware(state) {
     newGm.gameId = newGame.gameId
     req.body.newGame = newGame
     res.cookie('token', newGm.token)
+    res.cookie('playerName', newGm.playerName)
+    res.cookie('playerId',newGm.playerId)
 
     next()
   };
