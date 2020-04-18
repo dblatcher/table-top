@@ -6,7 +6,7 @@ function getInputErrors(input) {
 function makeMiddleware(state) {
   return function(req, res, next) {
 
-    console.log('IN CREATE MIDDLEWARE', req.body, req.cookies)
+    console.log('IN CREATE GAME AND PLAYER MIDDLEWARE', req.body, req.cookies)
     const {gameName, gmName, rpgName} = req.body;
 
     //TO DO - check inputs

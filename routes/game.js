@@ -1,5 +1,5 @@
 var express = require('express');
-var createGameAndPlayer = require('./middleware/createGameAndPlayerAndPlayer')
+var createGameAndPlayer = require('./middleware/createGameAndPlayer')
 var getPlayer = require('./middleware/getPlayer')
 
 function makeRouter(state) {
