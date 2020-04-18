@@ -4,7 +4,7 @@
     <h2>{{config.gameName}}</h2>
 
     <form v-if="!isSignedIn && !config.amGamemaster" 
-    @submit="signIn" 
+    @submit="requestEntry" 
     class="sign-in-form">
       <label for="playerName">User name:</label>
       <input type="text" name="playerName" />
@@ -106,7 +106,7 @@ export default {
       this.socket.emit('roll', this.playerId, rollData)
     },
 
-    signIn(event) {
+    requestEntry(event) {
 
       event.preventDefault();
 
@@ -118,12 +118,12 @@ export default {
       // TO DO - SANITISE INPUT!!
       const form = event.target
       const playerName = form.elements.playerName.value
-      this.socket.emit('sign-in', {playerName, gameId:this.config.gameId}, this.handleSignInResponse)
+      this.socket.emit('request-entry', {playerName, gameId:this.config.gameId}, this.handleRequestEntryResponse)
 
     },
 
-    handleSignInResponse (response) {
-        console.log('sign-in response', response)
+    handleRequestEntryResponse (response) {
+        console.log('request-entry response', response)
         if (response.type === 'REFUSAL') {
           this.messages.push (response.message)
           return false
@@ -170,7 +170,7 @@ export default {
       this.socket.emit('gm-sign-in', {
         gameMasterId: this.config.gameMasterId,
         gameId:this.config.gameId
-      }, this.handleSignInResponse)
+      }, this.handleRequestEntryResponse)
     }
 
   }

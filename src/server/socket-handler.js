@@ -1,7 +1,7 @@
 const cookie = require('cookie');
 
 const eventNames = [
-    "sign-in",
+    "request-entry",
     "roll",
     "disconnect",
     "request-state",

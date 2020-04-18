@@ -1,10 +1,10 @@
 sendStateToClients = require ('../sendStateToClients')
 
-function onSignIn(state, socket, io){
+function onRequestEntry(state, socket, io){
     return function (data, callback) {
 
         // TO DO - SANITISE INPUT!!
-        console.log(`user requested sign in to game${data.gameId} with user name ${data.playerName} `);
+        console.log(`user requested entry to game${data.gameId} with user name ${data.playerName} `);
         
         if (state.players.map(item=>item.playerName).indexOf (data.playerName) > -1 ) {
             console.log('refusing: NAME_ALREADY_TAKEN')
@@ -22,4 +22,4 @@ function onSignIn(state, socket, io){
     }
 }
 
-module.exports = onSignIn
+module.exports = onRequestEntry
