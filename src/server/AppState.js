@@ -12,12 +12,18 @@ class AppState {
         let nextPlayerIdKey = 1000
         this.getNextPlayerId = function() {return `${Math.floor(Math.random()*10000000)}-${nextPlayerIdKey++}` }
 
+        let nextTokenKey = 100
+        this.getNextToken = function() {
+            nextTokenKey += Math.floor(Math.random()*100)
+            return `${Math.floor(Math.random()*10000) * new Date().valueOf() }-${nextTokenKey}` 
+        }
+
         let nextGameIdKey = 1000
         this.getNextGameId = function() {return `${Math.floor(Math.random()*10000000)}-${nextGameIdKey++}` }
     }
 
     addPlayer (playerName, socketId, gameId) { 
-        const player = new Player(playerName, socketId, gameId, this.getNextPlayerId())
+        const player = new Player(playerName, socketId, gameId, this.getNextPlayerId(), this.getNextToken())
         this.players.push(player)
         return player
     }

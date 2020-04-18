@@ -1,7 +1,11 @@
 sendStateToClients = require ('../sendStateToClients')
+const cookie = require('cookie');
 
 function onDisconnect(state, socket, io){
     return function () {
+
+        const cookies = cookie.parse(socket.request.headers.cookie || '');
+        console.log("DISCONNECTION. token:", cookies.token)
 
         const removedPlayers = state.removePlayersWhere(player=>player.socketId === socket.id)
         if (removedPlayers.length === 0) { 

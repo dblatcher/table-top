@@ -1,3 +1,5 @@
+const cookie = require('cookie');
+
 const eventNames = [
     "sign-in",
     "roll",
@@ -17,7 +19,8 @@ eventNames.forEach( eventName => {
 
 function socketHandler (io, state) {
     io.on('connection', function(socket){
-        console.log('a user connected');
+        const cookies = cookie.parse(socket.request.headers.cookie || '');
+        console.log('CONNECTION. token:', cookies.token);
 
         eventNames.forEach( eventName => {
             socket.on(eventName, on[eventName](state,socket,io))

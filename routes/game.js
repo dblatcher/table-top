@@ -9,7 +9,7 @@ function makeRouter(state) {
   router.use('/:gameName', function(req, res, next) {
 
     console.log('IN GAME ROUTER', req.body, req.cookies)
-    
+
     let game, gmView;
 
     if (!req.body.newGame) { 

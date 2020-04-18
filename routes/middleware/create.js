@@ -20,10 +20,9 @@ function makeMiddleware(state) {
     var newGm = state.addPlayer(gmName ,0,undefined)
     var newGame = state.addGame (gameName,{rpgName}, newGm)
     newGm.gameId = newGame.gameId
-
-    res.location('/foo/bar')
-
     req.body.newGame = newGame
+    res.cookie('token', newGm.token)
+
     next()
   };
 }

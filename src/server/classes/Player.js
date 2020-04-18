@@ -1,9 +1,10 @@
 class Player {
-    constructor (playerName, socketId, gameId, playerId) {
+    constructor (playerName, socketId, gameId, playerId, token) {
         this.playerName = playerName;
         this.socketId = socketId;
         this.playerId = playerId;
         this.gameId = gameId;
+        this.token = token;
     } 
     get type() {return 'PLAYER'}
 
