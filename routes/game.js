@@ -1,11 +1,11 @@
 var express = require('express');
-var createGame = require('./middleware/create')
+var createGameAndPlayer = require('./middleware/createGameAndPlayerAndPlayer')
 var getPlayer = require('./middleware/getPlayer')
 
 function makeRouter(state) {
   var router = express.Router();
 
-  router.post('/:gameName', createGame(state) )
+  router.post('/:gameName', createGameAndPlayer(state) )
   router.get('/:gameName', getPlayer(state) )
   router.use('/:gameName', function(req, res, next) {
 
