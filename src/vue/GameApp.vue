@@ -167,7 +167,7 @@ export default {
 
     if (this.config.amGamemaster) {
       console.log('I AM THE GM')
-      this.socket.emit('gm-sign-in', {
+      this.socket.emit('gm-enter-game', {
         gameMasterId: this.config.gameMasterId,
         gameId:this.config.gameId
       }, this.handleRequestEntryResponse)

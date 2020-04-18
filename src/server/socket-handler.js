@@ -6,7 +6,7 @@ const eventNames = [
     "disconnect",
     "request-state",
     "message", 
-    "gm-sign-in", 
+    "gm-enter-game", 
     "gm-closing-game",
     "request-game-list"
 ]

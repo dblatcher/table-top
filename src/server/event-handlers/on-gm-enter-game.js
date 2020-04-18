@@ -1,10 +1,15 @@
 sendStateToClients = require ('../sendStateToClients')
+const cookie = require('cookie');
 
-function onGmSignIn(state, socket, io){
+
+function onGmEnterGame(state, socket, io){
     return function (data, callback) {
 
         // TO DO - SANITISE INPUT!!
-        console.log(`user requested sign in to game${data.gameId} AS GM with player ID name ${data.gameMasterId} `);
+        console.log(`user entering game${data.gameId} AS GM with player ID ${data.gameMasterId} `);
+
+        const cookies = cookie.parse(socket.request.headers.cookie || '');
+        console.log('token:', cookies.token);
 
         const matchingPlayer = state.getPlayerById(data.gameMasterId)
         console.log('gm matches:', matchingPlayer )
@@ -20,7 +25,7 @@ function onGmSignIn(state, socket, io){
 
         const playerIsGameMaster = matchingGame.masterPlayer === matchingPlayer
         if (playerIsGameMaster) {
-            console.log('They are the GM for that game')
+            console.log('OK: They are the GM for that game')
         } else {
             console.log('They are *NOT* the GM for that game!')
             const refusal = state.makeRefusal ('FAILED_GM_SIGN_IN', 0)
@@ -30,11 +35,11 @@ function onGmSignIn(state, socket, io){
 
         matchingPlayer.socketId = socket.id
         socket.join(data.gameId)
-        console.log(`logged in ${matchingPlayer.playerName} as GM of ${matchingGame.gameName}(${matchingGame.gameId})`)
+        console.log(`${matchingPlayer.playerName} JOINED as GM of ${matchingGame.gameName}(${matchingGame.gameId})`)
 
         callback(matchingPlayer.clientSafeVersion)
         sendStateToClients(state, socket, io, data.gameId)
     }
 }
 
-module.exports = onGmSignIn
+module.exports = onGmEnterGame
