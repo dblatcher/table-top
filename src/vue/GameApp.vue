@@ -3,11 +3,12 @@
     
     <h2>{{config.gameName}}</h2>
 
-    <E3dDice v-bind:sides="6" v-bind:result="1" v-bind:resultFaceClass="'preset-e3d-white flash'"/>
-    <E3dDice v-bind:sides="8"/>
-    <E3dDice v-bind:sides="10" v-bind:size="5"/>
-    <E3dDice v-bind:sides="12" v-bind:faceClass="'preset-e3d-blue'"/>
-    <E3dDice v-bind:sides="20" v-bind:size="6"/>
+    <E3dDice v-bind="{sides:4, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
+    <E3dDice v-bind="{sides:6, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
+    <E3dDice v-bind="{sides:8, result:1,}"/>
+    <E3dDice v-bind="{sides:10, result:1,}"/>
+    <E3dDice v-bind="{sides:12, result:1,}"/>
+    <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/>
 
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
