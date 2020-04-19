@@ -3,6 +3,12 @@
     
     <h2>{{config.gameName}}</h2>
 
+    <E3dDice v-bind:sides="6" v-bind:result="1" v-bind:resultFaceClass="'preset-e3d-white flash'"/>
+    <E3dDice v-bind:sides="8"/>
+    <E3dDice v-bind:sides="10" v-bind:size="5"/>
+    <E3dDice v-bind:sides="12" v-bind:faceClass="'preset-e3d-blue'"/>
+    <E3dDice v-bind:sides="20" v-bind:size="6"/>
+
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
     class="enter-game-form">
@@ -43,9 +49,10 @@ import DiceButton from './components/DiceButton.vue'
 import MessageBox from './components/MessageBox.vue'
 import PlayersDisplay from './components/PlayersDisplay.vue'
 import CloseGameButton from './components/CloseGameButton.vue'
+import E3dDice from './components/E3dDice.vue'
 
 export default {
-  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton},
+  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton, E3dDice},
 
   props: ['config', 'socket'],
 
@@ -87,7 +94,7 @@ export default {
     handleStateUpdate (response) {
       console.log('state update:', response)
       if (response.type === 'REFUSAL') {
-          this.messages.push (response.message)
+          alert (response.message)
           return false
       }
       this.$set(this.gameState, 'players', response.players)
@@ -109,7 +116,7 @@ export default {
       event.preventDefault();
 
       if (this.playerId) {
-        this.messages.push (`You are already logged in as ${this.displayName}`)
+        alert (`You are already logged in as ${this.displayName}`)
         return false
       }
       const form = event.target
@@ -120,7 +127,7 @@ export default {
     handleRequestEntryResponse (response) {
         console.log('request-entry response', response)
         if (response.type === 'REFUSAL') {
-          this.messages.push (response.message)
+          alert(response.message)
           return false
         }
         this.playerName = response.playerName;
@@ -178,5 +185,7 @@ export default {
   .roll-button-holder {
     display: flex;
   }
+
+
 
 </style>
