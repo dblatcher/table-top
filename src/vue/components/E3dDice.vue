@@ -1,6 +1,7 @@
 <template>
-  <div class="dice-frame" 
-  v-bind:style="{'height':`${this.safeSize}em`, 'width':`${this.safeSize}em`,}"></div>
+  <div class="dice-frame"
+  v-bind:style="styleObject">
+  </div>
 </template>
 
 <script>
@@ -18,7 +19,7 @@ const shapeTypes = {
 const numbersToUnderline = [9, 6, 16, 19]
 
 export default {
-  props : ['sides', 'faceClass', 'size', 'result', 'resultFaceClass'],
+  props : ['sides', 'faceClass', 'size', 'result', 'resultFaceClass', 'index'],
 
   data() {
     return{
@@ -27,13 +28,30 @@ export default {
   },
 
   computed: {
-    safeSize() {return this.size || 5},
-    safeFaceClass() {return this.faceClass || 'preset-e3d-white'}
+    safeSize() {return this.size || 75},
+    safeFaceClass() {return this.faceClass || 'preset-e3d-white'},
+    
+    placement() {
+      return {
+        x: this.index/2, 
+        y: this.index%2 ? 0 : 1
+      }
+    },
+
+    styleObject() {
+      const {safeSize, placement} = this;
+      return{
+        'height':`${safeSize}px`, 
+        'padding-right': `${safeSize*.5}px`,
+        'width': `calc(100% - ${safeSize*placement.x}px)`,
+        'top' : `${safeSize*placement.y}px`
+      }
+    }
   },
 
   methods: {
     renderDie () {
-      const {sides, safeSize, safeFaceClass, result, resultFaceClass} = this
+      const {sides, safeSize, safeFaceClass, result, resultFaceClass, getFrameWidth} = this
 
       if (this.shape) {
         this.$el.removeChild(this.shape)
@@ -42,8 +60,9 @@ export default {
 
       this.shape = e3d.make[shapeTypes[sides].shape]({
       size: [safeSize * 0.6 * shapeTypes[sides].scale, safeSize * 0.075 * shapeTypes[sides].scale  ],
-      units: 'em',
+      units: 'px',
       spin: [0,0,0],
+      move: [-getFrameWidth(),0,0],
       faceContent: function(face, faceIndex) {
               if (faceIndex < 6 || shapeTypes[sides].shape !== 'TruncatedCube') {
                 const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
@@ -58,25 +77,47 @@ export default {
       })
 
       this.$el.appendChild(this.shape)
-      }
+    },
+
+    getFrameWidth() {
+      return this.$el.clientWidth 
+    },
+
+    rollDie () {
+      this.shape.gradual.moveAndSpin (
+        {
+          move:{x: Math.floor(Math.random()*20)-10, y: Math.floor(Math.random()*10) },
+          spin:{x:360}
+        },
+        {
+          duration: 50 + Math.floor(Math.random()*30),
+        }
+      )
+
+    }
   },
 
   mounted() {
     this.renderDie();
-    this.shape.constant.turnVector.x = 1
-    this.shape.constant.turnVector.y = 3
-    this.shape.constant.turnVector.z = 0
-    this.shape.constant.go()
+    this.rollDie()
   },
+
+  updated() {
+      this.renderDie();
+      this.rollDie()
+  },
+
 }
 </script>
 
 <style>
   .dice-frame {
-    display: inline-flex;
-    justify-content: center;
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
     margin: 0;
+    box-sizing: border-box;
+    position: absolute;
   }
 
   .dice-frame [e3d-face] {

@@ -3,12 +3,17 @@
     
     <h2>{{config.gameName}}</h2>
 
-    <E3dDice v-bind="{sides:4, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
+    <!-- <E3dDice v-bind="{sides:4, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
     <E3dDice v-bind="{sides:6, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
     <E3dDice v-bind="{sides:8, result:1,}"/>
     <E3dDice v-bind="{sides:10, result:1,}"/>
     <E3dDice v-bind="{sides:12, result:1,}"/>
-    <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/>
+    <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/> -->
+
+
+    <div class="roll-zone">
+      <E3dDice  v-for="(die, key) in displayDice"  v-bind:key="key"  v-bind="die" ref="dice"/>
+    </div>
 
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
@@ -32,6 +37,8 @@
       <div class="roll-button-holder">
         <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
         <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
+        <DiceButton @dice-result="reportRoll" dice="6,6,6,6" label="4d6"/>
+        <DiceButton @dice-result="reportRoll" dice="10,10,10,10,10,10,10,10" label="8d10"/>
       </div>
 
       <PlayersDisplay 
@@ -62,6 +69,7 @@ export default {
       playerId : false,
       playerName : '',
       messages: [],
+      lastDiceRoll: null,
       gameState: {
         players: []
       },
@@ -78,6 +86,24 @@ export default {
     displayName() {
       return this.playerName || 'NONE'
     },
+
+    displayDice() {
+      const {lastDiceRoll} = this
+      
+      if (!lastDiceRoll) return []
+
+      let list = [], i
+
+      for (i = 0; i< lastDiceRoll.diceList.length; i++) {
+        list.push ({
+          index: i,
+          sides:lastDiceRoll.diceList[i],
+          result:lastDiceRoll.results[i], 
+          resultFaceClass:'preset-e3d-white flash'
+        })
+      }
+      return list
+    }
 
   },
 
@@ -107,8 +133,13 @@ export default {
 
     reportRoll(rollData) {
       const {diceList, results, total, message} = rollData
-      this.messages.push("I " + rollData.message)
+      this.lastDiceRoll = rollData
 
+      if (this.$refs.dice) {
+        this.$refs.dice.forEach(die => die.$forceUpdate() )
+      }
+
+      this.messages.push("I " + rollData.message)
       this.socket.emit('roll', this.playerId, rollData)
     },
 
@@ -185,8 +216,13 @@ export default {
 
   .roll-button-holder {
     display: flex;
+    flex-wrap: wrap;
   }
 
-
+  .roll-zone {
+    background-color: aquamarine;
+    height: 150px;
+    position: relative;
+  }
 
 </style>
