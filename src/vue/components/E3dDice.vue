@@ -93,6 +93,10 @@ const resultOrientations = {
 
 const numbersToUnderline = [9, 6, 16, 19]
 
+const randomInt = function (n) {
+  return  1 + Math.floor(Math.random()*n)
+}
+
 export default {
   props : ['sides', 'faceClass', 'size', 'result', 'resultFaceClass', 'index'],
 
@@ -106,7 +110,7 @@ export default {
   computed: {
     safeSize() {return this.size || 75},
     safeFaceClass() {return this.faceClass || 'preset-e3d-white'},
-    
+
     placement() {
       return {
         x: this.index/2, 
@@ -176,20 +180,19 @@ export default {
 
     rollDie () {
       const{sides, result} = this;
-      const tumbleSpin = [ Math.floor(Math.random()*6)*45, Math.floor(Math.random()*6)*45, Math.floor(Math.random()*6)*45 ]
 
       this.shape.gradual.moveAndSpin ({
-          move:{x: -this.getFrameWidth()/2, y: Math.floor(Math.random()*20), z:0},
-          spin:tumbleSpin
-        },{duration: 50 + Math.floor(Math.random()*30)}
+          move:{x: this.shape.move.x/2, y: randomInt(20), z:0},
+          spin:[ randomInt(6)*45, randomInt(6)*45, randomInt(6)*45 ]
+        },{duration: 50 + randomInt(30)}
       )
 
       .then( () => {
         return this.shape.gradual.moveAndSpin (
         {
-          move:{x: Math.floor(Math.random()*20)-10, y: Math.floor(Math.random()*10), z:0},
+          move:{x: randomInt(20)-10, y: randomInt(10), z:0},
           spin:resultOrientations[sides][result-1]
-        },{duration: 30 + Math.floor(Math.random()*40)})
+        },{duration: 30 + randomInt(40)})
       })
 
       .then( () => {
@@ -221,13 +224,13 @@ export default {
   }
 
   @keyframes flash {
-    from {filter: brightness(.75) } 
-    to   {filter: brightness(1)}
+    from {filter: brightness(.65) } 
+    to   {filter: brightness(.9)}
   }
 
   .flash {
     animation-name: flash;
-    animation-duration: .5s;
+    animation-duration: 1.5s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
   }
