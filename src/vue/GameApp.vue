@@ -3,18 +3,6 @@
     
     <h2>{{config.gameName}}</h2>
 
-    <!-- <E3dDice v-bind="{sides:4, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
-    <E3dDice v-bind="{sides:6, result:1, resultFaceClass:'preset-e3d-white flash'}"/>
-    <E3dDice v-bind="{sides:8, result:1,}"/>
-    <E3dDice v-bind="{sides:10, result:1,}"/>
-    <E3dDice v-bind="{sides:12, result:1,}"/>
-    <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/> -->
-
-
-    <div class="roll-zone">
-      <E3dDice  v-for="(die, key) in displayDice"  v-bind:key="key"  v-bind="die" ref="dice"/>
-    </div>
-
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
     class="enter-game-form">
@@ -41,6 +29,10 @@
         <DiceButton @dice-result="reportRoll" dice="10,10,10,10,10,10,10,10" label="8d10"/>
       </div>
 
+      <RollZone v-bind="{rollData: lastDiceRoll}" ref="rollZone"/>
+
+      <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/> 
+
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
       v-bind:playerId="playerId" 
@@ -58,9 +50,10 @@ import MessageBox from './components/MessageBox.vue'
 import PlayersDisplay from './components/PlayersDisplay.vue'
 import CloseGameButton from './components/CloseGameButton.vue'
 import E3dDice from './components/E3dDice.vue'
+import RollZone from './components/RollZone.vue'
 
 export default {
-  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton, E3dDice},
+  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton, E3dDice, RollZone},
 
   props: ['config', 'socket'],
 
@@ -86,25 +79,6 @@ export default {
     displayName() {
       return this.playerName || 'NONE'
     },
-
-    displayDice() {
-      const {lastDiceRoll} = this
-      
-      if (!lastDiceRoll) return []
-
-      let list = [], i
-
-      for (i = 0; i< lastDiceRoll.diceList.length; i++) {
-        list.push ({
-          index: i,
-          sides:lastDiceRoll.diceList[i],
-          result:lastDiceRoll.results[i], 
-          resultFaceClass:'preset-e3d-white flash'
-        })
-      }
-      return list
-    }
-
   },
 
   methods : {
@@ -134,11 +108,6 @@ export default {
     reportRoll(rollData) {
       const {diceList, results, total, message} = rollData
       this.lastDiceRoll = rollData
-
-      if (this.$refs.dice) {
-        this.$refs.dice.forEach(die => die.$forceUpdate() )
-      }
-
       this.messages.push("I " + rollData.message)
       this.socket.emit('roll', this.playerId, rollData)
     },
@@ -217,12 +186,6 @@ export default {
   .roll-button-holder {
     display: flex;
     flex-wrap: wrap;
-  }
-
-  .roll-zone {
-    background-color: aquamarine;
-    height: 150px;
-    position: relative;
   }
 
 </style>
