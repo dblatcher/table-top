@@ -24,7 +24,6 @@ export default {
                 index: i,
                 sides:diceList[i],
                 result:results[i], 
-                resultFaceClass:'preset-e3d-white flash'
                 })
             }
             return list
@@ -54,7 +53,7 @@ export default {
   .roll-zone {
     height: 150px;
     position: relative;
-    perspective: 500px;
+    perspective: 75vw;
   }
 
   s {
