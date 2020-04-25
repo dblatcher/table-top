@@ -87,10 +87,12 @@ export default {
       console.log('LOG:',input)
     },
 
-    handleRollReport (report) {
-      console.log('roll report:', report)
-      this.messages.push  (report.player.playerName + " " + report.rollData.message)
-      this.$set(this.diceRolls, report.player.playerId, report.rollData)
+    handleGameEvent (report) {
+      console.log('game event:', report)
+      if (report.type === 'ROLL') {
+        this.messages.push  (report.player.playerName + " " + report.data.message)
+        this.$set(this.diceRolls, report.player.playerId, report.data)
+      }
     },
 
     handleStateUpdate (response) {
@@ -110,7 +112,7 @@ export default {
       const {diceList, results, total, message} = rollData
       this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', rollData)
       this.messages.push("I " + rollData.message)
-      this.socket.emit('roll', this.playerId, rollData)
+      this.socket.emit('game-event', this.playerId, 'ROLL', rollData)
     },
 
     requestEntry(event) {
@@ -164,7 +166,7 @@ export default {
   },
 
   mounted() {
-    this.socket.on('roll', this.handleRollReport );
+    this.socket.on('game-event', this.handleGameEvent );
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('player-message', this.handleMessage );
     this.socket.on('game-closed', this.handleGameClosing );

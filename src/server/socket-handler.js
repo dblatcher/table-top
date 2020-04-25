@@ -2,7 +2,7 @@ const cookie = require('cookie');
 
 const eventNames = [
     "request-entry",
-    "roll",
+    "game-event",
     "disconnect",
     "request-state",
     "message", 
