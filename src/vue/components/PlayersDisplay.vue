@@ -2,6 +2,7 @@
   <section class="frame">
 
       <PlayerCard 
+      v-if="gameMaster"
       v-bind="{
         player: gameMaster,
         rollData: this.diceRolls[gameMaster.playerId] || null, 
