@@ -182,10 +182,11 @@ export default {
     },
 
     rollDie () {
-      const{sides, result} = this;
+      const{sides, result, safeSize} = this;
+      const scatter = 20 * (safeSize / 75)
 
       this.shape.gradual.moveAndSpin ({
-          move:{x: this.shape.move.x/2, y: randomInt(20), z:0},
+          move:{x: this.shape.move.x/2, y: randomInt(scatter), z:0},
           spin:[ randomInt(6)*45, randomInt(6)*45, randomInt(6)*45 ]
         },{duration: 50 + randomInt(30)}
       )
@@ -193,7 +194,7 @@ export default {
       .then( () => {
         return this.shape.gradual.moveAndSpin (
         {
-          move:{x: randomInt(20)-10, y: randomInt(10), z:0},
+          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:0},
           spin:resultOrientations[sides][result-1]
         },{duration: 30 + randomInt(40)})
       })
