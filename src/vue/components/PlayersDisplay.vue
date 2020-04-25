@@ -2,15 +2,30 @@
   <section class="frame">
 
       <PlayerCard 
-      v-bind="{player: gameMaster, color:'blue', gm:true, local:(localPlayer===gameMaster)}" />
+      v-bind="{
+        player: gameMaster,
+        rollData: this.diceRolls[gameMaster.playerId] || null, 
+        color:'blue', 
+        gm:true, 
+        local:(localPlayer===gameMaster)}" />
 
       <PlayerCard 
       v-if="localPlayer !== gameMaster"
-      v-bind="{player: localPlayer, color:'green', gm:false, local:true}" />
+      v-bind="{
+        player: localPlayer,
+        rollData: this.diceRolls[localPlayer.playerId] || null,  
+        color:'green', 
+        gm:false, 
+        local:true}" />
 
       <PlayerCard 
       v-for="player in otherPlayers" v-bind:key="player.playerId"
-      v-bind="{player: player, color:'red', gm:false, local:false}" />
+      v-bind="{
+        player: player, 
+        rollData: diceRolls[player.playerId] || null,  
+        color:'red', 
+        gm:false, 
+        local:false}" />
 
   </section>
 </template>
@@ -23,7 +38,7 @@ import PlayerCard from "./PlayerCard.vue";
 
 export default {
   components: {PlayerCard},
-  props: ["players", "playerId","gameMasterId", "lastDiceRoll"],
+  props: ["players", "playerId","gameMasterId", "diceRolls"],
 
   computed: {
     gameMaster: function() {

@@ -29,15 +29,13 @@
         <DiceButton @dice-result="reportRoll" dice="10,10,10,10,10,10,10,10" label="8d10"/>
       </div>
 
-      <RollZone v-bind="{rollData: lastDiceRoll}" ref="rollZone"/>
-
       <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/> 
 
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
       v-bind:playerId="playerId" 
       v-bind:gameMasterId="config.gameMasterId"
-      v-bind="{lastDiceRoll: lastDiceRoll}"
+      v-bind="{diceRolls: diceRolls}"
       />
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
@@ -64,10 +62,10 @@ export default {
       playerId : false,
       playerName : '',
       messages: [],
-      lastDiceRoll: null,
       gameState: {
         players: []
       },
+      diceRolls: {},
       gameHasClosed:false,
     };
   },
@@ -92,6 +90,7 @@ export default {
     handleRollReport (report) {
       console.log('roll report:', report)
       this.messages.push  (report.player.playerName + " " + report.rollData.message)
+      this.$set(this.diceRolls, report.player.playerId, report.rollData)
     },
 
     handleStateUpdate (response) {
@@ -109,7 +108,7 @@ export default {
 
     reportRoll(rollData) {
       const {diceList, results, total, message} = rollData
-      this.lastDiceRoll = rollData
+      this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', rollData)
       this.messages.push("I " + rollData.message)
       this.socket.emit('roll', this.playerId, rollData)
     },
