@@ -1,6 +1,6 @@
 <template>
   <section class="frame"> 
-      <ul>
+      <ul ref="list">
         <li v-for="(message, index) in messages" v-bind:key="index">{{message}}</li>
       </ul>
       <form @submit="writeMessage">
@@ -24,6 +24,10 @@ export default {
             form.elements.messageText.value = ""
         }
     },
+
+    updated() {
+        this.$refs.list.scrollTop = this.$refs.list.scrollHeight
+    }
 }
 
 </script>
@@ -32,12 +36,18 @@ export default {
 
     ul {
         height: 6rem;
-        overflow-y: auto;
+        overflow-y: scroll;
         margin: 0;
+        padding-inline-start: 1.5rem;
     }
 
     li {
         font-size: small;
+        margin-right: 1.5rem;
+    }
+
+    li:last-child {
+        border-bottom: 3px double black;
     }
 
     form {
