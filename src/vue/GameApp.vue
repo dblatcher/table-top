@@ -31,12 +31,14 @@
 
       <RollZone v-bind="{rollData: lastDiceRoll}" ref="rollZone"/>
 
-      <E3dDice v-bind="{sides:20, result:1, faceClass:'preset-e3d-blue'}"/> 
+      <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/> 
 
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
       v-bind:playerId="playerId" 
-      v-bind:gameMasterId="config.gameMasterId"/>
+      v-bind:gameMasterId="config.gameMasterId"
+      v-bind="{lastDiceRoll: lastDiceRoll}"
+      />
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
     </div>

@@ -1,6 +1,11 @@
 <template>
-    <div class="roll-zone">
-      <E3dDice  v-for="(die, key) in displayDice"  v-bind:key="key"  v-bind="die" ref="dice"/>
+    <div class="roll-zone"
+    v-bind:style="styleObject">
+      <E3dDice  
+      v-for="(die, key) in displayDice"  
+      v-bind:key="key"  
+      v-bind="die" 
+      ref="dice"/>
       <s>{{dataString}}</s>
     </div>
 </template>
@@ -11,7 +16,7 @@ import E3dDice from './E3dDice.vue'
 export default {
     components: {E3dDice},
 
-    props: ['rollData'],
+    props: ['rollData','size','zoneHeight'],
 
     computed: {
         displayDice() {
@@ -23,16 +28,24 @@ export default {
                 list.push ({
                 index: i,
                 sides:diceList[i],
-                result:results[i], 
+                result:results[i],
+                size:this.size, 
                 })
             }
             return list
         },
+
         dataString() {
             if (!this.rollData) return new Date().toString()
             const {diceList, results} = this.rollData
             return new Date().toString() + (diceList ? diceList.toString() : '-n-') + (results ? results.toString() : '-n-')
-        }
+        },
+
+        styleObject() {
+          return {
+            'height': `${this.zoneHeight || this.size*2 || 150}px`,
+          }
+        },
     },
 
     updated() {
@@ -42,16 +55,13 @@ export default {
                die.rollDie()
             } )
         }
-    }
-
-
+    },
 }
 
 </script>
 
 <style scoped>
   .roll-zone {
-    height: 150px;
     position: relative;
     perspective: 75vw;
   }

@@ -120,6 +120,7 @@ export default {
 
     styleObject() {
       const {safeSize, placement,forRolling} = this;
+      const baseFontSize = 16 * (safeSize / 75)
 
         if (forRolling) {
           return{
@@ -129,6 +130,7 @@ export default {
             'top' :  forRolling ? `${safeSize*placement.y}px` : 'unset',
             'justify-content': 'flex-end',
             'position': 'absolute',
+            'font-size': `${baseFontSize}px`,
           }
         } else {
           return {
@@ -136,6 +138,7 @@ export default {
             'width': `${safeSize}px`,
             'justify-content': 'center',
             'position': 'relative',
+            'font-size': `${baseFontSize}px`,
           }
         }
     }
