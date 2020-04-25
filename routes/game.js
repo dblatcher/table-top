@@ -9,16 +9,17 @@ function makeRouter(state) {
   router.post('/:gameName', createGameAndPlayer(state) )
 
   router.use('/:gameName', function(req, res, next) {
-
-
-
     const {gameName} = req.params
-    const {newGame, player} = req.body
-    let gmView
-
-    console.log(`IN GAME ROUTER for ${gameName}, which is ${newGame ? 'new' : 'existing'}. Player is ${player ? player.playerName : 'NOT SIGNED IN'}`)
-
+    const {player, formErrors} = req.body
     const matchingGame = state.games.filter(game => game.gameName === gameName)[0]
+
+    if (formErrors) {
+      res.render('error',{
+        message: `Input errors: ${JSON.stringify(formErrors)}`,
+        error: {status:403, stack:"create game input errors"}
+      })
+      return
+    }
 
     if (!matchingGame) {
       res.render('error',{
@@ -28,15 +29,12 @@ function makeRouter(state) {
       return
     }
 
-    gmView = matchingGame.masterPlayer === player
-
-    console.log({gmView})
-
     res.render('game', { 
       title: 'Table-top', 
-      game:matchingGame, 
-      gmView, 
-      player});
+      game: matchingGame, 
+      gmView: matchingGame.masterPlayer === player, 
+      player
+    });
   });
 
   return router

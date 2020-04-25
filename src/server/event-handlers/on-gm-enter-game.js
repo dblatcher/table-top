@@ -12,8 +12,6 @@ function onGmEnterGame(state, socket, io){
         const matchingPlayer = state.getPlayerByCookies(cookies)
         const matchingGame = state.getGameById(gameId)
 
-        console.log('onGmEnterGame', {matchingPlayer, matchingGame} )
-
         if(!matchingPlayer || !matchingGame) {
             const refusal = state.makeRefusal ('FAILED_GM_SIGN_IN', 0)
             callback(refusal.clientSafeVersion)
@@ -22,7 +20,7 @@ function onGmEnterGame(state, socket, io){
 
         const playerIsGameMaster = matchingGame.masterPlayer === matchingPlayer
         if (playerIsGameMaster) {
-            console.log('OK: They are the GM for that game')
+            console.log(`${matchingPlayer.playerName} JOINED as GM of ${matchingGame.gameName}(${matchingGame.gameId})`)
         } else {
             console.log('They are *NOT* the GM for that game!')
             const refusal = state.makeRefusal ('FAILED_GM_SIGN_IN', 0)
@@ -33,7 +31,6 @@ function onGmEnterGame(state, socket, io){
         matchingPlayer.socketId = socket.id
         matchingPlayer.gameId = gameId
         socket.join(gameId)
-        console.log(`${matchingPlayer.playerName} JOINED as GM of ${matchingGame.gameName}(${matchingGame.gameId})`)
 
         callback(matchingPlayer.clientSafeVersion)
         sendStateToClients(state, socket, io, gameId)
