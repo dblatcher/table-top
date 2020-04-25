@@ -16,6 +16,15 @@ function onRequestEntry(state, socket, io){
         }
 
         console.log(`${matchingPlayer.playerName} requested entry to game ${gameId}`);
+        console.log({matchingPlayer})
+
+        if (matchingPlayer.gameId) {
+            console.log('refusing: ALREADY_PLAYING_ANOTHER_GAME')
+            const refusal = state.makeRefusal ('ALREADY_PLAYING_ANOTHER_GAME', state.getGameById(matchingPlayer.gameId))
+            callback( refusal.clientSafeVersion )
+            return false
+        }
+
         matchingPlayer.gameId = gameId
         socket.join(gameId)
         console.log(`added ${matchingPlayer.playerName} to game ${gameId}`)
