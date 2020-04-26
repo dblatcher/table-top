@@ -23,6 +23,10 @@ body {
         margin: 0 0 ($std-space * 2) 0;
         padding: $std-space;
 
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
         h1 {
             margin: 0;
         }

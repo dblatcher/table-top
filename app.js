@@ -12,6 +12,7 @@ let state = new AppState()
 var indexRouter = require('./routes/index')(state);
 var usersRouter = require('./routes/users')(state);
 var gameRouter = require('./routes/game')(state);
+var signOutRouter = require('./routes/sign-out')(state);
 
 var app = express();
 
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/game', gameRouter);
+app.use('/sign-out', signOutRouter);
 
 
 // catch 404 and forward to error handler

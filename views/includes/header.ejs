@@ -1,8 +1,14 @@
 <header>
     <h1><a href="/">TableTop</a></h1>
 
-    <% if (typeof player === 'object' && player) { %>
-        <p>Player: <%= player.playerName %></p>
-    <% } %>
+    <div class="profile-menu">
+        <% if (typeof player === 'object' && player) { %>
+            <p>Player: <%= player.playerName %></p>
+            <p><a href="/sign-out">sign out</a></p>
+        <% } else { %>
+            <p><a href="/sign-in">sign in</a></p>
+        <% } %>
+    </div>
+
 
 </header>
