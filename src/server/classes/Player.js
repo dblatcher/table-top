@@ -1,10 +1,8 @@
 class Player {
-    constructor (playerName, socketId, gameId, playerId, token) {
+    constructor (playerName, playerId, token) {
         this.playerName = playerName;
         this.playerId = playerId;
         this.token = token;
-        this.gameId = gameId;
-        this.socketId = socketId;
         this.gameSessions = [];
     } 
     get type() {return 'PLAYER'}
@@ -51,7 +49,6 @@ class Player {
             type: this.type,
             playerName: this.playerName,
             playerId: this.playerId,
-            gameId: this.gameId,
             gameSessions: this.gameSessions.map(session => {return {gameId: session.gameId}})
         }
     }

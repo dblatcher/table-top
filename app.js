@@ -9,14 +9,6 @@ var AppState = require ('./src/server/AppState')
 // define app state
 let state = new AppState() 
 
-// adding testing state objects
-// var testPlayer = state.addPlayer('Comic Book Guy',0,undefined)
-// var testPlayer2 = state.addPlayer('Dweebles',0, undefined)
-// var testGame = state.addGame('test-game',{rpg:'AD&D',permission:'OPEN'},testPlayer)
-// var testGame2 = state.addGame('other-game',{rpg:'Call of Cthulu',permission:'OPEN'},testPlayer2)
-// testPlayer.gameId = testGame.gameId
-// testPlayer2.gameId = testGame2.gameId
-
 var indexRouter = require('./routes/index')(state);
 var usersRouter = require('./routes/users')(state);
 var gameRouter = require('./routes/game')(state);

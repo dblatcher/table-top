@@ -22,12 +22,10 @@ function makeMiddleware(state) {
       req.body.formErrors = errors;
     } else if (player) { 
       var newGame = state.addGame (gameName,{rpgName}, player)
-      player.gameId = newGame.gameId
       console.log(`${player.playerName} is creating the game '${newGame.gameName}'`)
     } else {
-      var newGm = state.addPlayer(gmName ,0,undefined)
+      var newGm = state.addPlayer(gmName)
       var newGame = state.addGame (gameName,{rpgName}, newGm)
-      newGm.gameId = newGame.gameId
       req.body.player = newGm
       res.cookie('token', newGm.token)
       res.cookie('playerName', newGm.playerName)

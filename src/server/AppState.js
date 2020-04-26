@@ -22,8 +22,8 @@ class AppState {
         this.getNextGameId = function() {return `${Math.floor(Math.random()*10000000)}-${nextGameIdKey++}` }
     }
 
-    addPlayer (playerName, socketId, gameId) { 
-        const player = new Player(playerName, socketId, gameId, this.getNextPlayerId(), this.getNextToken())
+    addPlayer (playerName) { 
+        const player = new Player(playerName, this.getNextPlayerId(), this.getNextToken())
         this.players.push(player)
         return player
     }

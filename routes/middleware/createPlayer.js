@@ -21,7 +21,7 @@ function makeMiddleware(state) {
       req.body.nameOfFormWithErrors = 'createPlayer'
     }
     else {
-      var newPlayer = state.addPlayer(playerName ,0,undefined)
+      var newPlayer = state.addPlayer(playerName)
       req.body.player = newPlayer
       res.cookie('token', newPlayer.token)
       res.cookie('playerName', newPlayer.playerName)
