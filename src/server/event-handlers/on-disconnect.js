@@ -6,16 +6,20 @@ function onDisconnect(state, socket, io){
         const cookies = cookie.parse(socket.request.headers.cookie || '');
         const matchingPlayer = state.getPlayerByCookies(cookies)
 
-        if (!matchingPlayer || !matchingPlayer.gameId) {return} // not signed in or not in a game
+        console.log('DISCONNECTION', socket.id)
 
-        const matchingGame = state.getGameById(matchingPlayer.gameId)
-        if (!matchingGame) { return } //player left an already closed game
+        if (!matchingPlayer ) {
+            console.log('DISCONNECTION', 'NOT SIGNED IN')
+            return
+        }
+        console.log('DISCONNECTION', matchingPlayer.playerName)
 
-        socket.leave(matchingGame.gameId)
-        matchingPlayer.gameId = false
-        sendStateToClients(state, socket, io, matchingGame.gameId)
+        const sessionsLeft = matchingPlayer.leaveSessionBySocket(socket)
 
-        console.log (`Player ${matchingPlayer.playerName} left ${matchingGame.gameName}.${matchingPlayer === matchingGame.masterPlayer ? 'THEY ARE THE GM' : ''}`)
+        sessionsLeft.forEach (gameSession => {
+            sendStateToClients(state, socket, io, gameSession.game.gameId)
+            console.log('DISCONNECTION', matchingPlayer.playerName, gameSession.game.gameName)
+        } )
     }
 }
 

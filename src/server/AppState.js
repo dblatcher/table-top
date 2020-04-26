@@ -78,7 +78,7 @@ class AppState {
         }
 
         const safePlayers = this.players
-        .filter (player => player.gameId === gameId)
+        .filter (player => player.isInSessionFor(gameId))
         .map(player => player.clientSafeVersion)
 
         return {
@@ -88,6 +88,7 @@ class AppState {
     }
 
     closeGame(gameId) {
+        this.players.forEach(player => {player.leaveAnySessionsForClosedGame(gameId)})
         this.games = this.games.filter(game => game.gameId !== gameId)
     }
 

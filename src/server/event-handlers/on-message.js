@@ -1,13 +1,20 @@
 function onMessage (state, socket,io){
     return function (playerId, messageText) {
 
-        matchingPlayer = state.getPlayerById(playerId)
+        const matchingPlayer = state.getPlayerById(playerId)
         if (!matchingPlayer) {return false}
-        console.log(`${matchingPlayer.playerName}(${playerId}): messageText`)
+        const matchingSession = matchingPlayer.getSessionBySocket(socket)
+        if (!matchingSession) {return false}
+        const matchingGame = matchingSession.game
+        if (!matchingGame) {return false}
 
+        console.log(`${matchingPlayer.playerName}(${playerId}) sent a message`)
 
-        socket.to(matchingPlayer.gameId).emit('player-message',{ playerId, playerName:matchingPlayer.playerName, messageText});
-
+        socket.to(matchingGame.gameId).emit('player-message',{ 
+            playerId, 
+            playerName:matchingPlayer.playerName, 
+            messageText
+        });
     }
 }
 

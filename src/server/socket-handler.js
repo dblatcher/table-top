@@ -20,7 +20,7 @@ eventNames.forEach( eventName => {
 function socketHandler (io, state) {
     io.on('connection', function(socket){
         const cookies = cookie.parse(socket.request.headers.cookie || '');
-        console.log('CONNECTION. token:', cookies.token);
+        console.log('CONNECTION. token:', cookies.token, 'SOCKET', socket.id);
 
         eventNames.forEach( eventName => {
             socket.on(eventName, on[eventName](state,socket,io))
