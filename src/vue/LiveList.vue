@@ -7,11 +7,14 @@
           <th>Game Name</th>
           <th>Game Master</th>
           <th>System</th>
+          <th>players</th>
+
       </tr>
       <tr v-for="game in info.games" v-bind:key="game.gameId">
           <td><a v-bind:href="getLink(game)">{{game.gameName}}</a></td>
-          <td>{{game.masterName}}</td>
+          <td>{{game.masterName}} {{isGmInGame(game) ? '' : '(absent)' }}</td>
           <td>{{game.details.rpgName}}</td>
+          <td>{{game.players.length}}</td>
       </tr>
   </table>
 
@@ -53,6 +56,10 @@ methods : {
     getLink(game) {
         return `/game/${game.gameName}`
     },
+
+    isGmInGame(game) {
+        return game.players.map(player=>player.playerId).indexOf(game.masterId.toString()) !== -1;
+    }
 },
 
 mounted() {
