@@ -1,3 +1,5 @@
+
+
 <header>
     <h1><a href="/">TableTop</a></h1>
 
@@ -6,9 +8,30 @@
             <p>Player: <%= player.playerName %></p>
             <p><a href="/sign-out">sign out</a></p>
         <% } else { %>
-            <p><a href="/sign-in">sign in</a></p>
+            <p><label for="sign-in-modal">sign in</label></p>
         <% } %>
     </div>
-
-
 </header>
+
+<% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>
+    <input hidden="" checked="" type="checkbox" id="sign-in-modal"/>
+<% } else { %>
+    <input hidden=""  type="checkbox" id="sign-in-modal"/>
+<% }  %>
+
+<aside class="modal toggled">
+    <div class="modal-content">
+        <div class="close-button-holder"><label class="close-button" for="sign-in-modal">X</label></div>
+        <h2>Sign in</h2>
+        <form data-role="sign-in-form" method="POST" action="/">
+            <div>
+            <label>Name:</label>
+            <input name="playerName" id="playerName" type="text"/>
+            </div>
+            <input type="submit"/>
+            <% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>
+                <%= data.formErrors.toString() %>
+            <% } %>
+        </form>
+    </div>
+</aside>

@@ -19,9 +19,38 @@
     }
 }
 
+input:checked+.modal.toggled {
+    display: flex;
+}
+
 .modal-content {
     z-index: 1100;
     margin: $std-space;
     padding: $std-space;
     background-color: $color-page;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+.close-button-holder {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    
+    .close-button {
+        cursor: pointer;
+        padding: $std-space/2;
+        margin: 0;
+        background-color: $color-shade;
+        color: $color-page;
+        font-size: 70%;
+        border-radius: 50%;
+        width: 1em;
+        height: 1em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

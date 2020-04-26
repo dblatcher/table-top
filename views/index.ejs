@@ -4,51 +4,32 @@
   <%- include('includes/head', {title:title, scripts:['homepage.js']}); %>
 
   <body>
-    <%- include('includes/header', {player: (typeof player !== 'undefined' ? player : null ) }); %>
+      <%- include('includes/header', {
+        player: (typeof player !== 'undefined' ? player : null ),
+        data:   (typeof data !== 'undefined' ? data : {} ),
+      }); %>
 
     <section class="content">
       <div id="app"></div>
-    </section>
 
-
-    <% if (!player) { %>
-
-    <section class="content">
-      <h2>Sign in</h2>
-      <form data-role="sign-in-form" method="POST" action="/">
-        <div>
-          <label>Name:</label>
-          <input name="playerName" id="playerName" type="text"/>
-        </div>
-        <input type="submit"/>
-        <% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>
-          <%= data.formErrors.toString() %>
-        <% } %>
-      </form>
-    </section>
-
-    <section class="content">
-      <h2>Sign in and Create New Game</h2>
-      <form data-role="create-game-form" method="POST">
-        <div>
-          <label>Game Master's Name:</label>
-          <input name="gmName" id="gmName" type="text"/>
-        </div>
-        <div>
-          <label>Game Name:</label>
-          <input name="gameName" id="gameName" type="text"/>
-        </div>
-        <div>
-          <label>What game are you playing?</label>
-          <input name="rpgName" id="rpgName" type="text"/>
-        </div>
-        <input type="submit"/>
-      </form>
-    </section>
-
-    <% } else { %>
-
-      <section class="content">
+      <% if (!player) { %>
+        <h2>Sign in and Create New Game</h2>
+        <form data-role="create-game-form" method="POST">
+          <div>
+            <label>Game Master's Name:</label>
+            <input name="gmName" id="gmName" type="text"/>
+          </div>
+          <div>
+            <label>Game Name:</label>
+            <input name="gameName" id="gameName" type="text"/>
+          </div>
+          <div>
+            <label>What game are you playing?</label>
+            <input name="rpgName" id="rpgName" type="text"/>
+          </div>
+          <input type="submit"/>
+        </form>
+      <% } else { %>
         <h2>Create New Game</h2>
         <form data-role="create-game-form" method="POST">
           <div>
@@ -61,9 +42,8 @@
           </div>
           <input type="submit"/>
         </form>
-      </section>
-
-    <% } %>
+      <% } %>
+    </section>
 
     <%- include('includes/footer'); %>
   </body>

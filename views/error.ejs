@@ -3,7 +3,10 @@
     <%- include('includes/head', {title:`ERROR - ${error.status}` , scripts:[]}); %>
 
     <body>
-        <%- include('includes/header', {player: (typeof player !== 'undefined' ? player : null ) }); %>
+        <%- include('includes/header', {
+            player: (typeof player !== 'undefined' ? player : null ),
+            data:   (typeof data   !== 'undefined' ? data : {} ),
+        }); %>
 
         <div class="content">
             <h1><%= message %></h1>
