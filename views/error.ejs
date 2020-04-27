@@ -8,10 +8,10 @@
             data:   (typeof data   !== 'undefined' ? data : {} ),
         }); %>
 
-        <div class="content">
+        <main class="content">
             <h1><%= message %></h1>
             <h2><%= error.status %></h2>
-        </div>
+        </main>
         <%- include('includes/footer'); %>
 
         <pre><%= error.stack %></pre>

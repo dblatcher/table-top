@@ -9,41 +9,37 @@
         data:   (typeof data !== 'undefined' ? data : {} ),
       }); %>
 
-    <section class="content">
-      <div id="app"></div>
+    <main class="content">
 
-      <% if (!player) { %>
-        <h2>Sign in and Create New Game</h2>
-        <form data-role="create-game-form" method="POST">
+
+      <form class="create-game-form" data-role="create-game-form" method="POST">
+        <% if (!player) { %>
+          <h2>Sign in and Create New Game</h2>
+        <% } else { %>
+          <h2>Create New Game</h2>
+        <% } %>
+
+        <% if (!player) { %>
           <div>
             <label>Game Master's Name:</label>
-            <input name="gmName" id="gmName" type="text"/>
+            <input required name="gmName" id="gmName" type="text"/>
           </div>
-          <div>
-            <label>Game Name:</label>
-            <input name="gameName" id="gameName" type="text"/>
-          </div>
-          <div>
-            <label>What game are you playing?</label>
-            <input name="rpgName" id="rpgName" type="text"/>
-          </div>
-          <input type="submit"/>
-        </form>
-      <% } else { %>
-        <h2>Create New Game</h2>
-        <form data-role="create-game-form" method="POST">
-          <div>
-            <label>Game Name:</label>
-            <input name="gameName" id="gameName" type="text"/>
-          </div>
-          <div>
-            <label>What game are you playing?</label>
-            <input name="rpgName" id="rpgName" type="text"/>
-          </div>
-          <input type="submit"/>
-        </form>
-      <% } %>
-    </section>
+        <% } %>
+        <div>
+          <label>Game Name:</label>
+          <input required name="gameName" id="gameName" type="text"/>
+        </div>
+        <div>
+          <label>What game are you playing?</label>
+          <input name="rpgName" id="rpgName" type="text"/>
+        </div>
+        <div>
+          <input class="button" type="submit"/>
+        </div>
+      </form>
+
+      <div id="app"></div>
+    </main>
 
     <%- include('includes/footer'); %>
   </body>

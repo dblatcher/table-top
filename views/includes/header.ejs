@@ -1,5 +1,3 @@
-
-
 <header>
     <h1><a href="/">TableTop</a></h1>
 
@@ -22,11 +20,11 @@
 <aside class="modal toggled">
     <div class="modal-content">
         <div class="close-button-holder"><label class="close-button" for="sign-in-modal">X</label></div>
-        <h2>Sign in</h2>
         <form data-role="sign-in-form" method="POST" action="/">
+            <h2>Sign in</h2>
             <div>
-            <label>Name:</label>
-            <input name="playerName" id="playerName" type="text"/>
+                <label>Name:</label>
+                <input name="playerName" id="playerName" type="text"/>
             </div>
             <input type="submit"/>
             <% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>

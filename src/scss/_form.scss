@@ -6,3 +6,52 @@
         display: none;
     }
 }
+
+.create-game-form {
+
+    margin-top: $std-space/2;
+    border-top: 1px solid $color-shade;
+    padding-top: $std-space/2;
+
+    padding-bottom: $std-space/2;
+    border-bottom: 1px solid $color-shade;
+    margin-bottom: $std-space/2;
+
+    h2 {
+        margin: 0;
+        margin-bottom: $std-space;
+    }
+
+    div {
+        display: flex;
+        align-items: center;
+        min-height: 1.4em;
+        margin-bottom: $std-space;
+    }
+
+    div:not(:last-of-type) {
+        justify-content: space-between;
+
+        label {
+            flex-basis: 15em;
+            flex-shrink: 0;
+            max-width: 50%;
+        }
+
+        input {
+            flex-basis: 100%;
+        } 
+    }
+
+    div:last-of-type {
+
+        justify-content: flex-end;
+
+        input[type='submit'] {
+            flex-basis: unset;
+            color: $color-page;
+        }
+    }
+
+
+}

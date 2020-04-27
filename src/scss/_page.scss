@@ -42,6 +42,10 @@ body {
 
     }
 
+    &>main {
+        min-height: 25em;
+    }
+
     .content {
         padding: 0 $std-space;
         max-width: 100%;
