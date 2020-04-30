@@ -1,7 +1,9 @@
 sendStateToClients = require ('../sendStateToClients')
 const cookie = require('cookie');
 
-function onRequestEntry(state, socket, io){
+function onRequestEntry(state, socket, io) {
+
+
     return function (data, callback) {
 
         const {gameId} = data
@@ -17,14 +19,45 @@ function onRequestEntry(state, socket, io){
         }
 
         console.log(`${matchingPlayer.playerName} requested entry to game ${matchingGame.gameName}`);
-        // TO DO - GM to accept or decline requests
 
+        const sessionOfGmInGame = matchingGame.masterPlayer.gameSessions.filter (session => session.game === matchingGame)[0]
+        const existingRequestForPlayer = matchingGame.entryRequests.filter(request => request.applicant === matchingPlayer)[0]
 
-        console.log(`added ${matchingPlayer.playerName} to game ${gameId}, on socket ${socket.id}`)
-        matchingPlayer.joinSession(matchingGame, socket)
-        callback(matchingPlayer.clientSafeVersion)
-        sendStateToClients(state, socket, io, gameId)
+        if (!sessionOfGmInGame) {
+            console.log('GM_NOT_PRESENT')
+            callback (state.makeRefusal('GM_NOT_PRESENT').clientSafeVersion )
+            return
+        }
+
+        if (existingRequestForPlayer && existingRequestForPlayer.status === 'REFUSED') {
+            console.log('ALREADY_REFUSED')
+            callback (state.makeRefusal('ALREADY_REFUSED').clientSafeVersion )
+            return
+        }
+
+        if (existingRequestForPlayer && existingRequestForPlayer.status === 'PENDING') {
+            console.log('IGNORE - a request is already pending')
+            return
+        }
+
+        if (existingRequestForPlayer && existingRequestForPlayer.status === 'GRANTED') {
+            console.log(`added ${matchingPlayer.playerName} to game ${gameId}, on socket ${socket.id} - previously granted`)
+            matchingPlayer.joinSession(matchingGame, socket)
+            callback(matchingPlayer.clientSafeVersion)
+            sendStateToClients(state, socket, io, gameId)
+            return
+        }
+
+        const entryRequest = matchingGame.addEntryRequest(matchingPlayer, callback, socket)
+ 
+        console.log(`asking ${matchingGame.masterPlayer.playerName} if ${matchingPlayer.playerName} can join ${matchingGame.gameName}...`)
+        io.to(sessionOfGmInGame.socketId).emit('join-request',{
+            player: matchingPlayer.clientSafeVersion,
+            requestTime: entryRequest.requestTime
+        })
     }
 }
+
+
 
 module.exports = onRequestEntry

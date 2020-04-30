@@ -7,6 +7,7 @@
     @submit="requestEntry" 
     class="enter-game-form">
       <input type="submit" value="go"/>
+      <p v-if="waitingForRequestEntryResponse" >waiting for answer...</p>
     </form>
 
     <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
@@ -67,6 +68,7 @@ export default {
       },
       diceRolls: {},
       gameHasClosed:false,
+      waitingForRequestEntryResponse: false,
     };
   },
 
@@ -125,10 +127,11 @@ export default {
       }
       const form = event.target
       this.socket.emit('request-entry', {gameId:this.config.gameId}, this.handleRequestEntryResponse)
-
+      this.waitingForRequestEntryResponse = true
     },
 
     handleRequestEntryResponse (response) {
+        this.waitingForRequestEntryResponse = false
         console.log('request-entry response', response)
         if (response.type === 'REFUSAL') {
           alert(response.message)
@@ -138,6 +141,13 @@ export default {
         this.playerId = response.playerId;
 
         this.requestStateUpdate();
+    },
+
+    handleJoinRequest(data) {
+      console.log(data)
+      let answer = confirm(`Let ${data.player.playerName} into the game?`)
+      console.log(answer)
+      this.socket.emit('entry-request-response',answer,data, this.playerId, this.config.gameId)
     },
 
     sendMessage (messageText) {
@@ -170,6 +180,7 @@ export default {
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('player-message', this.handleMessage );
     this.socket.on('game-closed', this.handleGameClosing );
+    this.socket.on('join-request', this.handleJoinRequest);
 
     if (this.config.amGamemaster) {
       console.log('I AM THE GM')

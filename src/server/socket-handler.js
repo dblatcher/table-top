@@ -8,7 +8,8 @@ const eventNames = [
     "message", 
     "gm-enter-game", 
     "gm-closing-game",
-    "request-game-list"
+    "request-game-list",
+    "entry-request-response",
 ]
 
 var on = {}
