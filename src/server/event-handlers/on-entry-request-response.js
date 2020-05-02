@@ -12,17 +12,17 @@ function onEntryRequestResponse(state, socket,io){
         if (sendingPlayer !== game.masterPlayer ) {return false }
 
         const matchingEntryRequest = game.entryRequests
-        .filter(request => request.applicant.playerId === data.player.playerId)[0]
+        .filter(request => request.player.playerId === data.player.playerId)[0]
 
         if (!matchingEntryRequest) { return false }
 
         if (answer !== true) {
-            console.log(`GM REFUSED ${matchingEntryRequest.applicant.playerName} ENTRY to game ${game.gameName}`)
+            console.log(`GM REFUSED ${matchingEntryRequest.player.playerName} ENTRY to game ${game.gameName}`)
             matchingEntryRequest.refuse()
             return
         }
 
-        console.log(`added ${matchingEntryRequest.applicant.playerName} to game ${game.gameName}`)
+        console.log(`added ${matchingEntryRequest.player.playerName} to game ${game.gameName}`)
         matchingEntryRequest.grant()
         sendStateToClients(state, socket, io, gameId)
     }

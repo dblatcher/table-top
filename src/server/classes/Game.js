@@ -1,4 +1,4 @@
-const Refusal = require ('./Refusal')
+EntryRequest = require('./EntryRequest')
 
 class Game {
     constructor (gameName, gameDetails, masterPlayer, gameId) {
@@ -25,28 +25,6 @@ class Game {
             masterName: this.masterPlayer.playerName,
             details: this.details
         }
-    }
-}
-
-class EntryRequest {
-    constructor (game, player, callback, socket) {
-        this.game = game;
-        this.applicant = player;
-        this.callback = callback
-        this.requestTime = new Date();
-        this.status = 'PENDING'
-        this.socket = socket
-    }
-
-    grant() {
-        this.status = 'GRANTED'
-        this.applicant.joinSession(this.game, this.socket)
-        this.callback(this.applicant.clientSafeVersion)
-    }
-
-    refuse() {
-        this.status = 'REFUSED'
-        this.callback(new Refusal('GM_REFUSED').clientSafeVersion)
     }
 }
 

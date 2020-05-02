@@ -21,7 +21,7 @@ function onRequestEntry(state, socket, io) {
         console.log(`${matchingPlayer.playerName} requested entry to game ${matchingGame.gameName}`);
 
         const sessionOfGmInGame = matchingGame.masterPlayer.gameSessions.filter (session => session.game === matchingGame)[0]
-        const existingRequestForPlayer = matchingGame.entryRequests.filter(request => request.applicant === matchingPlayer)[0]
+        const existingRequestForPlayer = matchingGame.entryRequests.filter(request => request.player === matchingPlayer)[0]
 
         if (!sessionOfGmInGame) {
             console.log('GM_NOT_PRESENT')
@@ -48,13 +48,10 @@ function onRequestEntry(state, socket, io) {
             return
         }
 
-        const entryRequest = matchingGame.addEntryRequest(matchingPlayer, callback, socket)
- 
         console.log(`asking ${matchingGame.masterPlayer.playerName} if ${matchingPlayer.playerName} can join ${matchingGame.gameName}...`)
-        io.to(sessionOfGmInGame.socketId).emit('join-request',{
-            player: matchingPlayer.clientSafeVersion,
-            requestTime: entryRequest.requestTime
-        })
+
+        const entryRequest = matchingGame.addEntryRequest(matchingPlayer, callback, socket)
+        io.to(sessionOfGmInGame.socketId).emit('join-request',entryRequest.clientSafeVersion)
     }
 }
 
