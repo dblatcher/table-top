@@ -27,6 +27,7 @@ class EntryRequest {
             type: this.type,
             player: this.player.clientSafeVersion,
             requestTime: this.requestTime,
+            status: this.status,
         }
     }
 }

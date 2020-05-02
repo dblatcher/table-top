@@ -21,7 +21,6 @@ function onDisconnect(state, socket, io){
             console.log('DISCONNECTION', matchingPlayer.playerName, gameSession.game.gameName)
         } )
 
-        //TO DO - cancel pending entry requests if the gm or player disconnects.
     }
 }
 

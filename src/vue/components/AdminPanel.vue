@@ -6,8 +6,8 @@
             <CloseGameButton  @close-game="requestGameClose"/>
 
             <transition-group name="list" tag="span">
-                <join-request-prompt v-for="(request,index) in joinRequests" v-bind:key="index"
-                @answer="handleJoinRequestAnswer"
+                <entry-request-prompt v-for="(request,index) in pendingEntryRequests" v-bind:key="index"
+                @answer="handleEntryRequestAnswer"
                 v-bind="{request: request}"/>
             </transition-group>
         </div>
@@ -17,25 +17,31 @@
 <script>
 
 import CloseGameButton from './admin-panel/CloseGameButton.vue'
-import JoinRequestPrompt from './admin-panel/JoinRequestPrompt.vue'
+import EntryRequestPrompt from './admin-panel/EntryRequestPrompt.vue'
 
 export default {
-    components: {CloseGameButton, JoinRequestPrompt},
+    components: {CloseGameButton, EntryRequestPrompt},
     props : ['config', 'socket', 'playerId'],
 
     data() {
         return {
-            joinRequests: [],
+            entryRequests: [],
+        }
+    },
+
+    computed : {
+        pendingEntryRequests() {
+            return this.entryRequests.filter(request => request.status === 'PENDING')
         }
     },
 
     methods : {
 
-        handleJoinRequestAnswer (answer, request) {
-            const {joinRequests, socket, playerId, config} = this
+        handleEntryRequestAnswer (answer, request) {
+            const {entryRequests, socket, playerId, config} = this
 
-            if (joinRequests.indexOf(request) !== -1) {
-                joinRequests.splice( joinRequests.indexOf(request), 1)
+            if (entryRequests.indexOf(request) !== -1) {
+                entryRequests.splice( entryRequests.indexOf(request), 1)
             }
 
             socket.emit('entry-request-response',answer,request, playerId, config.gameId)
@@ -49,14 +55,32 @@ export default {
             this.socket.emit('gm-closing-game',{gameId, playerId})
         },
 
-        handleJoinRequest(request) {
-            console.log(request)
-            this.joinRequests.push(request)
+
+        handleStateUpDate(update) {
+            console.log('ALL NEW REQUESTS', update.game.entryRequests)
+            const {entryRequests} = this
+            const newEntryRequestList = update.game.entryRequests
+            const playerIdsOfExistingRequests = entryRequests.map(request => request.player.playerId)
+            const playerIdsOfNewRequests = newEntryRequestList.map(request => request.player.playerId)
+
+            const newEntryRequestsToAdd = newEntryRequestList.filter(request => {
+                return playerIdsOfExistingRequests.indexOf(request.player.playerId) === -1
+            })
+
+            const existingEntryRequestToCancel = entryRequests.filter(request =>{
+                return playerIdsOfNewRequests.indexOf (request.player.playerId) === -1
+            })
+
+            existingEntryRequestToCancel.forEach(request => {
+                entryRequests.splice(entryRequests.indexOf(request),1)
+            })
+            entryRequests.push(...newEntryRequestsToAdd)
+
         },
     },
 
     mounted() {
-        this.socket.on('join-request', this.handleJoinRequest);
+        this.socket.on('state-update', this.handleStateUpDate);
     },
 }
 </script>

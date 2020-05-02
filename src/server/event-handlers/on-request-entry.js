@@ -51,7 +51,8 @@ function onRequestEntry(state, socket, io) {
         console.log(`asking ${matchingGame.masterPlayer.playerName} if ${matchingPlayer.playerName} can join ${matchingGame.gameName}...`)
 
         const entryRequest = matchingGame.addEntryRequest(matchingPlayer, callback, socket)
-        io.to(sessionOfGmInGame.socketId).emit('join-request',entryRequest.clientSafeVersion)
+        io.to(sessionOfGmInGame.socketId).emit('state-update', state.getStateOfGame(gameId))
+
     }
 }
 

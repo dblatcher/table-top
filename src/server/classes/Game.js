@@ -16,6 +16,10 @@ class Game {
         return entryRequest
     }
 
+    cancelEntryRequestFor(player) {
+        this.entryRequests = this.entryRequests.filter( request => request.player !== player)
+    }
+
     get clientSafeVersion () {
         return {
             type: this.type,
@@ -23,7 +27,8 @@ class Game {
             gameId: this.gameId,
             masterId: this.masterPlayer.playerId,
             masterName: this.masterPlayer.playerName,
-            details: this.details
+            details: this.details,
+            entryRequests: this.entryRequests.map(entryRequest => entryRequest.clientSafeVersion )
         }
     }
 }
