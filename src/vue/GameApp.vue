@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    
     <h2>{{config.gameName}}</h2>
 
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
@@ -10,14 +9,8 @@
       <p v-if="waitingForRequestEntryResponse" >waiting for answer...</p>
     </form>
 
-    <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
-      <div class="modal-content">
-        <p>GAME CLOSED</p>
-        <p><a href="/">return to homepage</a></p>
-      </div>
-    </div>
-
-    <CloseGameButton v-if="hasEnteredGame && config.amGamemaster"  @close-game="requestGameClose"/>
+    <admin-panel v-if="hasEnteredGame && config.amGamemaster" 
+    v-bind="{config, socket, playerId}"/>
 
     <div v-if="hasEnteredGame">
 
@@ -30,7 +23,6 @@
         <DiceButton @dice-result="reportRoll" dice="10,10,10,10,10,10,10,10" label="8d10"/>
       </div>
 
-      <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/> 
 
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
@@ -42,6 +34,15 @@
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
     </div>
 
+    <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/>
+
+    <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
+      <div class="modal-content">
+        <p>GAME CLOSED</p>
+        <p><a href="/">return to homepage</a></p>
+      </div>
+    </div>
+
   </div>
 </template> 
 
@@ -49,12 +50,12 @@
 import DiceButton from './components/DiceButton.vue'
 import MessageBox from './components/MessageBox.vue'
 import PlayersDisplay from './components/PlayersDisplay.vue'
-import CloseGameButton from './components/CloseGameButton.vue'
 import E3dDice from './components/E3dDice.vue'
 import RollZone from './components/RollZone.vue'
+import AdminPanel from "./components/AdminPanel.vue";
 
 export default {
-  components: {DiceButton, MessageBox, PlayersDisplay, CloseGameButton, E3dDice, RollZone},
+  components: {DiceButton, MessageBox, PlayersDisplay, E3dDice, RollZone, AdminPanel},
 
   props: ['config', 'socket'],
 
@@ -143,12 +144,6 @@ export default {
         this.requestStateUpdate();
     },
 
-    handleJoinRequest(data) {
-      console.log(data)
-      let answer = confirm(`Let ${data.player.playerName} into the game?`)
-      console.log(answer)
-      this.socket.emit('entry-request-response',answer,data, this.playerId, this.config.gameId)
-    },
 
     sendMessage (messageText) {
       this.messages.push(`${'me'}: ${messageText}`,)
@@ -160,13 +155,6 @@ export default {
       this.messages.push(`${messageData.playerName}: ${messageData.messageText}`,)
     },
 
-    requestGameClose() {
-      const {playerId} = this
-      const {gameId} = this.config
-
-      console.log('requesting game close...')
-      this.socket.emit('gm-closing-game',{gameId, playerId})
-    },
 
     handleGameClosing (data) {
       console.log('game closing:', data)
@@ -180,10 +168,9 @@ export default {
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('player-message', this.handleMessage );
     this.socket.on('game-closed', this.handleGameClosing );
-    this.socket.on('join-request', this.handleJoinRequest);
+
 
     if (this.config.amGamemaster) {
-      console.log('I AM THE GM')
       this.socket.emit('gm-enter-game', {
         gameMasterId: this.config.gameMasterId,
         gameId:this.config.gameId
