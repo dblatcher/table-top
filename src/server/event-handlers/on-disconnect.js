@@ -1,4 +1,3 @@
-sendStateToClients = require ('../sendStateToClients')
 const cookie = require('cookie');
 
 function onDisconnect(state, socket, io){
@@ -17,10 +16,9 @@ function onDisconnect(state, socket, io){
         const sessionsLeft = matchingPlayer.leaveSessionBySocket(socket)
 
         sessionsLeft.forEach (gameSession => {
-            sendStateToClients(state, socket, io, gameSession.game.gameId)
             console.log('DISCONNECTION', matchingPlayer.playerName, gameSession.game.gameName)
+            state.sendUpdateGameStateToAllPlayers(gameSession.game.gameId)
         } )
-
     }
 }
 

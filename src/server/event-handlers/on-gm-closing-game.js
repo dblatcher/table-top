@@ -18,7 +18,6 @@ function onGmClosingGame(state, socket, io){
         }
 
         console.log('closing game')
-        io.to(gameId).emit('game-closed', gameId);
         state.closeGame(gameId)
     }
 }

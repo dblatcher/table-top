@@ -1,4 +1,3 @@
-sendStateToClients = require ('../sendStateToClients')
 const cookie = require('cookie');
 
 
@@ -29,7 +28,7 @@ function onGmEnterGame(state, socket, io){
 
         matchingPlayer.joinSession(matchingGame, socket)
         callback(matchingPlayer.clientSafeVersion)
-        sendStateToClients(state, socket, io, gameId)
+        state.sendUpdateGameStateToAllPlayers(gameId)
     }
 }
 

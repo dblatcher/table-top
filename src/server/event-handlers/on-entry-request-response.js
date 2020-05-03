@@ -24,7 +24,7 @@ function onEntryRequestResponse(state, socket,io){
 
         console.log(`added ${matchingEntryRequest.player.playerName} to game ${game.gameName}`)
         matchingEntryRequest.grant()
-        sendStateToClients(state, socket, io, gameId)
+        state.sendUpdateGameStateToAllPlayers(gameId)
     }
 }
 

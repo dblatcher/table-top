@@ -1,4 +1,3 @@
-sendStateToClients = require ('../sendStateToClients')
 const cookie = require('cookie');
 
 function onRequestEntry(state, socket, io) {
@@ -44,7 +43,7 @@ function onRequestEntry(state, socket, io) {
             console.log(`added ${matchingPlayer.playerName} to game ${gameId}, on socket ${socket.id} - previously granted`)
             matchingPlayer.joinSession(matchingGame, socket)
             callback(matchingPlayer.clientSafeVersion)
-            sendStateToClients(state, socket, io, gameId)
+            state.sendUpdateGameStateToAllPlayers(gameId)
             return
         }
 

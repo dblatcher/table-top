@@ -27,6 +27,7 @@ var server = http.createServer(app);
  * Create socket instance, add handler.
  */
 var io = require('socket.io')(server);
+state.io = io;
 addSocketHandler(io, state)
 
 /**

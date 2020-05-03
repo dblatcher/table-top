@@ -20,6 +20,8 @@ class AppState {
 
         let nextGameIdKey = 1000
         this.getNextGameId = function() {return `${Math.floor(Math.random()*10000000)}-${nextGameIdKey++}` }
+
+        this.io = null
     }
 
     addPlayer (playerName) { 
@@ -31,6 +33,8 @@ class AppState {
 
     removePlayersWhere(filterFunction) {
         const matchingPlayers = this.players.filter(filterFunction)
+
+        // remove the players from state.players
         this.players = this.players.filter(player => matchingPlayers.indexOf(player) == -1)
         return matchingPlayers
     }
@@ -87,7 +91,14 @@ class AppState {
         }
     }
 
+    sendUpdateGameStateToAllPlayers(gameId) {
+        console.log (`sending state of game ${gameId} to all clients`)
+        this.io.to(gameId).emit('state-update', this.getStateOfGame(gameId));
+    }
+
     closeGame(gameId) {
+        console.log('closing', this.getGameById(gameId).gameName)
+        this.io.to(gameId).emit('game-closed', gameId);
         this.players.forEach(player => {player.leaveAnySessionsForClosedGame(gameId)})
         this.games = this.games.filter(game => game.gameId !== gameId)
     }
