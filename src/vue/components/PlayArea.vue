@@ -12,7 +12,7 @@
       v-bind:players="this.gameState.players" 
       v-bind:playerId="playerId" 
       v-bind:gameMasterId="config.gameMasterId"
-      v-bind="{diceRolls: diceRolls}"
+      v-bind="{diceRolls, characterSheets}"
       />
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
@@ -32,6 +32,7 @@ export default {
     data() {
         return {
             diceRolls: {},
+            characterSheets: {},
             messages: [],
         }
     },
@@ -69,6 +70,14 @@ export default {
     mounted() {
         this.socket.on('game-event', this.handleGameEvent );
         this.socket.on('player-message', this.handleMessage );
+
+        // const testCharacterSheet = {
+        //     "hp": {value:10, type:'count'},
+        //     "status": {value: "hiding", type:'condition'},
+        // }
+
+        // this.$set(this.characterSheets, this.playerId, testCharacterSheet)
+
     },
 
 }

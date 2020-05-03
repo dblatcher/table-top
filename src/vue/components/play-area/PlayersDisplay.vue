@@ -6,6 +6,7 @@
       v-bind="{
         player: gameMaster,
         rollData: this.diceRolls[gameMaster.playerId] || null, 
+        characterSheet: this.characterSheets[gameMaster.playerId] || null, 
         color:'blue', 
         gm:true, 
         local:(localPlayer===gameMaster)}" />
@@ -15,6 +16,7 @@
       v-bind="{
         player: localPlayer,
         rollData: this.diceRolls[localPlayer.playerId] || null,  
+        characterSheet: this.characterSheets[localPlayer.playerId] || null,  
         color:'green', 
         gm:false, 
         local:true}" />
@@ -24,6 +26,7 @@
       v-bind="{
         player: player, 
         rollData: diceRolls[player.playerId] || null,  
+        characterSheet: characterSheets[player.playerId] || null,  
         color:'red', 
         gm:false, 
         local:false}" />
@@ -39,7 +42,7 @@ import PlayerCard from "./PlayerCard.vue";
 
 export default {
   components: {PlayerCard},
-  props: ["players", "playerId","gameMasterId", "diceRolls"],
+  props: ["players", "playerId","gameMasterId", "diceRolls", "characterSheets"],
 
   computed: {
     gameMaster: function() {
