@@ -12,27 +12,8 @@
     <admin-panel v-if="hasEnteredGame && config.amGamemaster" 
     v-bind="{config, socket, playerId}"/>
 
-    <div v-if="hasEnteredGame">
-
-      <p>USER NAME:{{ displayName }}</p>
-
-      <div class="roll-button-holder">
-        <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
-        <DiceButton @dice-result="reportRoll" dice="12,12" label="2d12"/>
-        <DiceButton @dice-result="reportRoll" dice="6,6,6,6" label="4d6"/>
-        <DiceButton @dice-result="reportRoll" dice="10,10,10,10,10,10,10,10" label="8d10"/>
-      </div>
-
-
-      <PlayersDisplay 
-      v-bind:players="this.gameState.players" 
-      v-bind:playerId="playerId" 
-      v-bind:gameMasterId="config.gameMasterId"
-      v-bind="{diceRolls: diceRolls}"
-      />
-
-      <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
-    </div>
+    <play-area v-if="hasEnteredGame"
+    v-bind="{displayName, socket, playerId, gameState, config}"/>
 
     <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/>
 
@@ -47,15 +28,12 @@
 </template> 
 
 <script>
-import DiceButton from './components/DiceButton.vue'
-import MessageBox from './components/MessageBox.vue'
-import PlayersDisplay from './components/PlayersDisplay.vue'
 import E3dDice from './components/E3dDice.vue'
-import RollZone from './components/RollZone.vue'
 import AdminPanel from "./components/AdminPanel.vue";
+import PlayArea from "./components/PlayArea.vue";
 
 export default {
-  components: {DiceButton, MessageBox, PlayersDisplay, E3dDice, RollZone, AdminPanel},
+  components: {E3dDice, AdminPanel, PlayArea},
 
   props: ['config', 'socket'],
 
@@ -63,11 +41,9 @@ export default {
     return {
       playerId : false,
       playerName : '',
-      messages: [],
       gameState: {
         players: []
       },
-      diceRolls: {},
       gameHasClosed:false,
       waitingForRequestEntryResponse: false,
     };
@@ -90,14 +66,6 @@ export default {
       console.log('LOG:',input)
     },
 
-    handleGameEvent (report) {
-      console.log('game event:', report)
-      if (report.type === 'ROLL') {
-        this.messages.push  (report.player.playerName + " " + report.data.message)
-        this.$set(this.diceRolls, report.player.playerId, report.data)
-      }
-    },
-
     handleStateUpdate (response) {
       console.log('state update:', response)
       if (response.type === 'REFUSAL') {
@@ -111,15 +79,7 @@ export default {
       this.socket.emit('request-state',this.config.gameId)
     },
 
-    reportRoll(rollData) {
-      const {diceList, results, total, message} = rollData
-      this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', rollData)
-      this.messages.push("I " + rollData.message)
-      this.socket.emit('game-event', this.playerId, 'ROLL', rollData)
-    },
-
     requestEntry(event) {
-
       event.preventDefault();
 
       if (this.playerId) {
@@ -145,17 +105,6 @@ export default {
     },
 
 
-    sendMessage (messageText) {
-      this.messages.push(`${'me'}: ${messageText}`,)
-      this.socket.send(this.playerId, messageText)
-    },
-
-    handleMessage (messageData) {
-      let sendingPlayer
-      this.messages.push(`${messageData.playerName}: ${messageData.messageText}`,)
-    },
-
-
     handleGameClosing (data) {
       console.log('game closing:', data)
       this.gameHasClosed = true;
@@ -164,11 +113,8 @@ export default {
   },
 
   mounted() {
-    this.socket.on('game-event', this.handleGameEvent );
     this.socket.on('state-update', this.handleStateUpdate );
-    this.socket.on('player-message', this.handleMessage );
     this.socket.on('game-closed', this.handleGameClosing );
-
 
     if (this.config.amGamemaster) {
       this.socket.emit('gm-enter-game', {
@@ -176,7 +122,6 @@ export default {
         gameId:this.config.gameId
       }, this.handleRequestEntryResponse)
     }
-
   }
 
 };

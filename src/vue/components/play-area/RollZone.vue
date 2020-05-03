@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import E3dDice from './E3dDice.vue'
+import E3dDice from '../E3dDice.vue'
 
 export default {
     components: {E3dDice},
