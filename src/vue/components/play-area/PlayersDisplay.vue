@@ -11,15 +11,15 @@
         gm:true, 
         local:(localPlayer===gameMaster)}" />
 
-      <PlayerCard 
+      <local-player-card 
       v-if="localPlayer !== gameMaster"
+      @update-character-sheet = "$emit('update-character-sheet', $event)"
       v-bind="{
         player: localPlayer,
         rollData: this.diceRolls[localPlayer.playerId] || null,  
         characterSheet: this.characterSheets[localPlayer.playerId] || null,  
         color:'green', 
-        gm:false, 
-        local:true}" />
+        gm:false}" />
 
       <PlayerCard 
       v-for="player in otherPlayers" v-bind:key="player.playerId"
@@ -38,10 +38,11 @@
 
 
 import PlayerCard from "./PlayerCard.vue";
+import LocalPlayerCard from "./LocalPlayerCard.vue";
 
 
 export default {
-  components: {PlayerCard},
+  components: {PlayerCard, LocalPlayerCard},
   props: ["players", "playerId","gameMasterId", "diceRolls", "characterSheets"],
 
   computed: {

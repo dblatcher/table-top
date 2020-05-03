@@ -13,6 +13,7 @@
       v-bind:playerId="playerId" 
       v-bind:gameMasterId="config.gameMasterId"
       v-bind="{diceRolls, characterSheets}"
+      @update-character-sheet = "reportCharacterSheetUpdate"
       />
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
@@ -49,11 +50,18 @@ export default {
             this.socket.emit('game-event', this.playerId, 'ROLL', rollData)
         },
 
+        reportCharacterSheetUpdate(characterSheet) {
+            this.socket.emit('game-event', this.playerId, 'CHARACTER_SHEET', characterSheet)
+        },
+
         handleGameEvent (report) {
             console.log('game event:', report)
             if (report.type === 'ROLL') {
                 this.messages.push  (report.player.playerName + " " + report.data.message)
                 this.$set(this.diceRolls, report.player.playerId, report.data)
+            }
+            if (report.type === 'CHARACTER_SHEET') {
+                this.$set(this.characterSheets, report.player.playerId, report.data)
             }
         },
 
@@ -71,12 +79,12 @@ export default {
         this.socket.on('game-event', this.handleGameEvent );
         this.socket.on('player-message', this.handleMessage );
 
-        // const testCharacterSheet = {
-        //     "hp": {value:10, type:'count'},
-        //     "status": {value: "hiding", type:'condition'},
-        // }
+        const testCharacterSheet = {
+            "hp": {value:Math.floor(Math.random() * 10), max:10, type:'count'},
+            "status": {value: "normal", type:'condition'},
+        }
 
-        // this.$set(this.characterSheets, this.playerId, testCharacterSheet)
+        this.$set(this.characterSheets, this.playerId, testCharacterSheet)
 
     },
 

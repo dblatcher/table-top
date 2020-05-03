@@ -1,9 +1,13 @@
 <template>
   <article v-bind:class="`${color} card`">
       <h2>{{player.playerName}}</h2>
-      <p v-for="(line,index) in characterSheetLines" v-bind:key="index">
-        {{line}}
-      </p>
+
+      <table>
+        <tr v-for="(data,name) in characterSheet" v-bind:key="name">
+          <td>{{name}}</td>
+          <td>{{displayValue(data)}}</td>
+        </tr>
+      </table>
 
       <roll-zone v-bind="{rollData, size:40}"/>
   </article>
@@ -17,21 +21,19 @@ export default {
     components : {RollZone},
     props: ["player", "color","gm","local", "rollData","characterSheet"],
 
-    computed : {
-      characterSheetLines (){
-        if(!this.characterSheet) return []
-        const lines = []
-
-        Object.keys(this.characterSheet).forEach(key => {
-          lines.push(`${key}: ${this.characterSheet[key].value}`)
-        })
-
-        return lines
-      }
+    methods : {
+      displayValue(data){
+        if (data.max && data.type === 'count') { return `${data.value} / ${data.max}`}
+        return data.value.toString();
+      },
     }
 }
 </script>
 
-<style>
+<style scoped>
+
+  table {
+    font-size: smaller;
+  }
 
 </style>
