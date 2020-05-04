@@ -37,6 +37,7 @@ export default {
             diceRolls: {},
             characterSheets: {},
             messages: [],
+            myCharacterSheet: null,
         }
     },
 
@@ -53,7 +54,8 @@ export default {
         },
 
         reportCharacterSheetUpdate(characterSheet) {
-            this.socket.emit('game-event', this.playerId, 'CHARACTER_SHEET', characterSheet)
+            this.myCharacterSheet = characterSheet
+            this.socket.emit('game-event', this.playerId, 'CHARACTER_SHEET', this.myCharacterSheet)
         },
 
         handleGameEvent (report) {
@@ -64,6 +66,11 @@ export default {
             }
             if (report.type === 'CHARACTER_SHEET') {
                 this.$set(this.characterSheets, report.player.playerId, report.data)
+            }
+            if (report.type === 'PLAYER_STATUS_REQUEST') {
+                if (!this.config.amGameMaster) {
+                    this.socket.emit('game-event', this.playerId, 'CHARACTER_SHEET', this.myCharacterSheet)
+                }
             }
         },
 
@@ -88,6 +95,8 @@ export default {
         ])
 
         this.$set(this.characterSheets, this.playerId, testCharacterSheet)
+
+        this.socket.emit('game-event', this.playerId, 'PLAYER_STATUS_REQUEST', {})
 
     },
 
