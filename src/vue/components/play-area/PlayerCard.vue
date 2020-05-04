@@ -3,9 +3,9 @@
       <h2>{{player.playerName}}</h2>
 
       <table>
-        <tr v-for="(data,name) in characterSheet" v-bind:key="name">
-          <td>{{name}}</td>
-          <td>{{displayValue(data)}}</td>
+        <tr v-for="(datum,key_name) in characterSheet" v-bind:key="key_name">
+          <td>{{datum.name}}</td>
+          <td>{{displayValue(datum)}}</td>
         </tr>
       </table>
 
@@ -16,15 +16,15 @@
 <script>
 
 import RollZone from './RollZone.vue'
+import { SheetDatum } from "../../modules/characterSheets";
 
 export default {
     components : {RollZone},
     props: ["player", "color","gm","local", "rollData","characterSheet"],
 
     methods : {
-      displayValue(data){
-        if (data.max && data.type === 'count') { return `${data.value} / ${data.max}`}
-        return data.value.toString();
+      displayValue(datum){
+        return SheetDatum.getDisplayValue(datum)
       },
     }
 }

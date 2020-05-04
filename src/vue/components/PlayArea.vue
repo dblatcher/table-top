@@ -26,6 +26,8 @@ import DiceButton from './play-area/DiceButton.vue'
 import PlayersDisplay from './play-area/PlayersDisplay.vue'
 import MessageBox from './play-area/MessageBox.vue'
 
+import { CharacterSheet, SheetDatum } from "../modules/characterSheets";
+
 export default {
     components: {DiceButton, PlayersDisplay, MessageBox},
     props: ['displayName', 'socket', 'playerId', 'gameState', 'config'],
@@ -79,10 +81,11 @@ export default {
         this.socket.on('game-event', this.handleGameEvent );
         this.socket.on('player-message', this.handleMessage );
 
-        const testCharacterSheet = {
-            "hp": {value:Math.floor(Math.random() * 10), max:10, type:'count'},
-            "status": {value: "normal", type:'condition'},
-        }
+        const testCharacterSheet = new CharacterSheet([
+            new SheetDatum('HP',Math.floor(Math.random() * 10), {type : 'number', max:12}),
+            new SheetDatum('Status',"normal"),
+            new SheetDatum('Action',"wait"),
+        ])
 
         this.$set(this.characterSheets, this.playerId, testCharacterSheet)
 
