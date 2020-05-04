@@ -1,8 +1,8 @@
 <template>
-  <article v-bind:class="`${color} card`">
+  <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
       <h2>{{player.playerName}}</h2>
 
-      <table>
+      <table class="character-sheet" v-if="!gm">
         <tr v-for="(datum,key_name) in characterSheet" v-bind:key="key_name">
           <td>{{datum.name}}</td>
           <td>{{displayValue(datum)}}</td>

@@ -1,5 +1,5 @@
 
-table {
+table.game-list {
 
     border-collapse: collapse;
 
@@ -21,4 +21,8 @@ table {
         padding-left: .75em;
         min-width: 12rem;
     }
+}
+
+table.character-sheet {
+
 }

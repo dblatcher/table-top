@@ -1,8 +1,8 @@
 <template>
   <article v-bind:class="`${color} card`">
-      <h2>*{{player.playerName}}</h2>
+      <h2>{{player.playerName}}</h2>
 
-      <table>
+      <table class="character-sheet">
         <tr v-for="(data,key_name) in localCharacterSheet" v-bind:key="key_name">
           <td>{{data.name}}</td>
           <td><input @change="handleUpdate" type="text" v-model="data.value"/> {{getTextAfterInput(data)}}</td>
