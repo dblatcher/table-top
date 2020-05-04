@@ -14,13 +14,13 @@ class SheetDatum {
     }
     get keyName() {return keyPrefix + this.name}
 
-    static getDisplayValue (serialisedDatum) {
 
+    static getDisplaySuffix (serialisedDatum) {
         if (serialisedDatum.type === 'number' && serialisedDatum.max) {
-            return `${serialisedDatum.value} / ${serialisedDatum.max}`
+            return ` / ${serialisedDatum.max}`
         }
 
-        return `${serialisedDatum.value ? serialisedDatum.value : '??'}`
+        return ''
     }
 
 }
@@ -28,7 +28,6 @@ class SheetDatum {
 class CharacterSheet {
     constructor (sheetData = []) {
         sheetData.forEach(sheetDatum => {
-            console.log(sheetDatum.keyName, sheetDatum)
             this[sheetDatum.keyName] = sheetDatum 
         })
     }

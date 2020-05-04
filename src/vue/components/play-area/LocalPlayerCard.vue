@@ -3,9 +3,9 @@
       <h2>{{player.playerName}}</h2>
 
       <table class="character-sheet">
-        <tr v-for="(data,key_name) in localCharacterSheet" v-bind:key="key_name">
-          <td>{{data.name}}</td>
-          <td><input @change="handleUpdate" type="text" v-model="data.value"/> {{getTextAfterInput(data)}}</td>
+        <tr v-for="(datum,key_name) in localCharacterSheet" v-bind:key="key_name">
+          <td>{{datum.name}}</td>
+          <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
         </tr>
       </table>
 
@@ -22,24 +22,19 @@ export default {
     components : {RollZone},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
-
-      window.localCard = this 
         return {
             localCharacterSheet: this.characterSheet,
         }
     },
 
     methods : {
-        getTextAfterInput(data){
-            if (data.max && data.type === 'number') { return ` / ${data.max}`}
-            return '';
+        getTextAfterInput(datum){
+          return SheetDatum.getDisplaySuffix(datum)
         },
 
         handleUpdate(event) {
-            console.log('handleUpdate', event)
-            this.$emit('update-character-sheet', this.localCharacterSheet)
+          this.$emit('update-character-sheet', this.localCharacterSheet)
         }
-
     },
 
     mounted() {

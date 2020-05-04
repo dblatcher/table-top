@@ -24,7 +24,7 @@ export default {
 
     methods : {
       displayValue(datum){
-        return SheetDatum.getDisplayValue(datum)
+        return datum.value+SheetDatum.getDisplaySuffix(datum)
       },
     }
 }
