@@ -3,7 +3,7 @@
       <h2>{{player.playerName}}</h2>
 
       <table class="character-sheet" v-if="!gm">
-        <tr v-for="(datum,key_name) in characterSheet" v-bind:key="key_name">
+        <tr v-for="(datum,key_name) in characterSheet.values" v-bind:key="key_name">
           <td>{{datum.name}}</td>
           <td>{{displayValue(datum)}}</td>
         </tr>

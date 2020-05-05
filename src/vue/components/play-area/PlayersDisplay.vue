@@ -6,7 +6,7 @@
       v-bind="{
         player: gameMaster,
         rollData: this.diceRolls[gameMaster.playerId] || null, 
-        characterSheet: this.characterSheets[gameMaster.playerId] || null, 
+        characterSheet: this.characterSheets[gameMaster.playerId] || {}, 
         color:'blue', 
         gm:true, 
         local:(localPlayer===gameMaster)}" />
@@ -17,7 +17,7 @@
       v-bind="{
         player: localPlayer,
         rollData: this.diceRolls[localPlayer.playerId] || null,  
-        characterSheet: this.characterSheets[localPlayer.playerId] || null,  
+        characterSheet: this.characterSheets[localPlayer.playerId] || {},  
         color:'green', 
         gm:false}" />
 
@@ -26,7 +26,7 @@
       v-bind="{
         player: player, 
         rollData: diceRolls[player.playerId] || null,  
-        characterSheet: characterSheets[player.playerId] || null,  
+        characterSheet: characterSheets[player.playerId] || {},  
         color:'red', 
         gm:false, 
         local:false}" />

@@ -3,7 +3,7 @@
       <h2>{{player.playerName}}</h2>
 
       <table class="character-sheet">
-        <tr v-for="(datum,key_name) in localCharacterSheet" v-bind:key="key_name">
+        <tr v-for="(datum,key_name) in localCharacterSheet.values" v-bind:key="key_name">
           <td>{{datum.name}}</td>
           <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
         </tr>
