@@ -16,6 +16,14 @@ class SheetDatum {
     }
     get keyName() {return keyPrefix + this.name}
 
+    serialise() {
+        const keysToLeaveOut = ['group']
+        let output = {}
+        let keys = Object.keys(this).filter(key => keysToLeaveOut.indexOf(key) === -1)
+
+        keys.forEach(key => output[key] = this[key])
+        return output
+    }
 
     static getDisplaySuffix (serialisedDatum) {
         if (serialisedDatum.type === 'number' && serialisedDatum.max) {
@@ -34,6 +42,11 @@ class DataGroup {
         this.priority = config.priority || 0
     }
     get keyName() {return keyPrefix + this.name}
+    serialise() {
+        let output = {}
+        Object.keys(this).forEach(key => output[key] = this[key])
+        return output
+    }
 }
 
 class CharacterSheet {
@@ -80,6 +93,21 @@ class CharacterSheet {
             value: datum.value + SheetDatum.getDisplaySuffix(datum) 
         }}) 
     }
+
+    serialise () {
+        let output = {
+            groups: [],
+            values: {}
+        }
+        this.groups.forEach(group => {output.groups.push(group.serialise())})
+        Object.keys (this.values).forEach(key => {output.values[key] = this.values[key].serialise()} )
+        return output
+    }
+
+    toJson () {
+        return JSON.stringify(this.serialise())
+    }
+
 }
 
 CharacterSheet.Datum = SheetDatum 
