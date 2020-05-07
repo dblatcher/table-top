@@ -8,9 +8,11 @@
           <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
         </tr>
       </table>
-      <button @click="saveSheet" >save</button>
-      <button @click="loadSheet" >load</button>
+      <button @click="openSaveSheetDialogue" >save as</button>
+      <button @click="openLoadSheetDialogue" >load</button>
       <roll-zone v-bind="{rollData, size:40}"/>
+
+      <storage-dialogue v-bind="storageDialogueProps" @close="cancelStorageAction" @item-name-choice="handleStorageAction"/>
   </article>
 </template>
 
@@ -18,13 +20,20 @@
 
 import RollZone from './RollZone.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
+import * as storage from "../../modules/storage";
+import StorageDialogue from '../StorageDialogue.vue'
+
+window.storage = storage
 
 export default {
-    components : {RollZone},
+    components : {RollZone, StorageDialogue},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
         return {
             localCharacterSheet: this.characterSheet,
+            storageDialogueProps: {
+              isOpen: false,
+            }
         }
     },
 
@@ -37,27 +46,57 @@ export default {
           this.$emit('update-character-sheet', this.localCharacterSheet)
         },
 
-        saveSheet() {
-          if (!localStorage.getItem('storedSheets')) {
-            localStorage.setItem('storedSheets', JSON.stringify({}) )
+        handleStorageAction(itemName) {
+          if (!itemName) {return false}
+          this.storageDialogueProps.isOpen = false
+
+          if (this.storageDialogueProps.action === 'save') {
+            this.saveSheet(itemName)
           }
-          let storedSheets = JSON.parse (localStorage.getItem('storedSheets'))
-          storedSheets['TEST'] = this.localCharacterSheet.serialise()
-          localStorage.setItem('storedSheets', JSON.stringify(storedSheets) )
+          if (this.storageDialogueProps.action === 'load') {
+            this.loadSheet(itemName)
+          }
         },
 
-        loadSheet() {
-          let storedSheets = window.localStorage.getItem('storedSheets')
-          if (!storedSheets) { return false}
-          storedSheets = JSON.parse(storedSheets)
-          this.localCharacterSheet = CharacterSheet.deserialise( storedSheets['TEST'] )
+        openSaveSheetDialogue() {
+          this.storageDialogueProps = {
+              isOpen: true,
+              title: 'Save Sheet',
+              itemNames: storage.getItemNames('storedSheets'),
+              action: 'save'
+          }
+        },
+
+        openLoadSheetDialogue() {
+          this.storageDialogueProps = {
+              isOpen: true,
+              title: 'Load Sheet',
+              itemNames: storage.getItemNames('storedSheets'),
+              action: 'load'
+          }
+        },
+
+        saveSheet(itemName) {
+          storage.save('storedSheets',itemName, this.localCharacterSheet.serialise())
+        },
+
+        loadSheet(itemName) {
+          let item = storage.load('storedSheets', itemName)
+          if (!itemName) {
+            alert('DID NOT FIND SHEET', itemName)
+            return false
+          }
+          this.localCharacterSheet = CharacterSheet.deserialise( item )
           this.handleUpdate()
-          return storedSheets['TEST']
+        },
+
+        cancelStorageAction() {
+          this.storageDialogueProps.isOpen = false
         }
     },
 
     mounted() {
-        this.$emit('update-character-sheet', this.localCharacterSheet)
+      this.$emit('update-character-sheet', this.localCharacterSheet)
     }
 
 }
