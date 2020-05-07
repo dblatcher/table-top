@@ -8,7 +8,8 @@
           <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
         </tr>
       </table>
-
+      <button @click="saveSheet" >save</button>
+      <button @click="loadSheet" >load</button>
       <roll-zone v-bind="{rollData, size:40}"/>
   </article>
 </template>
@@ -16,7 +17,7 @@
 <script>
 
 import RollZone from './RollZone.vue'
-import { SheetDatum } from "../../modules/characterSheets";
+import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 
 export default {
     components : {RollZone},
@@ -34,6 +35,24 @@ export default {
 
         handleUpdate(event) {
           this.$emit('update-character-sheet', this.localCharacterSheet)
+        },
+
+        saveSheet() {
+          if (!localStorage.getItem('storedSheets')) {
+            localStorage.setItem('storedSheets', JSON.stringify({}) )
+          }
+          let storedSheets = JSON.parse (localStorage.getItem('storedSheets'))
+          storedSheets['TEST'] = this.localCharacterSheet.serialise()
+          localStorage.setItem('storedSheets', JSON.stringify(storedSheets) )
+        },
+
+        loadSheet() {
+          let storedSheets = window.localStorage.getItem('storedSheets')
+          if (!storedSheets) { return false}
+          storedSheets = JSON.parse(storedSheets)
+          this.localCharacterSheet = CharacterSheet.deserialise( storedSheets['TEST'] )
+          this.handleUpdate()
+          return storedSheets['TEST']
         }
     },
 

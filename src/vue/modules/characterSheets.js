@@ -25,14 +25,18 @@ class SheetDatum {
         return output
     }
 
+    static deserialise(serialisedDatum) {
+        const {name, value, type, groupName, max} = serialisedDatum;
+        const datum =  new SheetDatum( name, value, { type, group: groupName, max} )
+        return datum
+    }
+
     static getDisplaySuffix (serialisedDatum) {
         if (serialisedDatum.type === 'number' && serialisedDatum.max) {
             return ` / ${serialisedDatum.max}`
         }
-
         return ''
     }
-
 }
 
 class DataGroup {
@@ -42,10 +46,17 @@ class DataGroup {
         this.priority = config.priority || 0
     }
     get keyName() {return keyPrefix + this.name}
+
     serialise() {
         let output = {}
         Object.keys(this).forEach(key => output[key] = this[key])
         return output
+    }
+
+    static deserialise(serialisedGroup) {
+        const {name, label, priority } = serialisedGroup;
+        const group =  new DataGroup( name, { label, priority} )
+        return group
     }
 }
 
@@ -106,6 +117,12 @@ class CharacterSheet {
 
     toJson () {
         return JSON.stringify(this.serialise())
+    }
+
+    static deserialise (serialisedSheet) {
+        const data = Object.keys(serialisedSheet.values).map(key => SheetDatum.deserialise(serialisedSheet.values[key]) )
+        const groups = serialisedSheet.groups.map(group => DataGroup.deserialise(group) )
+        return new CharacterSheet( data , groups)
     }
 
 }
