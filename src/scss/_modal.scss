@@ -53,4 +53,8 @@ input:checked+.modal.toggled {
         align-items: center;
         justify-content: center;
     }
+
+    &>h2, &>h3 {
+        margin: 0 auto 0 0;
+    }
 }

@@ -22,6 +22,17 @@ function save(folderName, itemName, data) {
     localStorage.setItem(folderName, JSON.stringify(folder) )
 }
 
+function clear(folderName, itemName, ) {
+    if (!browserHasLocalStorage) {return false}
+    if (!localStorage.getItem(folderName)) { return false }
+    let folder = JSON.parse (localStorage.getItem(folderName))
+    if (!folder[itemName]) { return false }
+
+    folder[itemName] = undefined
+    localStorage.setItem(folderName, JSON.stringify(folder) )
+    return true
+}
+
 function load(folderName, itemName) {
     if (!browserHasLocalStorage) {return false}
 
@@ -40,4 +51,4 @@ function getItemNames (folderName) {
     return Object.keys(folder)
 }
 
-export {save, load, getItemNames}
+export {save, load, getItemNames, clear}

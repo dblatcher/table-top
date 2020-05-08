@@ -8,11 +8,15 @@
           <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
         </tr>
       </table>
+      <button v-if="currentSheetItemName" @click="()=>{saveSheet(currentSheetItemName)}">save {{currentSheetItemName}}</button>
       <button @click="openSaveSheetDialogue" >save as</button>
       <button @click="openLoadSheetDialogue" >load</button>
       <roll-zone v-bind="{rollData, size:40}"/>
 
-      <storage-dialogue v-bind="storageDialogueProps" @close="cancelStorageAction" @item-name-choice="handleStorageAction"/>
+      <storage-dialogue v-bind="storageDialogueProps" 
+      @close="cancelStorageAction" 
+      @item-delete-request="deleteSavedSheet"
+      @item-name-choice="handleStorageAction"/>
   </article>
 </template>
 
@@ -33,7 +37,8 @@ export default {
             localCharacterSheet: this.characterSheet,
             storageDialogueProps: {
               isOpen: false,
-            }
+            },
+            currentSheetItemName: undefined
         }
     },
 
@@ -78,6 +83,14 @@ export default {
 
         saveSheet(itemName) {
           storage.save('storedSheets',itemName, this.localCharacterSheet.serialise())
+          this.storageDialogueProps.itemNames = storage.getItemNames('storedSheets')
+          this.currentSheetItemName = itemName
+        },
+
+        deleteSavedSheet(itemName) {
+          storage.clear('storedSheets', itemName)
+          if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
+          this.storageDialogueProps.itemNames = storage.getItemNames('storedSheets')
         },
 
         loadSheet(itemName) {
@@ -87,6 +100,7 @@ export default {
             return false
           }
           this.localCharacterSheet = CharacterSheet.deserialise( item )
+          this.currentSheetItemName = itemName
           this.handleUpdate()
         },
 
