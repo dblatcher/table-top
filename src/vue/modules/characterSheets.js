@@ -42,7 +42,7 @@ class SheetDatum {
 class DataGroup {
     constructor (name, config ) {
         this.name = name
-        this.label = config.label || name
+        this.label = typeof config.label !== 'undefined' ?  config.label : name
         this.priority = config.priority || 0
     }
     get keyName() {return keyPrefix + this.name}
@@ -103,6 +103,29 @@ class CharacterSheet {
             name:datum.name, 
             value: datum.value + SheetDatum.getDisplaySuffix(datum) 
         }}) 
+    }
+
+    static groupedData (serialisedSheet) {
+        let output = []
+        if (serialisedSheet.values) {
+            let ungroupedValues = []
+            for (const property in serialisedSheet.values) {
+                if (serialisedSheet.values[property].groupName == undefined) {ungroupedValues.push(serialisedSheet.values[property])}
+            }
+            if (ungroupedValues.length > 0) {
+                output.push({group:undefined, values: ungroupedValues} )
+            }
+        }
+        if (serialisedSheet.groups) {
+            serialisedSheet.groups.forEach(group => {
+                let values = []
+                for (const property in serialisedSheet.values) {
+                    if (serialisedSheet.values[property].groupName == group.name) {values.push(serialisedSheet.values[property])}
+                }
+                output.push ({group, values})
+            })
+        }
+        return output
     }
 
     serialise () {

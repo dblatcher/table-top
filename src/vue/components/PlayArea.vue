@@ -1,12 +1,5 @@
 <template>
   <section>
-      <p>USER NAME:{{ displayName }}</p>
-
-      <div class="roll-button-holder">
-        <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
-        <DiceButton @dice-result="reportRoll" dice="6,6" label="2d6"/>
-        <DiceButton @dice-result="reportRoll" dice="4,4,4" label="3d4"/>
-      </div>
 
       <PlayersDisplay 
       v-bind:players="this.gameState.players" 
@@ -15,6 +8,12 @@
       v-bind="{diceRolls, characterSheets}"
       @update-character-sheet = "reportCharacterSheetUpdate"
       />
+
+      <div class="roll-button-holder">
+        <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
+        <DiceButton @dice-result="reportRoll" dice="6,6" label="2d6"/>
+        <DiceButton @dice-result="reportRoll" dice="4,4,4" label="3d4"/>
+      </div>
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
@@ -91,16 +90,19 @@ export default {
         const testCharacterSheet = new CharacterSheet(
         [
             new SheetDatum('HP',Math.floor(Math.random() * 10), {type : 'number', max:12}),
+            new SheetDatum('Dex',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
             new SheetDatum('Status',"normal"),
             new SheetDatum('Action',"wait"),
             new SheetDatum('Str',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
-            new SheetDatum('Dex',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
             new SheetDatum('Con',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
             new SheetDatum('Int',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
             new SheetDatum('Wis',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
             new SheetDatum('Chr',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {group:'attributes'} ),
+            new SheetDatum('bluff','okay', {group:'skills'} ),
+            new SheetDatum('repair','great', {group:'skills'} ),
         ],[
-            new DataGroup('attributes',{priority:1})
+            new DataGroup('attributes',{priority:1, label:""}),
+            new DataGroup('skills',{priority:1})
         ])
 
 window.testCharacterSheet = testCharacterSheet
