@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <%- include('includes/head', {title:`${title} - ${game.gameName}` , scripts:['gamepage.js']}); %>
+  <%- include('includes/head', {title:`${title} - ${game.gameName}` , scripts:['gamepage.js'], extraStyleSheets:['game.css']}); %>
 
   <body>
 
@@ -11,7 +11,6 @@
 
     <main class="content">
       <% if (!gmView) { %>
-        <p>GM: <%= game.masterPlayer.playerName %></p>
         <meta id="gameMeta" 
         gameMasterId="<%= game.masterPlayer.playerId %>" 
         gameMasterName="<%= game.masterPlayer.playerName %>" 

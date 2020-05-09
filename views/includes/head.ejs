@@ -1,6 +1,10 @@
+<% if (typeof extraStyleSheets === 'undefined') {var extraStyleSheets = []} %>
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/base.css' />
+    <% for(var i=0; i<extraStyleSheets.length; i++) { %>
+        <link rel='stylesheet' href='/stylesheets/<%= extraStyleSheets[i] %>' />
+    <% } %>
     <% for(var i=0; i<scripts.length; i++) { %>
         <script src="/javascripts/<%= scripts[i] %>"></script>
     <% } %>

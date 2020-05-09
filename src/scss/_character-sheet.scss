@@ -1,0 +1,27 @@
+.display-cs-group {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    max-width: 8em;
+}
+
+.display-cs-group--p1 {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.display-cs-group--p1>li {
+  display: inline-flex;
+  margin-right: .5em;
+  justify-content: space-between;
+  min-width: 3.5em;
+}
+
+.display-cs-group__key {
+  font-size: smaller;
+}
+
+.display-cs-group__value {
+  font-size: small;
+  font-weight: 700;
+}

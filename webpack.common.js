@@ -4,6 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     entry: {
         base: './src/scss/base.scss',
+        game: './src/scss/game.scss',
         homepage: './src/js/homepage.js',
         gamepage: './src/js/gamepage.js',
     },
