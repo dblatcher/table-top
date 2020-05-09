@@ -2,18 +2,11 @@
   <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
       <h2>{{gm? 'GAME MASTER - ': ''}}{{player.playerName}}</h2>
 
-      <!-- <table class="character-sheet" v-if="!gm">
-        <tr v-for="(datum,key_name) in characterSheet.values" v-bind:key="key_name">
-          <td>{{datum.name}}</td>
-          <td>{{getDisplayValue(datum)}}</td>
-        </tr>
-      </table> -->
-
       <div v-if="!gm">
         <section v-for="(section, index) in groupedData" v-bind:key="index">
           <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
           <ul v-bind:class="getGroupClass(section.group)">
-            <li v-for="(datum, index2) in section.values" v-bind:key="index2">
+            <li class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
               <span class="display-cs-group__key">{{datum.name}}:</span> <span class="display-cs-group__value">{{getDisplayValue(datum)}}</span>
             </li>
           </ul>
@@ -46,7 +39,7 @@ export default {
       },
       getGroupClass(group) {
         if (!group) { return 'display-cs-group display-cs-group--general' }
-        if (group.priority === 1) { return 'display-cs-group display-cs-group--p1' }
+        if (group.priority === 1) { return 'display-cs-group display-cs-group--two-col' }
         return 'display-cs-group'
       }
     },

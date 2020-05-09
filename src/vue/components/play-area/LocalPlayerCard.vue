@@ -2,12 +2,23 @@
   <article v-bind:class="`${color} card`">
       <h2>{{player.playerName}}</h2>
 
-      <table class="character-sheet">
-        <tr v-for="(datum,key_name) in localCharacterSheet.values" v-bind:key="key_name">
-          <td>{{datum.name}}</td>
-          <td><input @change="handleUpdate" type="text" v-model="datum.value"/> {{getTextAfterInput(datum)}}</td>
-        </tr>
-      </table>
+        <section v-for="(section, index) in groupedData" v-bind:key="index">
+          <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
+          <ul v-bind:class="getGroupClass(section.group)">
+            <li class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
+              <span class="display-cs-group__key">{{datum.name}}:</span> 
+              <span class="display-cs-group__value">
+                
+                <input @change="handleUpdate" v-bind:type="datum.type === 'number' ? 'number' : 'text'" v-model="datum.value"/>
+
+                <span v-if="typeof datum.max !== 'undefined'">
+                  &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                </span>
+              </span>
+            </li>
+          </ul>
+        </section>
+
       <button v-if="currentSheetItemName" @click="()=>{saveSheet(currentSheetItemName)}">save {{currentSheetItemName}}</button>
       <button @click="openSaveSheetDialogue" >save as</button>
       <button @click="openLoadSheetDialogue" >load</button>
@@ -42,9 +53,21 @@ export default {
         }
     },
 
+    computed : {
+      groupedData() {
+        return CharacterSheet.groupedData(this.localCharacterSheet)
+      }
+    },
+
     methods : {
         getTextAfterInput(datum){
           return SheetDatum.getDisplaySuffix(datum)
+        },
+
+        getGroupClass(group) {
+          if (!group) { return 'display-cs-group display-cs-group--general' }
+          if (group.priority === 1) { return 'display-cs-group display-cs-group--two-col' }
+          return 'display-cs-group'
         },
 
         handleUpdate(event) {
