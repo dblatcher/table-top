@@ -44,6 +44,7 @@ class DataGroup {
         this.label = typeof config.label !== 'undefined' ?  config.label : name
         this.priority = config.priority || 0
         this.layout = config.layout
+        this.onlyDisplayNonEmpty = config.onlyDisplayNonEmpty
     }
     get keyName() {return keyPrefix + this.name}
 

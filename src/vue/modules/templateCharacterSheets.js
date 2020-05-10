@@ -52,7 +52,7 @@ const wrathAndGlory = function() {return new CharacterSheet(
         new SheetDatum('Weapon Skill(I)',0,{type:'number', groupName:'skills'}),
     ],[
         new DataGroup('attributes',{priority:1, layout: '2-col', label:"Attributes"}),
-        new DataGroup('skills',{priority:1, layout: '', label:"Skills"}),
+        new DataGroup('skills',{priority:1, layout: '', label:"Skills", onlyDisplayNonEmpty:true}),
     ]
 )}
 

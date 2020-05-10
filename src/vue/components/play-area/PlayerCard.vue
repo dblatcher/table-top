@@ -29,7 +29,18 @@ export default {
 
     computed : {
       groupedData() {
-        return CharacterSheet.groupedData(this.characterSheet)
+        let output = CharacterSheet.groupedData(this.characterSheet)
+
+        output.forEach(grouping => {
+          if (grouping.group && grouping.group.onlyDisplayNonEmpty) {
+            grouping.values = grouping.values.filter(datum => {
+              if (datum.value === "0") {return false}
+              return !!datum.value
+            })
+          }
+        })
+
+        return output
       }
     },
 
@@ -44,9 +55,6 @@ export default {
       }
     },
 
-    updated() {
-      console.log(this.groupedData)
-    },
 }
 </script>
 
