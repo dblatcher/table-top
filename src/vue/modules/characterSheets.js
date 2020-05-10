@@ -7,7 +7,7 @@ class SheetDatum {
         this.name = name
         this.value = value
         this.type = config.type && validDatumValueTypes.indexOf(config.type) !== -1  ? config.type : 'string'
-        this.groupName = config.group || undefined
+        this.groupName = config.groupName || undefined
         this.group = false;
 
         if (this.type === 'number' && config.max) {
@@ -26,8 +26,7 @@ class SheetDatum {
     }
 
     static deserialise(serialisedDatum) {
-        const {name, value, type, groupName, max} = serialisedDatum;
-        const datum =  new SheetDatum( name, value, { type, group: groupName, max} )
+        const datum =  new SheetDatum( serialisedDatum.name, serialisedDatum.value, serialisedDatum)
         return datum
     }
 
@@ -44,6 +43,7 @@ class DataGroup {
         this.name = name
         this.label = typeof config.label !== 'undefined' ?  config.label : name
         this.priority = config.priority || 0
+        this.layout = config.layout
     }
     get keyName() {return keyPrefix + this.name}
 
@@ -54,8 +54,7 @@ class DataGroup {
     }
 
     static deserialise(serialisedGroup) {
-        const {name, label, priority } = serialisedGroup;
-        const group =  new DataGroup( name, { label, priority} )
+        const group =  new DataGroup( serialisedGroup.name, serialisedGroup )
         return group
     }
 }

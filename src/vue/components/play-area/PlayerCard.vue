@@ -39,7 +39,7 @@ export default {
       },
       getGroupClass(group) {
         if (!group) { return 'display-cs-group display-cs-group--general' }
-        if (group.priority === 1) { return 'display-cs-group display-cs-group--two-col' }
+        if (group.layout === '2-col') { return 'display-cs-group display-cs-group--two-col' }
         return 'display-cs-group'
       }
     },

@@ -26,6 +26,7 @@ import PlayersDisplay from './play-area/PlayersDisplay.vue'
 import MessageBox from './play-area/MessageBox.vue'
 
 import { CharacterSheet, SheetDatum, DataGroup } from "../modules/characterSheets";
+import * as makeTemplateSheet from "../modules/templateCharacterSheets.js"
 
 export default {
     components: {DiceButton, PlayersDisplay, MessageBox},
@@ -87,25 +88,9 @@ export default {
         this.socket.on('game-event', this.handleGameEvent );
         this.socket.on('player-message', this.handleMessage );
 
-        const testCharacterSheet = new CharacterSheet(
-        [
-            new SheetDatum('HP',Math.floor(Math.random() * 10), {type : 'number', max:12}),
-            new SheetDatum('Dex',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('Status',"normal"),
-            new SheetDatum('Action',"wait"),
-            new SheetDatum('Str',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('Con',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('Int',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('Wis',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('Chr',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', group:'attributes'} ),
-            new SheetDatum('bluff','okay', {group:'skills'} ),
-            new SheetDatum('repair','great', {group:'skills'} ),
-        ],[
-            new DataGroup('attributes',{priority:1, label:""}),
-            new DataGroup('skills',{priority:0})
-        ])
+        const testCharacterSheet = makeTemplateSheet.wrathAndGlory()
 
-window.testCharacterSheet = testCharacterSheet
+        window.testCharacterSheet = testCharacterSheet
 
         this.$set(this.characterSheets, this.playerId, testCharacterSheet)
 
