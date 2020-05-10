@@ -1,18 +1,22 @@
 <template>
-  <div>
     <ul>
-        <li v-for="(item, index) in list" v-bind:key="index">
+        <li v-for="(item, index) in datum.value" v-bind:key="index">
             <input @change="(event)=> {handleChange(event, index)}" type="text" v-bind:value="item"/>
-            <span @click="()=> {handleDelete(index)}">X</span>
+            <div class="list-control__button list-control__button--red" @click="()=> {handleDelete(index)}">
+                <span>&times;</span>
+            </div>
+        </li>
+        <li>
+            <div class="list-control__button list-control__button--green" @click="handleAdd">
+                <span>+</span>
+            </div>
         </li>
     </ul>
-    <p @click="handleAdd">+</p>
-  </div> 
 </template>
 
 <script>
 export default {
-    props: ['list', 'quantified'],
+    props: ['datum'],
 
     methods: {
         handleChange(event, index) {
@@ -28,6 +32,53 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+        display: flex;
+        margin-bottom: .2em;
+        justify-content: flex-end;
+    }
+
+    input[type="text"] {
+        border: none;
+        border-bottom: 1px solid black;
+        flex: 1;
+        padding: 2px;
+    }
+
+    .list-control__button {
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        border-radius: 50%;
+        width: 1em;
+
+        height: 1em;
+        line-height: 1em;
+        margin-left: .2em;
+    }
+
+    .list-control__button>span {
+        font-size: small;
+        text-align: center;
+    } 
+
+    .list-control__button--red {
+        background-color: red;
+    }
+
+    .list-control__button--green {
+        background-color: green;
+    }
+
 
 </style>

@@ -25,7 +25,7 @@
                  @change-item="(event)=>{handleListItemChange(event, datum)}" 
                  @delete-item="(event)=>{handleListItemDelete(event, datum)}"
                  @new-item="(event)=>{handleListItemAdd(datum)}"
-                 v-bind="{list:datum.value}"/>
+                 v-bind="{datum}"/>
               </span>
 
             </li>
