@@ -13,7 +13,8 @@ const dungeons = function() {return new CharacterSheet(
         new SheetDatum('Chr',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', groupName:'attributes'} ),
         new SheetDatum('bluff','okay', {groupName:'skills'} ),
         new SheetDatum('repair','great', {groupName:'skills'} ),
-        new SheetDatum('items', ['+1 mace', 'iron ration', 'blue key'], {type: 'list', groupName:'inventory'})
+        new SheetDatum('items', ['+1 mace', 'iron ration', 'blue key'], {type: 'list', groupName:'inventory'}),
+        new SheetDatum('money', ['gold', 'copper',], {type: 'list', quantity:[7,32], groupName:'inventory'}),
     ],[
         new DataGroup('attributes',{priority:1, layout: '2-col', label:""}),
         new DataGroup('skills',{priority:0}),

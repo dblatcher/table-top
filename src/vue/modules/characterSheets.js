@@ -13,6 +13,10 @@ class SheetDatum {
         if (this.type === 'number' && config.max) {
             this.max = config.max
         }
+
+        if (this.type === 'list' && config.quantity) {
+            this.quantity = config.quantity
+        }
     }
     get keyName() {return keyPrefix + this.name}
 

@@ -1,17 +1,24 @@
 <template>
-    <ul>
-        <li v-for="(item, index) in datum.value" v-bind:key="index">
+    <div class="list-control">
+        <p class="list-control__item" v-for="(item, index) in datum.value" v-bind:key="index">
+
+
+            <input v-if="datum.quantity" 
+            type="number" 
+            @change="(event)=> {handleQuantityChange(event, index)}"
+            v-bind:value="datum.quantity[index]"/>
+
             <input @change="(event)=> {handleChange(event, index)}" type="text" v-bind:value="item"/>
-            <div class="list-control__button list-control__button--red" @click="()=> {handleDelete(index)}">
+            <span class="list-control__button list-control__button--red" @click="()=> {handleDelete(index)}">
                 <span>&times;</span>
-            </div>
-        </li>
-        <li>
-            <div class="list-control__button list-control__button--green" @click="handleAdd">
+            </span>
+        </p>
+        <p class="list-control__item">
+            <span class="list-control__button list-control__button--green" @click="handleAdd">
                 <span>+</span>
-            </div>
-        </li>
-    </ul>
+            </span>
+        </p>
+    </div>
 </template>
 
 <script>
@@ -19,6 +26,9 @@ export default {
     props: ['datum'],
 
     methods: {
+        handleQuantityChange(event, index) {
+            this.$emit('change-quantity', {newValue:event.target.value, index})
+        },
         handleChange(event, index) {
             this.$emit('change-item', {newValue:event.target.value, index})
         },
@@ -34,23 +44,40 @@ export default {
 
 <style scoped>
 
-    ul {
+    .list-control {
         margin: 0;
         padding: 0;
+        max-width: 100%;
+        background-color: antiquewhite;
+        width: 100%;
     }
 
-    li {
+    .list-control__item {
+        max-width: 100%;
         list-style: none;
         display: flex;
+        margin: 0;
         margin-bottom: .2em;
         justify-content: flex-end;
     }
 
-    input[type="text"] {
+    input {
         border: none;
         border-bottom: 1px solid black;
-        flex: 1;
         padding: 2px;
+    }
+
+    input[type="text"] {
+        width: 5em;
+        flex-shrink: 1;
+        flex-basis: 100%;
+    }
+
+    input[type="number"] {
+        width: 3em;
+        flex-shrink: 0;
+        padding-right: .25em;
+        margin-right: .2em;
     }
 
     .list-control__button {
@@ -61,6 +88,7 @@ export default {
         color: white;
         border-radius: 50%;
         width: 1em;
+        flex-shrink: 0;
 
         height: 1em;
         line-height: 1em;

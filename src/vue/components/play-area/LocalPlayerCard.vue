@@ -4,8 +4,8 @@
 
         <section v-for="(section, index) in groupedData" v-bind:key="index">
           <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
-          <ul v-bind:class="getGroupClass(section.group)">
-            <li class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
+          <article v-bind:class="getGroupClass(section.group)">
+            <div class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
               
               <span v-if="datum.type ==='string'" class="display-cs-group__value">
                 <span class="display-cs-group__key">{{datum.name}}:</span> 
@@ -20,16 +20,17 @@
                 </span>
               </span>
 
-              <span v-if="datum.type ==='list'">
-                 <list-control  
-                 @change-item="(event)=>{handleListItemChange(event, datum)}" 
-                 @delete-item="(event)=>{handleListItemDelete(event, datum)}"
-                 @new-item="(event)=>{handleListItemAdd(datum)}"
-                 v-bind="{datum}"/>
-              </span>
 
-            </li>
-          </ul>
+              <list-control  v-if="datum.type ==='list'"
+              @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
+              @change-item="(event)=>{handleListItemChange(event, datum)}" 
+              @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+              @new-item="(event)=>{handleListItemAdd(datum)}"
+              v-bind="{datum}"/>
+
+
+            </div>
+          </article>
         </section>
 
       <button v-if="currentSheetItemName" @click="()=>{saveSheet(currentSheetItemName)}">save {{currentSheetItemName}}</button>
@@ -100,6 +101,11 @@ export default {
           }
         },
 
+        handleListItemQuantityChange(event, datum) {
+          datum.quantity[event.index] = Number(event.newValue)
+          this.handleUpdate();
+        },
+
         handleListItemChange(event, datum) {
           datum.value[event.index] = event.newValue
           this.handleUpdate();
@@ -107,11 +113,13 @@ export default {
 
         handleListItemDelete(event, datum) {
           datum.value.splice(event.index,1)
+          if (datum.quantity) {datum.quantity.splice(event.index,1)}
           this.handleUpdate();
         },
 
         handleListItemAdd(datum) {
           datum.value.push('')
+          if (datum.quantity) {datum.quantity.push(1)}
           this.handleUpdate();
         },
 
