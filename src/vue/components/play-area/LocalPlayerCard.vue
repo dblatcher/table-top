@@ -6,15 +6,28 @@
           <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
           <ul v-bind:class="getGroupClass(section.group)">
             <li class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
-              <span class="display-cs-group__key">{{datum.name}}:</span> 
-              <span class="display-cs-group__value">
-                
-                <input @change="handleUpdate" v-bind:type="datum.type === 'number' ? 'number' : 'text'" v-model="datum.value"/>
+              
+              <span v-if="datum.type ==='string'" class="display-cs-group__value">
+                <span class="display-cs-group__key">{{datum.name}}:</span> 
+                <input @change="handleUpdate" type="text" v-model="datum.value"/>
+              </span>
 
+              <span v-if="datum.type ==='number'" class="display-cs-group__value">
+                <span class="display-cs-group__key">{{datum.name}}:</span> 
+                <input @change="handleUpdate" type="number" v-model="datum.value"/>
                 <span v-if="typeof datum.max !== 'undefined'">
                   &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
                 </span>
               </span>
+
+              <span v-if="datum.type ==='list'">
+                 <list-control  
+                 @change-item="(event)=>{handleListItemChange(event, datum)}" 
+                 @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+                 @new-item="(event)=>{handleListItemAdd(datum)}"
+                 v-bind="{list:datum.value}"/>
+              </span>
+
             </li>
           </ul>
         </section>
@@ -37,11 +50,12 @@ import RollZone from './RollZone.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 import * as storage from "../../modules/storage";
 import StorageDialogue from '../StorageDialogue.vue'
+import ListControl from './ListControl.vue'
 
 window.storage = storage
 
 export default {
-    components : {RollZone, StorageDialogue},
+    components : {RollZone, StorageDialogue, ListControl},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
         return {
@@ -84,6 +98,21 @@ export default {
           if (this.storageDialogueProps.action === 'load') {
             this.loadSheet(itemName)
           }
+        },
+
+        handleListItemChange(event, datum) {
+          datum.value[event.index] = event.newValue
+          this.handleUpdate();
+        },
+
+        handleListItemDelete(event, datum) {
+          datum.value.splice(event.index,1)
+          this.handleUpdate();
+        },
+
+        handleListItemAdd(datum) {
+          datum.value.push('')
+          this.handleUpdate();
         },
 
         openSaveSheetDialogue() {

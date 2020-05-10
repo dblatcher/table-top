@@ -1,5 +1,5 @@
 
-const validDatumValueTypes = ['string', 'number']
+const validDatumValueTypes = ['string', 'number', 'list']
 const keyPrefix = 'k_'
 
 class SheetDatum {

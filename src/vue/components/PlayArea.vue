@@ -88,14 +88,10 @@ export default {
         this.socket.on('game-event', this.handleGameEvent );
         this.socket.on('player-message', this.handleMessage );
 
-        const testCharacterSheet = makeTemplateSheet.wrathAndGlory()
-
+        const testCharacterSheet = makeTemplateSheet.dungeons()
         window.testCharacterSheet = testCharacterSheet
-
         this.$set(this.characterSheets, this.playerId, testCharacterSheet)
-
         this.socket.emit('game-event', this.playerId, 'PLAYER_STATUS_REQUEST', {})
-
     },
 
 }
