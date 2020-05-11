@@ -5,19 +5,25 @@
         <section v-for="(section, index) in groupedData" v-bind:key="index">
           <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
           <article v-bind:class="getGroupClass(section.group)">
-            <div class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
+            <div class="display-cs-group__datum-wrapper" v-for="(datum, index2) in section.values" v-bind:key="index2">
               
-              <span v-if="datum.type ==='string'" class="display-cs-group__value">
+              <span class="display-cs-group__datum" 
+              v-if="datum.type ==='string'" >
                 <span class="display-cs-group__key">{{datum.name}}:</span> 
-                <input @change="handleUpdate" type="text" v-model="datum.value"/>
+                <input class="display-cs-group__value" @change="handleUpdate" type="text" v-model="datum.value"/>
               </span>
 
-              <span v-if="datum.type ==='number'" class="display-cs-group__value">
+              <span class="display-cs-group__datum"
+              v-if="datum.type ==='number'">
                 <span class="display-cs-group__key">{{datum.name}}:</span> 
-                <input @change="handleUpdate" type="number" v-model="datum.value"/>
-                <span v-if="typeof datum.max !== 'undefined'">
-                  &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                
+                <span class="display-cs-group__value">
+                  <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                  <span v-if="typeof datum.max !== 'undefined'">
+                    &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                  </span>
                 </span>
+
               </span>
 
 

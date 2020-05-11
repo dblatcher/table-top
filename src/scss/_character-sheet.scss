@@ -2,7 +2,8 @@
     margin: 0;
     list-style: none;
     padding: 0;
-    max-width: 10rem;
+    width: inherit;
+    max-width: inherit;
 
     &__key {
       font-size: smaller;
@@ -12,22 +13,10 @@
     &__value {
       font-size: small;
       font-weight: 700;
-    
-      input {
-        background: white;
-        border: none;
-        border-bottom: 3px double black;
-      }
+    }
 
-      input[type="text"] {
-        width: 5em;
-      }
-
-      input[type="number"] {
-        width: 3em;
-        text-align: right;
-      }
-
+    &__datum-wrapper {
+      box-sizing: border-box;
     }
 
     &__datum {
@@ -42,7 +31,8 @@
       display: flex;
       flex-wrap: wrap;
 
-      .display-cs-group__datum {
+
+      &>.display-cs-group__datum, &>.display-cs-group__datum-wrapper {
         flex-basis: 50%;
         
         &:nth-child(2n) {
@@ -53,6 +43,22 @@
           padding-right: 0.25rem;
         }
       }
+    }
+
+    input {
+      font-weight: 400;
+      background: white;
+      border: none;
+      border-bottom: 3px double black;
+    }
+
+    input[type="text"] {
+      width: 5em;
+    }
+
+    input[type="number"] {
+      width: 3em;
+      text-align: right;
     }
 }
 
