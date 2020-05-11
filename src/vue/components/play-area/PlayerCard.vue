@@ -5,11 +5,28 @@
       <div v-if="!gm">
         <section v-for="(section, index) in groupedData" v-bind:key="index">
           <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
-          <ul v-bind:class="getGroupClass(section.group)">
-            <li class="display-cs-group__datum" v-for="(datum, index2) in section.values" v-bind:key="index2">
-              <span class="display-cs-group__key">{{datum.name}}:</span> <span class="display-cs-group__value">{{getDisplayValue(datum)}}</span>
-            </li>
-          </ul>
+          <article v-bind:class="getGroupClass(section.group)">
+
+            <div class="display-cs-group__datum-wrapper" v-for="(datum, index2) in section.values" v-bind:key="index2">
+
+              <p class="display-cs-group__datum" v-if="datum.type !=='list'">
+                <span class="display-cs-group__key">{{datum.name}}:</span> 
+                <span class="display-cs-group__value">{{getDisplayValue(datum)}}</span>
+              </p>
+
+              <div class="display-cs-group__list-datum" v-if="datum.type ==='list'">
+                <p class="display-cs-group__key">{{datum.name}}:</p> 
+                <ul class="display-cs-group__list">
+                  <li class="display-cs-group__value display-cs-group__value--list"
+                  v-for="(item, index) in datum.value" v-bind:key="index">
+                    <span v-if="datum.quantity">{{datum.quantity[index]}}&nbsp;</span>{{item}}
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </article>
         </section>
       </div>
 
@@ -54,7 +71,6 @@ export default {
         return 'display-cs-group'
       }
     },
-
 }
 </script>
 
