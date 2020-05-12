@@ -11,7 +11,7 @@
 
               <p class="display-cs-group__datum" v-if="datum.type !=='list'">
                 <span class="display-cs-group__key">{{datum.name}}:</span> 
-                <span class="display-cs-group__value">{{getDisplayValue(datum)}}</span>
+                <span class="display-cs-group__value" v-bind:style="getAnimationState(datum)">{{getDisplayValue(datum)}}</span>
               </p>
 
               <div class="display-cs-group__list-datum" v-if="datum.type ==='list'">
@@ -39,10 +39,36 @@
 import RollZone from './RollZone.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 
+class ChangedValueAnimation {
+  constructor (keyName) {
+    this.keyName = keyName,
+    this.frame = 10
+    this.timer = undefined
+  }
+
+  start() {
+    const animation = this
+
+    animation.timer = setInterval( function(){
+      console.log(animation.keyName, animation.frame)
+      animation.frame -= 1
+      if (animation.frame <= 0) {
+        clearInterval(animation.timer)
+      }
+    }, 20)
+    return this
+  }
+}
+
 export default {
     components : {RollZone},
     props: ["player", "color","gm","local", "rollData","characterSheet"],
 
+    data() {
+      return {
+        changedValueAnimations: {}
+      }
+    },
 
     computed : {
       groupedData() {
@@ -65,12 +91,49 @@ export default {
       getDisplayValue(datum) {
         return datum.value+SheetDatum.getDisplaySuffix(datum)
       },
+      getAnimationState(datum) {
+        let animationState = this.changedValueAnimations[datum.keyName] 
+        console.log(animationState)
+        if (!animationState || animationState.frame < 1) { return {}}
+
+        return {transform: `scale(${animationState.frame})`}
+      },
       getGroupClass(group) {
         if (!group) { return 'display-cs-group display-cs-group--general' }
         if (group.layout === '2-col') { return 'display-cs-group display-cs-group--two-col' }
         return 'display-cs-group'
       }
     },
+
+    watch : {
+      characterSheet: function(newSheet, oldSheet) {
+        if (!oldSheet.values) {return}
+
+        const changedValues = []
+        const newKeys = []
+        const valueKeys = Object.keys(newSheet.values)
+        let i = 0;
+
+        valueKeys.forEach(key => {
+          if (!oldSheet.values[key] ) {
+            newKeys.push(key)
+            
+            return
+          }
+
+          if (newSheet.values[key].type !== 'list') {
+            if (newSheet.values[key].value != oldSheet.values[key].value) {
+              changedValues.push(key)
+              
+              this.$set(this.changedValueAnimations, key, new ChangedValueAnimation(key).start())
+
+            }
+          }
+          //TO DO - list for changes in a list
+        })
+      }
+    }
+
 }
 </script>
 

@@ -65,7 +65,7 @@ export default {
                 this.$set(this.diceRolls, report.player.playerId, report.data)
             }
             if (report.type === 'CHARACTER_SHEET') {
-                this.$set(this.characterSheets, report.player.playerId, report.data)
+                this.$set(this.characterSheets, report.player.playerId, CharacterSheet.deserialise(report.data))
             }
             if (report.type === 'PLAYER_STATUS_REQUEST') {
                 if (!this.config.amGameMaster) {
