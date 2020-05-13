@@ -4,8 +4,13 @@
 
       <div v-if="!gm">
         <section v-for="(section, index) in groupedData" v-bind:key="index">
-          <h3 v-if="section.group && section.group.label">{{section.group.label}}</h3>
-          <article v-bind:class="getGroupClass(section.group)">
+          <h4 v-if="section.group && section.group.label"
+          @click="()=>{toggleFolder(section.group)}">
+            {{section.group.label}}
+            <span>{{isFolded(section.group) ? '  &#710;' : '  &#711;'}}</span>
+          </h4>
+          <article v-bind:class="getGroupClass(section.group)"
+          v-show="!isFolded(section.group)">
 
             <div class="display-cs-group__datum-wrapper" v-for="(datum, index2) in section.values" v-bind:key="index2">
 
@@ -50,7 +55,6 @@ class ChangedValueAnimation {
     const animation = this
 
     animation.timer = setInterval( function(){
-      console.log(animation.keyName, animation.frame)
       animation.frame -= 1
       if (animation.frame <= 0) {
         clearInterval(animation.timer)
@@ -66,7 +70,8 @@ export default {
 
     data() {
       return {
-        changedValueAnimations: {}
+        changedValueAnimations: {},
+        foldedGroups: [],
       }
     },
 
@@ -93,16 +98,26 @@ export default {
       },
       getAnimationState(datum) {
         let animationState = this.changedValueAnimations[datum.keyName] 
-        console.log(animationState)
         if (!animationState || animationState.frame < 1) { return {}}
-
         return {transform: `scale(${animationState.frame})`}
       },
       getGroupClass(group) {
         if (!group) { return 'display-cs-group display-cs-group--general' }
         if (group.layout === '2-col') { return 'display-cs-group display-cs-group--two-col' }
         return 'display-cs-group'
-      }
+      },
+      toggleFolder(group) {
+        let index = this.foldedGroups.indexOf(group.name)
+        if (index == -1) {
+          this.foldedGroups.push(group.name)
+        } else {
+          this.foldedGroups.splice(index,1)
+        }
+      },
+      isFolded(group) {
+        if (!group) {return false} // accounts for the section made of datums withou groups
+        return this.foldedGroups.indexOf(group.name) !== -1
+      },
     },
 
     watch : {
@@ -124,9 +139,7 @@ export default {
           if (newSheet.values[key].type !== 'list') {
             if (newSheet.values[key].value != oldSheet.values[key].value) {
               changedValues.push(key)
-              
               this.$set(this.changedValueAnimations, key, new ChangedValueAnimation(key).start())
-
             }
           }
           //TO DO - list for changes in a list
