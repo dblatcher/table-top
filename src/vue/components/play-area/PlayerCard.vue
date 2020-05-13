@@ -9,6 +9,8 @@
             {{section.group.label}}
             <span>{{isFolded(section.group) ? '  &#710;' : '  &#711;'}}</span>
           </h4>
+
+          <transition name="fold">
           <article v-bind:class="getGroupClass(section.group)"
           v-show="!isFolded(section.group)">
 
@@ -32,6 +34,8 @@
             </div>
 
           </article>
+          </transition>
+
         </section>
       </div>
 
@@ -152,6 +156,12 @@ export default {
 
 <style scoped>
 
-
+.fold-enter-active, .fold-leave-active {
+  transition: transform .5s;
+  transform-origin: top;
+}
+.fold-enter, .fold-leave-to {
+  transform: scaleY(0);
+}
 
 </style>
