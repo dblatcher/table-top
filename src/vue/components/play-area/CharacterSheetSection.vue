@@ -9,6 +9,7 @@
         <transition name="fold">
         <article v-bind:class="groupClass"
         v-show="!isFolded">
+          <slot>
 
             <div class="display-cs-group__datum-wrapper" v-for="datum in section.values" v-bind:key="datum.keyName">
                 <p class="display-cs-group__datum" v-if="datum.type !=='list'">
@@ -28,6 +29,7 @@
                 </div>
             </div>
 
+          </slot>
         </article>
         </transition>
 
@@ -55,7 +57,7 @@ class ChangedValueAnimation {
 }
 
 export default {
-    props: ['section', 'forLocalPlayer'],
+    props: ['section'],
 
     data() {
         return {

@@ -64,7 +64,7 @@ export default {
                 this.messages.push  (report.player.playerName + " " + report.data.message)
                 this.$set(this.diceRolls, report.player.playerId, report.data)
             }
-            if (report.type === 'CHARACTER_SHEET') {
+            if (report.type === 'CHARACTER_SHEET' && report.data) {
                 this.$set(this.characterSheets, report.player.playerId, CharacterSheet.deserialise(report.data))
             }
             if (report.type === 'PLAYER_STATUS_REQUEST') {
