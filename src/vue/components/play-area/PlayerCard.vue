@@ -3,7 +3,10 @@
       <h2>{{gm? 'GAME MASTER - ': ''}}{{player.playerName}}</h2>
 
       <div v-if="!gm">
-        <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="index" v-bind="{section}"/>
+
+        <folding-panel v-bind="{title:'Character Sheet', holderClass:'bordered', transitionClass:'corner-fold'}">
+          <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="index" v-bind="{section}"/>
+        </folding-panel>
       </div>
 
       <roll-zone v-bind="{rollData, size:40}"/>
@@ -14,10 +17,11 @@
 
 import RollZone from './RollZone.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
+import FoldingPanel from '../FoldingPanel.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 
 export default {
-    components : {RollZone, CharacterSheetSection},
+    components : {RollZone, CharacterSheetSection,FoldingPanel},
     props: ["player", "color","gm","local", "rollData","characterSheet"],
 
     computed : {
