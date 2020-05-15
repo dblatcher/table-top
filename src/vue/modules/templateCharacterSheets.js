@@ -16,7 +16,7 @@ const dungeons = function() {return new CharacterSheet(
         new SheetDatum('items', ['+1 mace', 'iron ration', 'blue key'], {type: 'list', groupName:'inventory'}),
         new SheetDatum('money', ['gold', 'copper',], {type: 'list', quantity:[7,32], groupName:'inventory'}),
     ],[
-        new DataGroup('attributes',{priority:1, layout: '2-col', label:""}),
+        new DataGroup('attributes',{priority:1, layout: '2-col', label:"stats"}),
         new DataGroup('skills',{priority:0}),
         new DataGroup('inventory',{priority:0}),
     ]
@@ -55,7 +55,7 @@ const wrathAndGlory = function() {return new CharacterSheet(
         new SheetDatum('Weapon Skill(I)',0,{type:'number', groupName:'skills'}),
     ],[
         new DataGroup('attributes',{priority:1, layout: '2-col', label:"Attributes"}),
-        new DataGroup('skills',{priority:1, layout: '', label:"Skills", onlyDisplayNonEmpty:true}),
+        new DataGroup('skills',{priority:1, layout: 'full-width', label:"Skills", onlyDisplayNonEmpty:true}),
     ]
 )}
 

@@ -86,6 +86,7 @@ export default {
             const {group} = this.section
             if (!group) { return 'display-cs-group display-cs-group--general' }
             if (group.layout === '2-col') { return 'display-cs-group display-cs-group--two-col' }
+            if (group.layout === 'full-width') { return 'display-cs-group display-cs-group--full-width' }
             return 'display-cs-group'
         }
     },
