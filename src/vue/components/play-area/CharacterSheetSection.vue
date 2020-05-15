@@ -1,43 +1,39 @@
 <template>
   <section>
-        <h4 v-if="section.group && section.group.label"
-        @click="()=>{toggleFolded()}">
-            {{section.group.label}}
-            <span>{{isFolded ? '  &#710;' : '  &#711;'}}</span>
-        </h4>
 
-        <transition name="fold">
-        <article v-bind:class="groupClass"
-        v-show="!isFolded">
-          <slot>
+  <folding-panel v-bind:title="section.group ? section.group.name : false" >
+    <article v-bind:class="groupClass">
+    <slot>
 
-            <div class="display-cs-group__datum-wrapper" v-for="datum in section.values" v-bind:key="datum.keyName">
-                <p class="display-cs-group__datum" v-if="datum.type !=='list'">
-                    <span class="display-cs-group__key">{{datum.name}}:</span> 
-                    <span class="display-cs-group__value" v-bind:style="getAnimationState(datum)">{{getDisplayValue(datum)}}</span>
-                </p>
+      <div class="display-cs-group__datum-wrapper" v-for="datum in section.values" v-bind:key="datum.keyName">
+          <p class="display-cs-group__datum" v-if="datum.type !=='list'">
+              <span class="display-cs-group__key">{{datum.name}}:</span> 
+              <span class="display-cs-group__value" v-bind:style="getAnimationState(datum)">{{getDisplayValue(datum)}}</span>
+          </p>
 
-                <div class="display-cs-group__list-datum" v-if="datum.type ==='list'">
-                    <p class="display-cs-group__key">{{datum.name}}:</p> 
-                    <ul class="display-cs-group__list">
-                        <li class="display-cs-group__value display-cs-group__value--list"
-                        v-for="(item, index) in datum.value" v-bind:key="index">
-                            <span v-if="datum.quantity">{{datum.quantity[index]}}&nbsp;</span>
-                            {{item}}
-                        </li>
-                    </ul>
-                </div>
-            </div>
+          <div class="display-cs-group__list-datum" v-if="datum.type ==='list'">
+              <p class="display-cs-group__key">{{datum.name}}:</p> 
+              <ul class="display-cs-group__list">
+                  <li class="display-cs-group__value display-cs-group__value--list"
+                  v-for="(item, index) in datum.value" v-bind:key="index">
+                      <span v-if="datum.quantity">{{datum.quantity[index]}}&nbsp;</span>
+                      {{item}}
+                  </li>
+              </ul>
+          </div>
+      </div>
 
-          </slot>
-        </article>
-        </transition>
+    </slot>
+    </article>
+  </folding-panel>
+
 
   </section>
 </template>
 
 <script>
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
+import FoldingPanel from "../FoldingPanel.vue";
 
 class ChangedValueAnimation {
   constructor (keyName) {
@@ -57,11 +53,11 @@ class ChangedValueAnimation {
 }
 
 export default {
+    components: {FoldingPanel},
     props: ['section'],
 
     data() {
         return {
-            isFolded: false,
             changedValueAnimations: {},
         }
     },
@@ -69,9 +65,6 @@ export default {
     methods : {
         getDisplayValue(datum) {
             return datum.value+SheetDatum.getDisplaySuffix(datum)
-        },
-        toggleFolded() {
-            this.isFolded = !this.isFolded
         },
         getAnimationState(datum) {
             let animationState = this.changedValueAnimations[datum.keyName]
@@ -81,7 +74,7 @@ export default {
     },
 
     computed: {
-        keyPrefix() {return this.section.group ? this.section.group.name : '__'},
+        keyPrefix() {return this.section.group ? this.section.group.name : '_general_'},
         groupClass() {
             const {group} = this.section
             if (!group) { return 'display-cs-group display-cs-group--general' }
@@ -118,15 +111,3 @@ export default {
 
 }
 </script>
-
-<style scoped>
-
-.fold-enter-active, .fold-leave-active {
-  transition: transform .5s;
-  transform-origin: top;
-}
-.fold-enter, .fold-leave-to {
-  transform: scaleY(0);
-}
-
-</style>

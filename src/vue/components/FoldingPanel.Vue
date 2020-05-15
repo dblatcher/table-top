@@ -1,11 +1,11 @@
 <template>
-  <div v-bind="{class: holderClass}">
-      <h3 @click="toggleFolded" class="title">
+  <div>
+      <h3 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
             {{title}}
             <span>{{isFolded ? '  &#710;' : '  &#711;'}}</span>
         </h3>
       <transition v-bind:name="transitionClass || 'fold'">
-          <div v-show="!isFolded" class="holder">
+          <div v-show="!isFolded" v-bind="{class: holderClass + ' holder'}">
             <slot></slot>
           </div>
       </transition>
@@ -32,11 +32,11 @@ export default {
 
 <style scoped>
 
-    .bordered .title {
+    .bordered.title {
         border-bottom: 3px double black; 
     }
 
-    .bordered .holder {
+    .bordered.holder {
         border-bottom: 3px double black; 
         border-left:  1px solid black; 
         border-right:  1px solid black; 
