@@ -1,9 +1,9 @@
 <template>
   <div>
-      <h3 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
+        <h4 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
             {{title}}
-            <span>{{isFolded ? '  &#710;' : '  &#711;'}}</span>
-        </h3>
+            <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--on' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
+        </h4>
       <transition v-bind:name="transitionClass || 'fold'">
           <div v-show="!isFolded" v-bind="{class: holderClass + ' holder'}">
             <slot></slot>
@@ -32,6 +32,11 @@ export default {
 
 <style scoped>
 
+    .title {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .bordered.title {
         border-bottom: 3px double black; 
     }
@@ -42,6 +47,14 @@ export default {
         border-right:  1px solid black; 
         padding: 5px;
     } 
+
+    .fold-indicator {
+
+    }
+
+    .fold-indicator--on {
+
+    }
 
     .fold-enter-active, .fold-leave-active {
         transition: transform .5s;
