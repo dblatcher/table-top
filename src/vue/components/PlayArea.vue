@@ -12,7 +12,8 @@
       <div class="roll-button-holder">
         <DiceButton @dice-result="reportRoll" dice="20" label="d20"/>
         <DiceButton @dice-result="reportRoll" dice="6,6" label="2d6"/>
-        <DiceButton @dice-result="reportRoll" dice="4,4,4" label="3d4"/>
+        <DiceButton @dice-result="reportRoll" dice="6,6,6,6" label="4d6"/>
+        <DiceButton @dice-result="reportRoll" dice="12,4,8" label="d4 + d8 + d12"/>
       </div>
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
