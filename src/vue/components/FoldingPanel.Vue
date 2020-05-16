@@ -1,13 +1,11 @@
 <template>
   <div>
-        <h4 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
-            {{title}}
-            <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--on' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
-        </h4>
+      <h4 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
+        {{title}}
+        <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--on' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
+      </h4>
       <transition v-bind:name="transitionClass || 'fold'">
-          <div v-show="!isFolded" v-bind="{class: holderClass + ' holder'}">
-            <slot></slot>
-          </div>
+          <div v-show="!isFolded" v-bind="{class: holderClass + ' holder'}"><slot></slot></div>
       </transition>
   </div>
 </template>
