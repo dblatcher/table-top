@@ -2,7 +2,12 @@
   <article v-bind:class="`${color} card`">
       <h2>{{player.playerName}}</h2>
 
-      <folding-panel v-bind="{title:'My Character Sheet', holderClass:'bordered', transitionClass:'corner-fold'}">
+      <folding-panel v-bind="{ title:true, holderClass:'bordered', transitionClass:'corner-fold'}">
+
+        <template v-slot:title>
+          <h3 class="character-sheet-title">{{ currentSheetItemName || 'My Sheet'}}</h3>
+        </template>
+
         <button v-if="currentSheetItemName" @click="()=>{saveSheet(currentSheetItemName)}">save {{currentSheetItemName}}</button>
         <button @click="openSaveSheetDialogue" >save as</button>
         <button @click="openLoadSheetDialogue" >load</button>

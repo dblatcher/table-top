@@ -1,16 +1,17 @@
 <template>
   <div>
-      <h4 v-if="title" @click="toggleFolded" v-bind="{class: holderClass + ' title'}">
-        {{title}}
-        <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--on' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
-      </h4>
+      <div v-if="title" @click="toggleFolded" v-bind="{class: holderClass ? holderClass + ' header' : 'header'}">
+        <slot name="title"><h4 class="header__title">{{title}}</h4></slot>
+        <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--down' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
+      </div>
       <transition v-bind:name="transitionClass || 'fold'">
-          <div v-show="!isFolded" v-bind="{class: holderClass + ' holder'}"><slot></slot></div>
+          <div v-show="!isFolded" v-bind="{class: holderClass ? holderClass + ' holder' : 'holder'}"><slot></slot></div>
       </transition>
   </div>
 </template>
 
 <script>
+
 export default {
     props: ["title", "holderClass", "transitionClass"],
 
@@ -23,6 +24,7 @@ export default {
     methods: {
         toggleFolded() {
             this.isFolded = !this.isFolded
+            this.$emit('is-folded', this.isFolded)
         }
     }
 }
@@ -30,12 +32,18 @@ export default {
 
 <style scoped>
 
-    .title {
+    .header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
+        align-items: center;
+        cursor: pointer;
     }
 
-    .bordered.title {
+    .header__title {
+        margin: 0;
+    }
+
+    .bordered.header {
         border-bottom: 3px double black; 
     }
 
@@ -47,10 +55,11 @@ export default {
     } 
 
     .fold-indicator {
+        margin-left: auto;
 
     }
 
-    .fold-indicator--on {
+    .fold-indicator--down {
 
     }
 

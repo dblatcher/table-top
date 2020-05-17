@@ -5,6 +5,9 @@
       <div v-if="!gm">
 
         <folding-panel v-bind="{title:'Character Sheet', holderClass:'bordered', transitionClass:'corner-fold'}">
+          <template v-slot:title>
+            <h3 class="character-sheet-title">{{'Character Sheet'}}</h3>
+          </template>
           <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="index" v-bind="{section}"/>
         </folding-panel>
       </div>
