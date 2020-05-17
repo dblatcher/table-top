@@ -2,7 +2,7 @@
   <div>
       <div v-if="title" @click="toggleFolded" v-bind="{class: holderClass ? holderClass + ' header' : 'header'}">
         <slot name="title"><h4 class="header__title">{{title}}</h4></slot>
-        <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--down' : 'fold-indicator'">{{isFolded ? '  &#711;' : '  &#710;'}}</span>
+        <span v-bind:class="isFolded ? 'fold-indicator fold-indicator--down' : 'fold-indicator'">&#8679;</span>
       </div>
       <transition v-bind:name="transitionClass || 'fold'">
           <div v-show="!isFolded" v-bind="{class: holderClass ? holderClass + ' holder' : 'holder'}"><slot></slot></div>
@@ -56,11 +56,11 @@ export default {
 
     .fold-indicator {
         margin-left: auto;
-
+        transition: transform .5s;
     }
 
     .fold-indicator--down {
-
+        transform: rotate(180deg);
     }
 
     .fold-enter-active, .fold-leave-active {
