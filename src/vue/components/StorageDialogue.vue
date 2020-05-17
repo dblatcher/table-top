@@ -6,48 +6,74 @@
             <div  @click="$emit('close')" class="close-button">X</div> 
         </div> 
 
-            <ul class="storage-list">
-                <li v-for="(itemName, index) in itemNames" v-bind:key="index">
-                    <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
-                    <div @click="() => {handleDeleteButtonClick(itemName)}">x</div>
-                </li>
-            </ul>
+        <ul class="storage-list">
+            <li v-for="(itemName, index) in itemNameList" v-bind:key="index">
+                <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
+                <div @click="() => {handleDeleteButtonClick(itemName)}">x</div>
+            </li>
+        </ul>
 
-            <form v-if="action === 'save'" @submit="handleSubmit">
-                <input v-model="newItemName"/>
-                <input type="submit" v-bind:value="action"/>
-            </form>
+        <form v-if="action === 'save'" @submit="handleSaveButton">
+            <input v-model="newItemName"/>
+            <input type="submit" value="save"/>
+        </form>
       </div>
     </aside>
 </template>
 
 <script>
+import * as storage from "../modules/storage";
+
 export default {
-    props: ['isOpen', 'title', 'itemNames', "action"],
+    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave'],
 
     data() {
         return {
-            newItemName: ''
+            newItemName: '',
+            itemNameList: storage.getItemNames(this.folderName),
         }
     },
 
     methods: {
-        handleSubmit(event) {
+
+        refreshItemNameList() {
+            this.itemNameList.splice(0, this.itemNameList.length, ...storage.getItemNames(this.folderName))
+        },
+
+        handleSaveButton(event) {
             event.preventDefault()
-            this.$emit('item-name-choice', this.newItemName)
+            // to do - confirm overwrites before proceeding
+            // to do - santise / validate save names?
+            if (!this.newItemName) {return false}
+            storage.save(this.folderName,this.newItemName, this.dataToSave)
+            this.refreshItemNameList()
+            this.$emit('item-save', this.newItemName)
         },
 
         handleDeleteButtonClick(itemName) {
-            this.$emit('item-delete-request', itemName)
+            storage.clear(this.folderName, itemName)
+            this.refreshItemNameList()
+            this.$emit('item-delete', itemName)
         },
 
         handleItemNameClick(itemName) {
-            this.newItemName = itemName
-            if (this.action !== 'save') {
-                this.$emit('item-name-choice', this.newItemName)
+
+            if (this.action === 'save') {
+                this.newItemName = itemName
+            }
+
+            if (this.action === 'load') {
+                this.newItemName = itemName
+                let item = storage.load(this.folderName, itemName)
+                if (!item) {
+                    alert('DID NOT FIND ITEM', itemName)
+                    return false
+                }
+                this.$emit('item-load', {itemName, item})
             }
         },
-    }
+    },
+
 }
 </script>
 

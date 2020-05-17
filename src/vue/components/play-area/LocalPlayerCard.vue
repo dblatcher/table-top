@@ -49,8 +49,9 @@
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
-      @item-delete-request="deleteSavedSheet"
-      @item-name-choice="handleStorageAction"/>
+      @item-delete="handleDeletedSheet"
+      @item-load="handleLoadedSheet"
+      @item-save="handleSavedSheet"/>
   </article>
 </template>
 
@@ -58,7 +59,7 @@
 
 import RollZone from './RollZone.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
-import * as storage from "../../modules/storage";
+import {save as storageSave} from "../../modules/storage";
 import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
@@ -73,6 +74,7 @@ export default {
             localCharacterSheet: this.characterSheet,
             storageDialogueProps: {
               isOpen: false,
+              folderName: 'storedSheets',
             },
             currentSheetItemName: undefined
         }
@@ -90,16 +92,18 @@ export default {
           this.$emit('update-character-sheet', this.localCharacterSheet)
         },
 
-        handleStorageAction(itemName) {
-          if (!itemName) {return false}
+        handleLoadedSheet(payload) {
+          const {item, itemName} = payload;
+          if (!itemName || !item) {return false}
           this.storageDialogueProps.isOpen = false
+          this.localCharacterSheet = CharacterSheet.deserialise( item )
+          this.currentSheetItemName = itemName
+          this.handleUpdate()
+        },
 
-          if (this.storageDialogueProps.action === 'save') {
-            this.saveSheet(itemName)
-          }
-          if (this.storageDialogueProps.action === 'load') {
-            this.loadSheet(itemName)
-          }
+        handleSavedSheet(itemName) {
+          this.storageDialogueProps.isOpen = false
+          this.currentSheetItemName = itemName
         },
 
         handleListItemQuantityChange(event, datum) {
@@ -124,12 +128,17 @@ export default {
           this.handleUpdate();
         },
 
+        handleDeletedSheet(itemName) {
+          if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
+        },
+
         openSaveSheetDialogue() {
           this.storageDialogueProps = {
               isOpen: true,
               title: 'Save Sheet',
-              itemNames: storage.getItemNames('storedSheets'),
-              action: 'save'
+              action: 'save',
+              folderName: 'storedSheets',
+              dataToSave: this.localCharacterSheet.serialise(),
           }
         },
 
@@ -137,32 +146,14 @@ export default {
           this.storageDialogueProps = {
               isOpen: true,
               title: 'Load Sheet',
-              itemNames: storage.getItemNames('storedSheets'),
-              action: 'load'
+              action: 'load',
+              folderName: 'storedSheets',
           }
         },
 
         saveSheet(itemName) {
-          storage.save('storedSheets',itemName, this.localCharacterSheet.serialise())
-          this.storageDialogueProps.itemNames = storage.getItemNames('storedSheets')
+          storageSave('storedSheets',itemName, this.localCharacterSheet.serialise())
           this.currentSheetItemName = itemName
-        },
-
-        deleteSavedSheet(itemName) {
-          storage.clear('storedSheets', itemName)
-          if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
-          this.storageDialogueProps.itemNames = storage.getItemNames('storedSheets')
-        },
-
-        loadSheet(itemName) {
-          let item = storage.load('storedSheets', itemName)
-          if (!itemName) {
-            alert('DID NOT FIND SHEET', itemName)
-            return false
-          }
-          this.localCharacterSheet = CharacterSheet.deserialise( item )
-          this.currentSheetItemName = itemName
-          this.handleUpdate()
         },
 
         cancelStorageAction() {
