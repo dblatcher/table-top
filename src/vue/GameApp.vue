@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <h2>{{config.gameName}}</h2>
+    <header>
+      <h2>{{config.gameName}}</h2>
+      <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}" ref="headerDie"/>
+    </header>
 
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
     @submit="requestEntry" 
@@ -15,7 +18,7 @@
     <play-area v-if="hasEnteredGame"
     v-bind="{displayName, socket, playerId, gameState, config}"/>
 
-    <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}"/>
+
 
     <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
       <div class="modal-content">
@@ -116,6 +119,12 @@ export default {
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('game-closed', this.handleGameClosing );
 
+    const headerDieControl = this.$refs.headerDie.shape.constant
+    headerDieControl.turnVector.x = -1;
+    headerDieControl.turnVector.y = 3;
+    headerDieControl.turnVector.z = 0;
+    headerDieControl.go();
+
     if (this.config.amGamemaster) {
       this.socket.emit('gm-enter-game', {
         gameMasterId: this.config.gameMasterId,
@@ -128,6 +137,18 @@ export default {
 </script>
 
 <style>
+
+  #app>header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: -1em;
+    padding-right: 2em;
+  }
+
+  #app>header>h2 {
+    margin: 0;
+  }
 
   .roll-button-holder {
     display: flex;
