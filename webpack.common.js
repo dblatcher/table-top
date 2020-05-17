@@ -7,6 +7,7 @@ module.exports = {
         game: './src/scss/game.scss',
         homepage: './src/js/homepage.js',
         gamepage: './src/js/gamepage.js',
+        sheetspage: './src/js/sheetspage.js',
     },
 
     module: {
