@@ -13,11 +13,11 @@
 <script>
 
 export default {
-    props: ["title", "holderClass", "transitionClass"],
+    props: ["title", "holderClass", "transitionClass", "startFolded"],
 
     data() {
         return{
-            isFolded: false,
+            isFolded: !!this.startFolded && !!this.title,
         }
     },
 

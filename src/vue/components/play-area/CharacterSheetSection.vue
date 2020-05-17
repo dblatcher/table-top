@@ -1,7 +1,7 @@
 <template>
   <section>
 
-  <folding-panel v-bind:title="section.group ? section.group.name : false" >
+  <folding-panel v-bind="{title: section.group ? section.group.name : false, startFolded:true}" >
     <article v-bind:class="groupClass">
     <slot>
 
