@@ -43,6 +43,14 @@ export default {
         margin: 0;
     }
 
+    .editor {
+        max-width: 32rem;
+    }
+
+    .editor.header {
+        margin-top: .5em;
+    }
+
     .bordered.header {
         border-bottom: 3px double black; 
     }

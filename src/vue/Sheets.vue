@@ -2,47 +2,80 @@
   <div>
       <h2>Sheets App</h2>
 
-        <div class="widget">
-        <article class="frame">
-            <h3>values</h3>
 
-            <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="'_'+index" v-bind="{section}">
-            <div class="display-cs-group__datum-wrapper" v-for="(datum, index2) in section.values" v-bind:key="index2">
+      <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
+      v-bind="{title: section.group ? section.group.name : '[main]', holderClass: 'editor'}">
 
-                <span class="display-cs-group__datum" 
-                v-if="datum.type ==='string'" >
-                <span class="display-cs-group__key">{{datum.name}}:</span> 
-                <input class="display-cs-group__value" @change="handleUpdate" type="text" v-model="datum.value"/>
-                </span>
+        <table>
 
-                <span class="display-cs-group__datum"
-                v-if="datum.type ==='number'">
-                <span class="display-cs-group__key">{{datum.name}}:</span> 
-                <span class="display-cs-group__value">
-                    <input @change="handleUpdate" type="number" v-model="datum.value"/>
-                    <span v-if="typeof datum.max !== 'undefined'">
-                    &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+          <thead v-if="section.group">
+            <tr >
+              <td colspan="2">
+                <span>label:</span>
+              </td>
+              <td >
+                <input @change="handleUpdate" type="text" v-model="section.group.label"/>
+              </td>
+            </tr>
+            <tr >
+              <td colspan="2">
+                <span>don't display empty:</span>
+              </td>
+              <td>
+                <input @change="handleUpdate" type="checkbox" v-model="section.group.onlyDisplayNonEmpty"/>
+              </td>
+            </tr>
+          </thead>
+
+          <tr v-for="(datum, index2) in section.values" v-bind:key="index2">
+
+            <td>
+              <span>{{datum.name}}:</span> 
+            </td>
+
+            <td>
+              <div>
+
+                  <span v-if="datum.type ==='string'" >
+                    <input @change="handleUpdate" type="text" v-model="datum.value"/>
+                  </span>
+
+                  <span v-if="datum.type ==='number'">
+                    <span >
+                        <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                        <span v-if="typeof datum.max !== 'undefined'">
+                        &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                        </span>
                     </span>
-                </span>
-                </span>
+                  </span>
 
-                <list-control  v-if="datum.type ==='list'"
-                @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
-                @change-item="(event)=>{handleListItemChange(event, datum)}" 
-                @delete-item="(event)=>{handleListItemDelete(event, datum)}"
-                @new-item="(event)=>{handleListItemAdd(datum)}"
-                v-bind="{datum}"/>
-            </div>
-            </character-sheet-section>
+                  <list-control  v-if="datum.type ==='list'"
+                  @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
+                  @change-item="(event)=>{handleListItemChange(event, datum)}" 
+                  @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+                  @new-item="(event)=>{handleListItemAdd(datum)}"
+                  v-bind="{datum}"/>
+              </div>
+            </td>
 
-        
-        </article>
+            <td>
+              <div>
+                {{datum.type}}
+              </div>
+            </td>
 
-        <article class="frame"> 
-            <h3>edit</h3>
-        </article>
-        
-        </div>
+          </tr>
+
+
+          <tr>
+            <td colspan="3">
+              <span>Add new value</span>
+            </td>
+          </tr>
+
+        </table>
+
+      </folding-panel>
 
       <storage-dialogue v-bind="storageDialogueProps"/>
   </div>
@@ -53,13 +86,14 @@
 import StorageDialogue from "./components/StorageDialogue.vue";
 import CharacterSheetSection from "./components/play-area/CharacterSheetSection.vue"
 import ListControl from "./components/play-area/ListControl.vue"
+import FoldingPanel from "./components/FoldingPanel.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
 
 
 export default {
-    components: {StorageDialogue, CharacterSheetSection, ListControl},
+    components: {StorageDialogue, CharacterSheetSection, ListControl, FoldingPanel},
     props: ["config"],
 
     data() {
@@ -109,15 +143,18 @@ export default {
 
 <style scoped>
 
-    .widget {
-        display: flex;
-        flex-wrap: wrap;
-    }
+  table {
+    width: 100%;
+  }
 
-    .frame {
-        min-width: 8rem;
-        width: 50%;
-        max-width: 14rem;
-    }
+  td {
+    padding: .2em;
+    border: 1px dashed blue;
+  }
+
+  thead>tr:last-child td {
+    border-bottom: 2px solid blue;
+  }
+
 
 </style>
