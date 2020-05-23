@@ -72,7 +72,7 @@
 
             <td>
               <div>
-                <select @change="handleUpdate" v-model="datum.type">
+                <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
                     <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
                     >{{optionName}}</option>
                 </select>
@@ -135,8 +135,47 @@ export default {
     },
 
     methods : {
+
+        handleTypeChange(datum) {
+          console.log ('handleTypeChange', datum)
+
+          //will create new type number_with_max (or similar)
+          //will create new type qunatified_list (or similar)
+          let oldType;
+
+          switch (typeof datum.value) {
+            case 'number' :
+              oldType = 'number'
+              break;
+            case 'string' :
+              oldType = 'string'
+              break;
+            case 'object' :
+              oldType = 'list'
+              break;
+          }
+
+          console.log(`value is a ${oldType}, type is now ${datum.type}`)
+
+          switch (datum.type) {
+            case 'number' :
+              datum.value = 1
+              if (datum.max) { datum.max = 5}
+              break;
+            case 'string' :
+              datum.value = datum.value.toString()
+              break;
+            case 'list' :
+              datum.value= [datum.value]
+              if (datum.quantity) { datum.quantity = [1]}
+              break;
+          }
+
+          this.handleUpdate();
+        },
+
         handleUpdate(event) {
-          console.log(event)
+          console.log('update', event)
         },
 
         handleListItemQuantityChange(event, datum) {
