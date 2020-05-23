@@ -4,7 +4,7 @@
 
 
       <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
-      v-bind="{title: section.group ? section.group.name : '[main]', holderClass: 'editor'}">
+      v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
 
         <table>
 
@@ -23,6 +23,18 @@
               </td>
               <td>
                 <input @change="handleUpdate" type="checkbox" v-model="section.group.onlyDisplayNonEmpty"/>
+              </td>
+            </tr>
+            
+            <tr >
+              <td colspan="2">
+                <span>layout</span>
+              </td>
+              <td>
+                <select @change="handleUpdate" v-model="section.group.layout">
+                    <option v-for="(optionName, index) in layoutOptions" v-bind:key="optionName+index" 
+                    >{{optionName}}</option>
+                </select>
               </td>
             </tr>
           </thead>
@@ -60,7 +72,10 @@
 
             <td>
               <div>
-                {{datum.type}}
+                <select @change="handleUpdate" v-model="datum.type">
+                    <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
+                    >{{optionName}}</option>
+                </select>
               </div>
             </td>
 
@@ -109,11 +124,19 @@ export default {
     computed : {
       groupedData() {
         return CharacterSheet.groupedData(this.localCharacterSheet)
+      },
+      layoutOptions() {
+        return DataGroup.layoutOptions
+      },
+      datumTypeOptions() {
+        return SheetDatum.validTypes
       }
+      
     },
 
     methods : {
         handleUpdate(event) {
+          console.log(event)
         },
 
         handleListItemQuantityChange(event, datum) {

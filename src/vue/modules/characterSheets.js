@@ -1,5 +1,6 @@
 
 const validDatumValueTypes = ['string', 'number', 'list']
+const validGroupLayouts = ['2-col', 'full-width']
 const keyPrefix = 'k_'
 
 class SheetDatum {
@@ -40,6 +41,10 @@ class SheetDatum {
         }
         return ''
     }
+
+    static get validTypes () {
+        return validDatumValueTypes
+    }
 }
 
 class DataGroup {
@@ -47,7 +52,7 @@ class DataGroup {
         this.name = name
         this.label = typeof config.label !== 'undefined' ?  config.label : name
         this.priority = config.priority || 0
-        this.layout = config.layout
+        this.layout = config.layout || '[default]'
         this.onlyDisplayNonEmpty = config.onlyDisplayNonEmpty
     }
     get keyName() {return keyPrefix + this.name}
@@ -62,6 +67,10 @@ class DataGroup {
         const group =  new DataGroup( serialisedGroup.name, serialisedGroup )
         return group
     }
+
+    static get layoutOptions() {
+        return  ['[default]'].concat(validGroupLayouts)
+    } 
 }
 
 class CharacterSheet {
