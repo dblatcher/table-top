@@ -1,8 +1,10 @@
 <template>
   <div>
-      <h2>Sheets App</h2>
+      <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
       <button @click="undo">undo {{history.length -1}}</button>
+      <button @click="openSaveSheetDialogue">save as</button>
+      <button @click="openLoadSheetDialogue">load</button>
 
       <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
       v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
@@ -93,14 +95,17 @@
 
       </folding-panel>
 
-      <storage-dialogue v-bind="storageDialogueProps"/>
+      <storage-dialogue v-bind="storageDialogueProps" 
+      @close="cancelStorageAction" 
+      @item-delete="handleDeletedSheet"
+      @item-load="handleLoadedSheet"
+      @item-save="handleSavedSheet"/>
   </div>
 </template>
 
 <script>
 
 import StorageDialogue from "./components/StorageDialogue.vue";
-import CharacterSheetSection from "./components/play-area/CharacterSheetSection.vue"
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 
@@ -109,15 +114,16 @@ import * as templates from "./modules/templateCharacterSheets"
 
 
 export default {
-    components: {StorageDialogue, CharacterSheetSection, ListControl, FoldingPanel},
+    components: {StorageDialogue, ListControl, FoldingPanel},
     props: ["config"],
 
     data() {
 
-        const newSheet = templates.dungeons()
+        const newSheet = templates.wrathAndGlory()
 
         return {
             localCharacterSheet: newSheet,
+            currentSheetItemName: undefined,
             history: [newSheet.clone()],
             storageDialogueProps :{
                 isOpen: false,
@@ -205,6 +211,50 @@ export default {
           if (datum.quantity) {datum.quantity.push(1)}
           this.handleUpdate();
         },
+
+
+        openSaveSheetDialogue() {
+          this.storageDialogueProps = {
+              isOpen: true,
+              title: 'Save Sheet',
+              action: 'save',
+              folderName: 'storedSheets',
+              dataToSave: this.localCharacterSheet.serialise(),
+          }
+        },
+
+        openLoadSheetDialogue() {
+          this.storageDialogueProps = {
+              isOpen: true,
+              title: 'Load Sheet',
+              action: 'load',
+              folderName: 'storedSheets',
+          }
+        },
+
+        handleDeletedSheet(itemName) {
+          if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
+        },
+
+        cancelStorageAction() {
+          this.storageDialogueProps.isOpen = false
+        },
+
+
+        handleLoadedSheet(payload) {
+          const {item, itemName} = payload;
+          if (!itemName || !item) {return false}
+          this.storageDialogueProps.isOpen = false
+          this.localCharacterSheet = CharacterSheet.deserialise( item )
+          this.currentSheetItemName = itemName
+          this.handleUpdate()
+        },
+
+        handleSavedSheet(itemName) {
+          this.storageDialogueProps.isOpen = false
+          this.currentSheetItemName = itemName
+        },
+
 
         undo() {
           if (this.history.length <= 1) { // history[0] is the clone of the current state
