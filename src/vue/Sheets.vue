@@ -2,6 +2,7 @@
   <div>
       <h2>Sheets App</h2>
 
+      <button @click="undo">undo {{history.length -1}}</button>
 
       <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
       v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
@@ -112,8 +113,12 @@ export default {
     props: ["config"],
 
     data() {
+
+        const newSheet = templates.dungeons()
+
         return {
-            localCharacterSheet: templates.dungeons(),
+            localCharacterSheet: newSheet,
+            history: [newSheet.clone()],
             storageDialogueProps :{
                 isOpen: false,
                 folderName: "storedSheets"
@@ -175,7 +180,8 @@ export default {
         },
 
         handleUpdate(event) {
-          console.log('update', event)
+          this.history.push(this.localCharacterSheet.clone())
+          console.log('update', this.history.length)
         },
 
         handleListItemQuantityChange(event, datum) {
@@ -199,6 +205,18 @@ export default {
           if (datum.quantity) {datum.quantity.push(1)}
           this.handleUpdate();
         },
+
+        undo() {
+          if (this.history.length <= 1) { // history[0] is the clone of the current state
+            console.log('no history to undo to')
+            return false
+          }
+
+          // remove copy of current
+          this.history.pop() 
+          // copy the previous history item as new current 
+          this.localCharacterSheet = this.history[this.history.length - 1].clone();
+        }
     }
 }
 </script>

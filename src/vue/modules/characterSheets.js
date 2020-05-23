@@ -151,6 +151,10 @@ class CharacterSheet {
         return output
     }
 
+    clone () {
+        return CharacterSheet.deserialise(this.serialise())
+    }
+
     toJson () {
         return JSON.stringify(this.serialise())
     }
