@@ -58,12 +58,19 @@
 <script>
 
 import RollZone from './RollZone.vue'
-import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
-import {save as storageSave} from "../../modules/storage";
 import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
 import FoldingPanel from '../FoldingPanel.vue'
+
+import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
+import {save as storageSave} from "../../modules/storage";
+import {
+  handleListItemQuantityChange, 
+  handleListItemChange,
+  handleListItemDelete,
+  handleListItemAdd,
+} from "../../modules/listControlMethods"
 
 
 export default {
@@ -106,28 +113,6 @@ export default {
           this.currentSheetItemName = itemName
         },
 
-        handleListItemQuantityChange(event, datum) {
-          datum.quantity[event.index] = Number(event.newValue)
-          this.handleUpdate();
-        },
-
-        handleListItemChange(event, datum) {
-          datum.value[event.index] = event.newValue
-          this.handleUpdate();
-        },
-
-        handleListItemDelete(event, datum) {
-          datum.value.splice(event.index,1)
-          if (datum.quantity) {datum.quantity.splice(event.index,1)}
-          this.handleUpdate();
-        },
-
-        handleListItemAdd(datum) {
-          datum.value.push('')
-          if (datum.quantity) {datum.quantity.push(1)}
-          this.handleUpdate();
-        },
-
         handleDeletedSheet(itemName) {
           if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
         },
@@ -158,7 +143,12 @@ export default {
 
         cancelStorageAction() {
           this.storageDialogueProps.isOpen = false
-        }
+        },
+
+        handleListItemQuantityChange, 
+        handleListItemChange,
+        handleListItemDelete,
+        handleListItemAdd,
     },
 
     mounted() {

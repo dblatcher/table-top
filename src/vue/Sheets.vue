@@ -111,6 +111,12 @@ import FoldingPanel from "./components/FoldingPanel.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
+import {
+  handleListItemQuantityChange, 
+  handleListItemChange,
+  handleListItemDelete,
+  handleListItemAdd,
+} from "./modules/listControlMethods"
 
 
 export default {
@@ -147,126 +153,108 @@ export default {
 
     methods : {
 
-        handleTypeChange(datum) {
-          console.log ('handleTypeChange', datum)
+      handleTypeChange(datum) {
+        console.log ('handleTypeChange', datum)
 
-          //will create new type number_with_max (or similar)
-          //will create new type qunatified_list (or similar)
-          let oldType;
+        //will create new type number_with_max (or similar)
+        //will create new type qunatified_list (or similar)
+        let oldType;
 
-          switch (typeof datum.value) {
-            case 'number' :
-              oldType = 'number'
-              break;
-            case 'string' :
-              oldType = 'string'
-              break;
-            case 'object' :
-              oldType = 'list'
-              break;
-          }
-
-          console.log(`value is a ${oldType}, type is now ${datum.type}`)
-
-          switch (datum.type) {
-            case 'number' :
-              datum.value = 1
-              if (datum.max) { datum.max = 5}
-              break;
-            case 'string' :
-              datum.value = datum.value.toString()
-              break;
-            case 'list' :
-              datum.value= [datum.value]
-              if (datum.quantity) { datum.quantity = [1]}
-              break;
-          }
-
-          this.handleUpdate();
-        },
-
-        handleUpdate(event) {
-          this.history.push(this.localCharacterSheet.clone())
-          console.log('update', this.history.length)
-        },
-
-        handleListItemQuantityChange(event, datum) {
-          datum.quantity[event.index] = Number(event.newValue)
-          this.handleUpdate();
-        },
-
-        handleListItemChange(event, datum) {
-          datum.value[event.index] = event.newValue
-          this.handleUpdate();
-        },
-
-        handleListItemDelete(event, datum) {
-          datum.value.splice(event.index,1)
-          if (datum.quantity) {datum.quantity.splice(event.index,1)}
-          this.handleUpdate();
-        },
-
-        handleListItemAdd(datum) {
-          datum.value.push('')
-          if (datum.quantity) {datum.quantity.push(1)}
-          this.handleUpdate();
-        },
-
-
-        openSaveSheetDialogue() {
-          this.storageDialogueProps = {
-              isOpen: true,
-              title: 'Save Sheet',
-              action: 'save',
-              folderName: 'storedSheets',
-              dataToSave: this.localCharacterSheet.serialise(),
-          }
-        },
-
-        openLoadSheetDialogue() {
-          this.storageDialogueProps = {
-              isOpen: true,
-              title: 'Load Sheet',
-              action: 'load',
-              folderName: 'storedSheets',
-          }
-        },
-
-        handleDeletedSheet(itemName) {
-          if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
-        },
-
-        cancelStorageAction() {
-          this.storageDialogueProps.isOpen = false
-        },
-
-
-        handleLoadedSheet(payload) {
-          const {item, itemName} = payload;
-          if (!itemName || !item) {return false}
-          this.storageDialogueProps.isOpen = false
-          this.localCharacterSheet = CharacterSheet.deserialise( item )
-          this.currentSheetItemName = itemName
-          this.handleUpdate()
-        },
-
-        handleSavedSheet(itemName) {
-          this.storageDialogueProps.isOpen = false
-          this.currentSheetItemName = itemName
-        },
-
-
-        undo() {
-          if (this.history.length <= 1) { // history[0] is the clone of the current state
-            console.log('no history to undo to')
-            return false
-          }
-
-          // remove copy of current
-          this.history.pop() 
-          // copy the previous history item as new current 
-          this.localCharacterSheet = this.history[this.history.length - 1].clone();
+        switch (typeof datum.value) {
+          case 'number' :
+            oldType = 'number'
+            break;
+          case 'string' :
+            oldType = 'string'
+            break;
+          case 'object' :
+            oldType = 'list'
+            break;
         }
+
+        console.log(`value is a ${oldType}, type is now ${datum.type}`)
+
+        switch (datum.type) {
+          case 'number' :
+            datum.value = 1
+            if (datum.max) { datum.max = 5}
+            break;
+          case 'string' :
+            datum.value = datum.value.toString()
+            break;
+          case 'list' :
+            datum.value= [datum.value]
+            if (datum.quantity) { datum.quantity = [1]}
+            break;
+        }
+
+        this.handleUpdate();
+      },
+
+      handleUpdate(event) {
+        this.history.push(this.localCharacterSheet.clone())
+        console.log('update', this.history.length)
+      },
+
+      handleListItemQuantityChange, 
+      handleListItemChange,
+      handleListItemDelete,
+      handleListItemAdd,
+
+      openSaveSheetDialogue() {
+        this.storageDialogueProps = {
+            isOpen: true,
+            title: 'Save Sheet',
+            action: 'save',
+            folderName: 'storedSheets',
+            dataToSave: this.localCharacterSheet.serialise(),
+        }
+      },
+
+      openLoadSheetDialogue() {
+        this.storageDialogueProps = {
+            isOpen: true,
+            title: 'Load Sheet',
+            action: 'load',
+            folderName: 'storedSheets',
+        }
+      },
+
+      handleDeletedSheet(itemName) {
+        if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
+      },
+
+      cancelStorageAction() {
+        this.storageDialogueProps.isOpen = false
+      },
+
+
+      handleLoadedSheet(payload) {
+        const {item, itemName} = payload;
+        if (!itemName || !item) {return false}
+        this.storageDialogueProps.isOpen = false
+        this.localCharacterSheet = CharacterSheet.deserialise( item )
+        this.currentSheetItemName = itemName
+        this.handleUpdate()
+      },
+
+      handleSavedSheet(itemName) {
+        this.storageDialogueProps.isOpen = false
+        this.currentSheetItemName = itemName
+      },
+
+
+      undo() {
+        if (this.history.length <= 1) { // history[0] is the clone of the current state
+          console.log('no history to undo to')
+          return false
+        }
+
+        // remove copy of current
+        this.history.pop() 
+        // copy the previous history item as new current 
+        this.localCharacterSheet = this.history[this.history.length - 1].clone();
+      }
     }
 }
 </script>
