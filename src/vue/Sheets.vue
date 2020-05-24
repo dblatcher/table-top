@@ -64,7 +64,7 @@
                     </span>
                   </span>
 
-                  <list-control  v-if="datum.type ==='list'"
+                  <list-control  v-if="datum.isListType"
                   @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
                   @change-item="(event)=>{handleListItemChange(event, datum)}" 
                   @delete-item="(event)=>{handleListItemDelete(event, datum)}"
@@ -154,24 +154,9 @@ export default {
     methods : {
 
       handleTypeChange(datum) {
-        console.log ('handleTypeChange', datum)
-
         //will create new type number_with_max (or similar)
-        //will create new type qunatified_list (or similar)
-        let oldType;
 
-        switch (typeof datum.value) {
-          case 'number' :
-            oldType = 'number'
-            break;
-          case 'string' :
-            oldType = 'string'
-            break;
-          case 'object' :
-            oldType = 'list'
-            break;
-        }
-
+        let oldType = this.history[this.history.length-1].values[datum.keyName].type
         console.log(`value is a ${oldType}, type is now ${datum.type}`)
 
         switch (datum.type) {
@@ -179,12 +164,27 @@ export default {
             datum.value = 1
             if (datum.max) { datum.max = 5}
             break;
+
           case 'string' :
             datum.value = datum.value.toString()
             break;
+
           case 'list' :
-            datum.value= [datum.value]
-            if (datum.quantity) { datum.quantity = [1]}
+            if (oldType === 'QUANTIFIED_LIST') {
+              datum.quantity = undefined
+              this.$set(datum,'quantity',undefined)
+            } else {
+              datum.value= [datum.value]
+            }
+            break;
+
+          case 'QUANTIFIED_LIST' :
+            if (oldType === 'list') {
+              this.$set(datum,'quantity',datum.value.map(item => 1))
+            } else {
+              datum.value= [datum.value]
+              this.$set(datum,'quantity',[1])
+            }
             break;
         }
 
@@ -193,7 +193,6 @@ export default {
 
       handleUpdate(event) {
         this.history.push(this.localCharacterSheet.clone())
-        console.log('update', this.history.length)
       },
 
       handleListItemQuantityChange, 

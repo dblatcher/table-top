@@ -6,12 +6,12 @@
     <slot>
 
       <div class="display-cs-group__datum-wrapper" v-for="datum in section.values" v-bind:key="datum.keyName">
-          <p class="display-cs-group__datum" v-if="datum.type !=='list'">
+          <p class="display-cs-group__datum" v-if="!datum.isListType">
               <span class="display-cs-group__key">{{datum.name}}:</span> 
               <span class="display-cs-group__value" v-bind:style="getAnimationState(datum)">{{getDisplayValue(datum)}}</span>
           </p>
 
-          <div class="display-cs-group__list-datum" v-if="datum.type ==='list'">
+          <div class="display-cs-group__list-datum" v-if="datum.isListType">
               <p class="display-cs-group__key">{{datum.name}}:</p> 
               <ul class="display-cs-group__list">
                   <li class="display-cs-group__value display-cs-group__value--list"
@@ -98,7 +98,7 @@ export default {
             return
           }
 
-          if (newSheet.values[key].type !== 'list') {
+          if ( !newSheet.values[key].isListType ) {
             if (newSheet.values[key].value != oldSheet.values[key].value) {
               changedValues.push(newSheet.values[key].keyName)
               this.$set(this.changedValueAnimations, newSheet.values[key].keyName, new ChangedValueAnimation(key).start())

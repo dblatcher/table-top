@@ -34,7 +34,7 @@
               </span>
             </span>
 
-            <list-control  v-if="datum.type ==='list'"
+            <list-control  v-if="datum.isListType"
             @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
             @change-item="(event)=>{handleListItemChange(event, datum)}" 
             @delete-item="(event)=>{handleListItemDelete(event, datum)}"

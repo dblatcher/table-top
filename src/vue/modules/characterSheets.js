@@ -1,5 +1,5 @@
 
-const validDatumValueTypes = ['string', 'number', 'list']
+const validDatumValueTypes = ['string', 'number', 'list', 'QUANTIFIED_LIST']
 const validGroupLayouts = ['2-col', 'full-width']
 const keyPrefix = 'k_'
 
@@ -15,11 +15,13 @@ class SheetDatum {
             this.max = config.max
         }
 
-        if (this.type === 'list' && config.quantity) {
-            this.quantity = config.quantity
+        if (this.type === 'QUANTIFIED_LIST') {
+            this.quantity = config.quantity || value.map(item => 1)
         }
     }
     get keyName() {return keyPrefix + this.name}
+
+    get isListType() { return (this.type === 'list' || this.type === 'QUANTIFIED_LIST') }
 
     serialise() {
         const keysToLeaveOut = ['group']

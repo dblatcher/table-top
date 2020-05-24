@@ -14,7 +14,7 @@ const dungeons = function() {return new CharacterSheet(
         new SheetDatum('bluff','okay', {groupName:'skills'} ),
         new SheetDatum('repair','great', {groupName:'skills'} ),
         new SheetDatum('items', ['+1 mace', 'iron ration', 'blue key'], {type: 'list', groupName:'inventory'}),
-        new SheetDatum('money', ['gold', 'copper',], {type: 'list', quantity:[7,32], groupName:'inventory'}),
+        new SheetDatum('money', ['gold', 'copper',], {type: 'QUANTIFIED_LIST', quantity:[7,32], groupName:'inventory'}),
     ],[
         new DataGroup('attributes',{priority:1, layout: '2-col', label:"stats"}),
         new DataGroup('skills',{priority:0}),
