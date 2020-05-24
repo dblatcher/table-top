@@ -1,5 +1,12 @@
 import {CharacterSheet, SheetDatum, DataGroup} from './characterSheets'
 
+const blank = function() {return new CharacterSheet(
+    [
+        new SheetDatum('Action',"wait"),
+    ],
+    []
+)}
+
 const dungeons = function() {return new CharacterSheet(
     [
         new SheetDatum('HP',Math.floor(Math.random() * 20), {type : 'number', max:20}),
@@ -59,4 +66,4 @@ const wrathAndGlory = function() {return new CharacterSheet(
     ]
 )}
 
-export {dungeons, wrathAndGlory}
+export {blank, dungeons, wrathAndGlory}

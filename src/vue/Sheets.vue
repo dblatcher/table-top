@@ -2,6 +2,8 @@
   <div>
       <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
+      <template-menu v-bind="{templateChoices}" @submit="useTemplate"/>
+
       <button @click="undo">undo {{history.length -1}}</button>
       <button @click="openSaveSheetDialogue">save as</button>
       <button @click="openLoadSheetDialogue">load</button>
@@ -108,6 +110,7 @@
 import StorageDialogue from "./components/StorageDialogue.vue";
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
+import TemplateMenu from "./components/sheets/TemplateMenu.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
@@ -120,12 +123,12 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel},
+    components: {StorageDialogue, ListControl, FoldingPanel,TemplateMenu},
     props: ["config"],
 
     data() {
 
-        const newSheet = templates.wrathAndGlory()
+        const newSheet = templates.blank()
 
         return {
             localCharacterSheet: newSheet,
@@ -147,6 +150,9 @@ export default {
       },
       datumTypeOptions() {
         return SheetDatum.validTypes
+      },
+      templateChoices() {
+        return Object.keys(templates)
       }
       
     },
@@ -242,6 +248,11 @@ export default {
         this.currentSheetItemName = itemName
       },
 
+      useTemplate(templateName) {
+        this.localCharacterSheet = templates[templateName]()
+        this.$forceUpdate()
+        this.handleUpdate()
+      },
 
       undo() {
         if (this.history.length <= 1) { // history[0] is the clone of the current state
