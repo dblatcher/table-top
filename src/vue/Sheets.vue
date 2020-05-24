@@ -2,7 +2,9 @@
   <div>
       <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
-      <choice-menu v-bind="{choices: templateChoices}" @submit="useTemplate"/>
+      <choice-menu v-bind="{choices: templateChoices}" @submit="useTemplate">
+        <span class="button">use</span>
+      </choice-menu>
 
       <button @click="undo">undo {{history.length -1}}</button>
       <button @click="openSaveSheetDialogue">save as</button>
@@ -12,7 +14,6 @@
       v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
 
         <table>
-
           <thead v-if="section.group">
             <tr >
               <td colspan="2">
@@ -30,7 +31,7 @@
                 <input @change="handleUpdate" type="checkbox" v-model="section.group.onlyDisplayNonEmpty"/>
               </td>
             </tr>
-            
+
             <tr >
               <td colspan="2">
                 <span>layout</span>
@@ -45,47 +46,38 @@
           </thead>
 
           <tr v-for="(datum, index2) in section.values" v-bind:key="index2">
-
             <td>
               <span>{{datum.name}}:</span> 
             </td>
-
             <td>
-              <div>
+                <span v-if="datum.type ==='string'" >
+                  <input @change="handleUpdate" type="text" v-model="datum.value"/>
+                </span>
 
-                  <span v-if="datum.type ==='string'" >
-                    <input @change="handleUpdate" type="text" v-model="datum.value"/>
+                <span v-if="datum.type ==='number'">
+                  <span >
+                      <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                      <span v-if="typeof datum.max !== 'undefined'">
+                      &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                      </span>
                   </span>
+                </span>
 
-                  <span v-if="datum.type ==='number'">
-                    <span >
-                        <input @change="handleUpdate" type="number" v-model="datum.value"/>
-                        <span v-if="typeof datum.max !== 'undefined'">
-                        &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
-                        </span>
-                    </span>
-                  </span>
-
-                  <list-control  v-if="datum.isListType"
-                  @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
-                  @change-item="(event)=>{handleListItemChange(event, datum)}" 
-                  @delete-item="(event)=>{handleListItemDelete(event, datum)}"
-                  @new-item="(event)=>{handleListItemAdd(datum)}"
-                  v-bind="{datum}"/>
-              </div>
+                <list-control  v-if="datum.isListType"
+                @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
+                @change-item="(event)=>{handleListItemChange(event, datum)}" 
+                @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+                @new-item="(event)=>{handleListItemAdd(datum)}"
+                v-bind="{datum}"/>
             </td>
 
             <td>
-              <div>
-                <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
-                    <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
-                    >{{optionName}}</option>
-                </select>
-              </div>
+              <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
+                  <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
+                  >{{optionName}}</option>
+              </select>
             </td>
-
           </tr>
-
 
           <tr>
             <td colspan="3">
@@ -130,9 +122,7 @@ export default {
     props: ["config"],
 
     data() {
-
         const newSheet = templates.blank()
-
         return {
             localCharacterSheet: newSheet,
             currentSheetItemName: undefined,
@@ -157,7 +147,6 @@ export default {
       templateChoices() {
         return Object.keys(templates)
       }
-      
     },
 
     methods : {
@@ -292,6 +281,7 @@ export default {
   td {
     padding: .2em;
     border: 1px dashed blue;
+    vertical-align: baseline;
   }
 
   thead>tr:last-child td {
