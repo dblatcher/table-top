@@ -6,8 +6,10 @@ const keyPrefix = 'k_'
 class SheetDatum {
     constructor (name, value, config={}) {
         this.name = name
-        this.value = value
         this.type = config.type && validDatumValueTypes.indexOf(config.type) !== -1  ? config.type : 'string'
+
+        this.value = value || getDefaultValue(this.type)
+
         this.groupName = config.groupName || undefined
         this.group = false;
 
@@ -17,6 +19,18 @@ class SheetDatum {
 
         if (this.type === 'QUANTIFIED_LIST') {
             this.quantity = config.quantity || value.map(item => 1)
+        }
+
+        function getDefaultValue(type) {
+            switch (type) {
+                case 'string':
+                return "?"
+                case 'number':
+                return 0
+                case 'list':
+                case 'QUANTIFIED_LIST':
+                return []
+            }
         }
     }
     get keyName() {return keyPrefix + this.name}

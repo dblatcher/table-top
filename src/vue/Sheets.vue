@@ -2,7 +2,7 @@
   <div>
       <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
-      <template-menu v-bind="{templateChoices}" @submit="useTemplate"/>
+      <choice-menu v-bind="{choices: templateChoices}" @submit="useTemplate"/>
 
       <button @click="undo">undo {{history.length -1}}</button>
       <button @click="openSaveSheetDialogue">save as</button>
@@ -89,7 +89,10 @@
 
           <tr>
             <td colspan="3">
-              <span>Add new value</span>
+              <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true}" 
+              @submit="($event) => { addNewItem(section, $event)}">
+                <span class="button">Add new value</span>
+              </choice-menu>
             </td>
           </tr>
 
@@ -110,7 +113,7 @@
 import StorageDialogue from "./components/StorageDialogue.vue";
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
-import TemplateMenu from "./components/sheets/TemplateMenu.vue"
+import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
@@ -123,7 +126,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,TemplateMenu},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu},
     props: ["config"],
 
     data() {
@@ -201,6 +204,16 @@ export default {
         this.history.push(this.localCharacterSheet.clone())
       },
 
+      addNewItem(section, dataInput ) {
+        const type = dataInput.choice
+        const name = dataInput.text
+        const groupName = section.group ? section.group.name : undefined
+    
+        this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
+        this.localCharacterSheet = this.localCharacterSheet.clone()
+        this.handleUpdate()
+      },
+
       handleListItemQuantityChange, 
       handleListItemChange,
       handleListItemDelete,
@@ -248,7 +261,8 @@ export default {
         this.currentSheetItemName = itemName
       },
 
-      useTemplate(templateName) {
+      useTemplate(inputData) {
+        const templateName = inputData.choice
         this.localCharacterSheet = templates[templateName]()
         this.$forceUpdate()
         this.handleUpdate()
