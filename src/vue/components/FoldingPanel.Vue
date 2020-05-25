@@ -45,10 +45,19 @@ export default {
 
     .editor {
         max-width: 32rem;
+        min-width: 6rem;
     }
 
     .editor.header {
         margin-top: .5em;
+        border: 1px solid black;
+        padding: .2em;
+    }
+
+    .editor.holder {
+        border: 1px solid black;
+        border-top: none;
+        padding: .2em;
     }
 
     .bordered.header {

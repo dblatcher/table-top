@@ -108,7 +108,9 @@ class CharacterSheet {
 
     removeValue (keyName) {
         let validatedKeyName = keyName.startsWith(keyPrefix) ? keyName : keyPrefix + keyName
-        if (this[validatedKeyName]) {this[validatedKeyName] === null}
+        if (this.values[validatedKeyName]) {
+            delete this.values[validatedKeyName]
+        }
     }
 
     getGroupData (groupName) {

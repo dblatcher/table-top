@@ -2,108 +2,128 @@
   <div>
       <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
-      <choice-menu v-bind="{choices: templateChoices}" @submit="useTemplate">
-        <span class="button">use template</span>
-      </choice-menu>
+      <div class="frame-row">
+        <div class="frame">
+          <button class="button" @click="undo">undo {{history.length -1}}</button>
+          <button class="button" @click="openSaveSheetDialogue">save as</button>
+          <button class="button" @click="openLoadSheetDialogue">load</button>
+        </div>
 
-      <button @click="undo">undo {{history.length -1}}</button>
-      <button @click="openSaveSheetDialogue">save as</button>
-      <button @click="openLoadSheetDialogue">load</button>
+        <choice-menu class="frame" v-bind="{choices: templateChoices}" @submit="useTemplate">
+          <span class="button">use template</span>
+        </choice-menu>
+      </div>
 
-      <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
-      v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
+      <div class="frame-row">
 
-        <table @drop="handleDropOn({ group: section.group})" @dragover.prevent>
-          <thead v-if="section.group"  >
-            <tr >
-              <td colspan="2">
-                <span>label:</span>
-              </td>
-              <td >
-                <input @change="handleUpdate" type="text" v-model="section.group.label"/>
-              </td>
-            </tr>
-            <tr >
-              <td colspan="2">
-                <span>don't display empty:</span>
-              </td>
-              <td>
-                <input @change="handleUpdate" type="checkbox" v-model="section.group.onlyDisplayNonEmpty"/>
-              </td>
-            </tr>
-
-            <tr >
-              <td colspan="2">
-                <span>layout</span>
-              </td>
-              <td>
-                <select @change="handleUpdate" v-model="section.group.layout">
-                    <option v-for="(optionName, index) in layoutOptions" v-bind:key="optionName+index" 
-                    >{{optionName}}</option>
-                </select>
-              </td>
-            </tr>
-          </thead>
-
-          <tbody>
-
-          <tr v-for="(datum, index2) in section.values" v-bind:key="index2" 
-          draggable="true" 
-          @dragstart="setDragData(datum, index2)"
-
-          @dragover.prevent 
-          @drop="handleDropOn({datum, group: section.group})"
-
+        <div class="frame">
+          <div style="width: 8rem; border: 1px dotted black"
+          @drop="handleDropOn({ special:'bin' })" @dragover.prevent
           >
-            <td>
-              <span>{{datum.name}}:</span> 
-            </td>
-            <td>
-                <span v-if="datum.type ==='string'" >
-                  <input @change="handleUpdate" type="text" v-model="datum.value"/>
-                </span>
+            <p>bin</p>
+          </div>
+        </div>
 
-                <span v-if="datum.type ==='number'">
-                  <span >
-                      <input @change="handleUpdate" type="number" v-model="datum.value"/>
-                      <span v-if="typeof datum.max !== 'undefined'">
-                      &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+        <div class="frame">
+
+          <div class="group-panels">
+            <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
+            v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
+
+              <table @drop="handleDropOn({ group: section.group || false})" @dragover.prevent>
+                <thead v-if="section.group">
+                  <tr>
+                    <td colspan="2">
+                      <span>label:</span>
+                    </td>
+                    <td >
+                      <input @change="handleUpdate" type="text" v-model="section.group.label"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <span>don't display empty:</span>
+                    </td>
+                    <td>
+                      <input @change="handleUpdate" type="checkbox" v-model="section.group.onlyDisplayNonEmpty"/>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="2">
+                      <span>layout</span>
+                    </td>
+                    <td>
+                      <select @change="handleUpdate" v-model="section.group.layout">
+                          <option v-for="(optionName, index) in layoutOptions" v-bind:key="optionName+index" 
+                          >{{optionName}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                <tr v-for="(datum, index2) in section.values" v-bind:key="index2" 
+                draggable="true" 
+                @dragstart="setDragData(datum, index2)"
+                @dragover.prevent 
+                @drop="handleDropOn({datum, group: section.group || false})"
+                >
+                  <td>
+                    <span>{{datum.name}}:</span> 
+                  </td>
+                  <td>
+                      <span v-if="datum.type ==='string'" >
+                        <input @change="handleUpdate" type="text" v-model="datum.value"/>
                       </span>
-                  </span>
-                </span>
 
-                <list-control  v-if="datum.isListType"
-                @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
-                @change-item="(event)=>{handleListItemChange(event, datum)}" 
-                @delete-item="(event)=>{handleListItemDelete(event, datum)}"
-                @new-item="(event)=>{handleListItemAdd(datum)}"
-                v-bind="{datum}"/>
-            </td>
+                      <span v-if="datum.type ==='number'">
+                        <span >
+                            <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                            <span v-if="typeof datum.max !== 'undefined'">
+                            &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
+                            </span>
+                        </span>
+                      </span>
 
-            <td>
-              <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
-                  <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
-                  >{{optionName}}</option>
-              </select>
-            </td>
-          </tr>
+                      <list-control  v-if="datum.isListType"
+                      @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
+                      @change-item="(event)=>{handleListItemChange(event, datum)}" 
+                      @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+                      @new-item="(event)=>{handleListItemAdd(datum)}"
+                      v-bind="{datum}"/>
+                  </td>
 
-          <tr>
-            <td colspan="3">
-              <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true}" 
-              @submit="($event) => { addNewItem(section, $event)}">
-                <span class="button">Add new value</span>
-              </choice-menu>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+                  <td>
+                    <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
+                        <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
+                        >{{optionName}}</option>
+                    </select>
+                  </td>
+                </tr>
 
-      </folding-panel>
+                <tr>
+                  <td colspan="3">
+                    <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true}" 
+                    @submit="($event) => { addNewItem(section, $event)}">
+                      <span class="button">Add new value</span>
+                    </choice-menu>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
 
-      <choice-menu v-bind="{hasTextInput: true}" @submit="addNewGroup">
-        <span class="button">Add new group</span>
-      </choice-menu>
+            </folding-panel>
+          </div>
+
+          <choice-menu v-bind="{hasTextInput: true}" @submit="addNewGroup">
+            <span class="button">Add new group</span>
+          </choice-menu>
+
+        </div>
+      </div>
+
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
@@ -175,14 +195,19 @@ export default {
         console.log('dropped ', this.dragData)
         console.log(' on', target)
 
-        console.log (
-          `Dropped ${this.dragData.datum.name} on ${ target.datum ? target.datum.name : 'No datum'} in ${target.group?target.group.name : 'no group'}`
-        )
-        this.dragData.datum.groupName = target.group ? target.group.name : undefined;
+        if (typeof target.group !== 'undefined') {
+          this.dragData.datum.groupName = target.group ? target.group.name : undefined;
+          this.localCharacterSheet = this.localCharacterSheet.clone()
+        }
 
-        this.dragData = null
-        this.localCharacterSheet = this.localCharacterSheet.clone()
+        if (target.special && target.special === 'bin') {
+          console.log('BIN')
+          this.localCharacterSheet.removeValue(this.dragData.datum.keyName)
+          this.localCharacterSheet = this.localCharacterSheet.clone()
+        }
+
         this.handleUpdate()
+        this.dragData = null
       },
 
       handleTypeChange(datum) {
@@ -317,13 +342,17 @@ export default {
 
 <style scoped>
 
+  .frame-row {
+    display: flex;
+    flex-wrap: wrap;
+  } 
+
   table {
     width: 100%;
   }
 
   td {
     padding: .2em;
-    border: 1px dashed blue;
     vertical-align: baseline;
     background-color: antiquewhite;
   }
@@ -333,7 +362,7 @@ export default {
   }
 
   thead>tr:last-child td {
-    border-bottom: 2px solid blue;
+    border-bottom: 2px dotted black;
   }
 
 
