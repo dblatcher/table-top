@@ -124,15 +124,6 @@ class CharacterSheet {
         return data
     }
 
-    getGroupDisplay (groupName) {
-        const groupData = this.getGroupData(groupName)
-        if (!groupData) return {}
-
-        return groupData.map (datum => { return { 
-            name:datum.name, 
-            value: datum.value + SheetDatum.getDisplaySuffix(datum) 
-        }}) 
-    }
 
     static groupedData (serialisedSheet) {
         let output = []

@@ -13,8 +13,8 @@
       <folding-panel v-for="(section, index) in groupedData" v-bind:key="'_'+index" 
       v-bind="{title: section.group ? section.group.label : '[main]', holderClass: 'editor'}">
 
-        <table>
-          <thead v-if="section.group">
+        <table @drop="handleDropOn({ group: section.group})" @dragover.prevent>
+          <thead v-if="section.group"  >
             <tr >
               <td colspan="2">
                 <span>label:</span>
@@ -45,7 +45,16 @@
             </tr>
           </thead>
 
-          <tr v-for="(datum, index2) in section.values" v-bind:key="index2">
+          <tbody>
+
+          <tr v-for="(datum, index2) in section.values" v-bind:key="index2" 
+          draggable="true" 
+          @dragstart="setDragData(datum, index2)"
+
+          @dragover.prevent 
+          @drop="handleDropOn({datum, group: section.group})"
+
+          >
             <td>
               <span>{{datum.name}}:</span> 
             </td>
@@ -87,7 +96,7 @@
               </choice-menu>
             </td>
           </tr>
-
+          </tbody>
         </table>
 
       </folding-panel>
@@ -134,7 +143,8 @@ export default {
             storageDialogueProps :{
                 isOpen: false,
                 folderName: "storedSheets"
-            }
+            },
+            dragData: null,
         }
     },
 
@@ -154,6 +164,26 @@ export default {
     },
 
     methods : {
+
+      setDragData (datum, index) {
+        console.log('drag', datum, index)
+        this.dragData = {datum, index}
+      },
+
+      handleDropOn (target) {
+        if (!this.dragData) {return false}
+        console.log('dropped ', this.dragData)
+        console.log(' on', target)
+
+        console.log (
+          `Dropped ${this.dragData.datum.name} on ${ target.datum ? target.datum.name : 'No datum'} in ${target.group?target.group.name : 'no group'}`
+        )
+        this.dragData.datum.groupName = target.group ? target.group.name : undefined;
+
+        this.dragData = null
+        this.localCharacterSheet = this.localCharacterSheet.clone()
+        this.handleUpdate()
+      },
 
       handleTypeChange(datum) {
         //will create new type number_with_max (or similar)
@@ -198,10 +228,11 @@ export default {
       },
 
       addNewItem(section, dataInput ) {
-        const type = dataInput.choice
         const name = dataInput.text
+        if (!name) {return false}
+        const type = dataInput.choice
         const groupName = section.group ? section.group.name : undefined
-    
+
         this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
         this.localCharacterSheet = this.localCharacterSheet.clone()
         this.handleUpdate()
@@ -209,6 +240,7 @@ export default {
 
       addNewGroup(dataInput ) {
         const name = dataInput.text
+        if (!name) {return false}
         this.localCharacterSheet.groups.push(new DataGroup(name,{}))
         this.localCharacterSheet = this.localCharacterSheet.clone()
         this.handleUpdate()
@@ -293,6 +325,11 @@ export default {
     padding: .2em;
     border: 1px dashed blue;
     vertical-align: baseline;
+    background-color: antiquewhite;
+  }
+
+  tbody>tr:not(:last-of-type) {
+    cursor: grab;
   }
 
   thead>tr:last-child td {
