@@ -3,7 +3,7 @@
       <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
 
       <choice-menu v-bind="{choices: templateChoices}" @submit="useTemplate">
-        <span class="button">use</span>
+        <span class="button">use template</span>
       </choice-menu>
 
       <button @click="undo">undo {{history.length -1}}</button>
@@ -91,6 +91,10 @@
         </table>
 
       </folding-panel>
+
+      <choice-menu v-bind="{hasTextInput: true}" @submit="addNewGroup">
+        <span class="button">Add new group</span>
+      </choice-menu>
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
@@ -199,6 +203,13 @@ export default {
         const groupName = section.group ? section.group.name : undefined
     
         this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
+        this.localCharacterSheet = this.localCharacterSheet.clone()
+        this.handleUpdate()
+      },
+
+      addNewGroup(dataInput ) {
+        const name = dataInput.text
+        this.localCharacterSheet.groups.push(new DataGroup(name,{}))
         this.localCharacterSheet = this.localCharacterSheet.clone()
         this.handleUpdate()
       },
