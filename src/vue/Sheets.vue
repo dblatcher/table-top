@@ -197,6 +197,11 @@ export default {
 
         if (typeof target.group !== 'undefined') {
           this.dragData.datum.groupName = target.group ? target.group.name : undefined;
+
+          if (target.datum) {
+            this.localCharacterSheet.moveDatum(this.dragData.datum.keyName, {before:target.datum.keyName})
+          }
+
           this.localCharacterSheet = this.localCharacterSheet.clone()
         }
 

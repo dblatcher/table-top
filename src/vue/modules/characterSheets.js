@@ -121,6 +121,18 @@ class CharacterSheet {
         }
     }
 
+    moveDatum (keyName,instruction) {
+        const indexOfValue = this.values.map(value => value.keyName).indexOf(keyName)
+        if (indexOfValue === -1) {return false}
+
+        if (instruction.before) {
+            const indexOfValueToGoBefore = this.values.map(value => value.keyName).indexOf(instruction.before)
+            if (indexOfValueToGoBefore === -1) {return false}
+            const movedDatumArray = this.values.splice(indexOfValue,1)
+            this.values.splice(indexOfValueToGoBefore,0,movedDatumArray[0])
+        }
+    }
+
     getGroupData (groupName) {
         if (groupName) {
             if (!this.groups.filter(group => group.name === groupName)[0]) return false
