@@ -213,7 +213,7 @@ export default {
       handleTypeChange(datum) {
         //will create new type number_with_max (or similar)
 
-        let oldType = this.history[this.history.length-1].values[datum.keyName].type
+        let oldType = this.history[this.history.length-1].valuesAsObject[datum.keyName].type
         console.log(`value is a ${oldType}, type is now ${datum.type}`)
 
         switch (datum.type) {

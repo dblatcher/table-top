@@ -92,24 +92,32 @@ class DataGroup {
 class CharacterSheet {
     constructor (sheetData = [], groups =[]) {
         this.groups = groups
-        this.values = {}
+        this.values = []
         sheetData.forEach(sheetDatum => {
             this.addDatum(sheetDatum)
         })
     }
     get type() {return 'CharacterSheet'}
 
+    get valuesAsObject() {
+        let output = {}
+        this.values.forEach(datum => {output[datum.keyName] = datum})
+        return output
+    }
+
     addDatum( sheetDatum) {
         if (sheetDatum.groupName && this.groups.map(group => group.name).includes(sheetDatum.groupName)) {
             sheetDatum.group = this.groups.filter(group => group.name === sheetDatum.groupName)[0]
         }
-        this.values[sheetDatum.keyName] = sheetDatum 
+        this.values.push (sheetDatum)
     }
 
     removeValue (keyName) {
         let validatedKeyName = keyName.startsWith(keyPrefix) ? keyName : keyPrefix + keyName
-        if (this.values[validatedKeyName]) {
-            delete this.values[validatedKeyName]
+        const indexOfValue = this.values.map(value => value.keyName).indexOf(validatedKeyName)
+
+        if (indexOfValue !== -1) {
+            this.values.splice(indexOfValue,1)
         }
     }
 
@@ -118,9 +126,7 @@ class CharacterSheet {
             if (!this.groups.filter(group => group.name === groupName)[0]) return false
         }
 
-        const data = Object.keys(this.values)
-        .filter(key => key.startsWith(keyPrefix))
-        .map(key => this.values[key])
+        const data = this.values
         .filter(datum => datum.groupName === groupName)
 
         return data
@@ -131,9 +137,11 @@ class CharacterSheet {
         let output = []
         if (serialisedSheet.values) {
             let ungroupedValues = []
-            for (const property in serialisedSheet.values) {
-                if (serialisedSheet.values[property].groupName == undefined) {ungroupedValues.push(serialisedSheet.values[property])}
-            }
+
+            serialisedSheet.values.forEach (datum => {
+                if (datum.groupName == undefined) {ungroupedValues.push(datum)}
+            })
+
             if (ungroupedValues.length > 0) {
                 output.push({group:undefined, values: ungroupedValues} )
             }
@@ -141,9 +149,9 @@ class CharacterSheet {
         if (serialisedSheet.groups) {
             serialisedSheet.groups.forEach(group => {
                 let values = []
-                for (const property in serialisedSheet.values) {
-                    if (serialisedSheet.values[property].groupName == group.name) {values.push(serialisedSheet.values[property])}
-                }
+                serialisedSheet.values.forEach (datum => {
+                    if (datum.groupName == group.name) {values.push(datum)}
+                })
                 output.push ({group, values})
             })
         }
@@ -153,10 +161,10 @@ class CharacterSheet {
     serialise () {
         let output = {
             groups: [],
-            values: {}
+            values: [],
         }
         this.groups.forEach(group => {output.groups.push(group.serialise())})
-        Object.keys (this.values).forEach(key => {output.values[key] = this.values[key].serialise()} )
+        this.values.forEach(value => {output.values.push(value.serialise())})
         return output
     }
 
@@ -169,7 +177,7 @@ class CharacterSheet {
     }
 
     static deserialise (serialisedSheet) {
-        const data = Object.keys(serialisedSheet.values).map(key => SheetDatum.deserialise(serialisedSheet.values[key]) )
+        const data   = serialisedSheet.values.map(value => SheetDatum.deserialise(value) )
         const groups = serialisedSheet.groups.map(group => DataGroup.deserialise(group) )
         return new CharacterSheet( data , groups)
     }

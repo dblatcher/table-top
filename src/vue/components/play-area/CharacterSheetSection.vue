@@ -86,22 +86,25 @@ export default {
 
     watch : {
       section: function(newSheet, oldSheet) {
-        if (!oldSheet.values) {return}
+        if (!oldSheet.values ) {return}
+        let newSheetValuesObject = {}
+        newSheet.values.forEach(datum => {newSheetValuesObject[datum.keyName] = datum})
 
-        const changedValues = []
-        const newKeys = []
-        const valueKeys = Object.keys(newSheet.values)
+        let oldSheetValuesObject = {}
+        oldSheet.values.forEach(datum => {oldSheetValuesObject[datum.keyName] = datum})
+
+        const valueKeys = Object.keys(newSheetValuesObject)
 
         valueKeys.forEach(key => {
-          if (!oldSheet.values[key] ) {
-            newKeys.push(newSheet.values[key].keyName)
+          if (!oldSheetValuesObject[key] ) {
+            // TO DO - other animation for new keys ?
+            this.$set(this.changedValueAnimations, key, new ChangedValueAnimation(key).start())
             return
           }
 
-          if ( !newSheet.values[key].isListType ) {
-            if (newSheet.values[key].value != oldSheet.values[key].value) {
-              changedValues.push(newSheet.values[key].keyName)
-              this.$set(this.changedValueAnimations, newSheet.values[key].keyName, new ChangedValueAnimation(key).start())
+          if ( !newSheetValuesObject[key].isListType ) {
+            if (newSheetValuesObject[key].value != oldSheetValuesObject[key].value) {
+              this.$set(this.changedValueAnimations, key, new ChangedValueAnimation(key).start())
             }
           }
 
