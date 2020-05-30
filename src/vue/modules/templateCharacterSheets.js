@@ -9,7 +9,7 @@ const blank = function() {return new CharacterSheet(
 
 const dungeons = function() {return new CharacterSheet(
     [
-        new SheetDatum('HP',Math.floor(Math.random() * 20), {type : 'number', max:20}),
+        new SheetDatum('HP',Math.floor(Math.random() * 20), {type : 'NUM_&_MAX', max:20}),
         new SheetDatum('Status',"normal"),
         new SheetDatum('Action',"wait"),
         new SheetDatum('Str',Math.floor(Math.random() * 6)+ Math.floor(Math.random() * 6)+6, {type : 'number', groupName:'attributes'} ),

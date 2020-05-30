@@ -17,7 +17,7 @@
       <div class="frame-row">
 
         <div class="frame">
-          <div style="width: 8rem; border: 1px dotted black"
+          <div class="waste-bin"
           @drop="handleDropOn({ special:'bin' })" @dragover.prevent
           >
             <p>bin</p>
@@ -64,62 +64,68 @@
 
                 <tbody>
 
-                <tr v-for="(datum, index2) in section.values" v-bind:key="index2" 
-                draggable="true" 
-                @dragstart="setDragData(datum, index2)"
-                @dragover.prevent 
-                @drop="handleDropOn({datum, group: section.group || false})"
-                >
-                  <td>
-                    <span>{{datum.name}}:</span> 
-                  </td>
-                  <td>
-                      <span v-if="datum.type ==='string'" >
-                        <input @change="handleUpdate" type="text" v-model="datum.value"/>
-                      </span>
-
-                      <span v-if="datum.type ==='number'">
-                        <span >
-                            <input @change="handleUpdate" type="number" v-model="datum.value"/>
-                            <span v-if="typeof datum.max !== 'undefined'">
-                            &nbsp;/&nbsp;<input @change="handleUpdate" type="number" v-model="datum.max"/>
-                            </span>
+                  <tr v-for="(datum, index2) in section.values" v-bind:key="index2" 
+                  class="datum-row"
+                  draggable="true" 
+                  @dragstart="setDragData(datum, index2)"
+                  @dragover.prevent 
+                  @drop="handleDropOn({datum, group: section.group || false})"
+                  >
+                    <td>
+                      <span>{{datum.name}}:</span> 
+                    </td>
+                    <td>
+                        <span v-if="datum.type ==='string'" >
+                          <input @change="handleUpdate" type="text" v-model="datum.value"/>
                         </span>
-                      </span>
 
-                      <list-control  v-if="datum.isListType"
-                      @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
-                      @change-item="(event)=>{handleListItemChange(event, datum)}" 
-                      @delete-item="(event)=>{handleListItemDelete(event, datum)}"
-                      @new-item="(event)=>{handleListItemAdd(datum)}"
-                      v-bind="{datum}"/>
-                  </td>
+                        <span v-if="datum.type ==='number'">
+                          <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                        </span>
 
-                  <td>
-                    <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
-                        <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
-                        >{{optionName}}</option>
-                    </select>
-                  </td>
-                </tr>
+                        <span v-if="datum.type ==='NUM_&_MAX'">
+                            <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                            &nbsp;/&nbsp;
+                            <input @change="handleUpdate" type="number" v-model="datum.max"/>
+                        </span>
 
-                <tr>
-                  <td colspan="3">
-                    <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true}" 
-                    @submit="($event) => { addNewItem(section, $event)}">
-                      <span class="button">Add new value</span>
-                    </choice-menu>
-                  </td>
-                </tr>
+                        <list-control  v-if="datum.isListType"
+                        @change-quantity="(event)=>{handleListItemQuantityChange(event, datum)}" 
+                        @change-item="(event)=>{handleListItemChange(event, datum)}" 
+                        @delete-item="(event)=>{handleListItemDelete(event, datum)}"
+                        @new-item="(event)=>{handleListItemAdd(datum)}"
+                        v-bind="{datum}"/>
+                    </td>
+
+                    <td>
+                      <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
+                          <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
+                          >{{optionName}}</option>
+                      </select>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="3">
+                      <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true, placeholder: 'new value name'}" 
+                      @submit="($event) => { addNewItem(section, $event)}">
+                        <span class="stud-button">+</span>
+                      </choice-menu>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
 
             </folding-panel>
           </div>
 
-          <choice-menu v-bind="{hasTextInput: true}" @submit="addNewGroup">
-            <span class="button">Add new group</span>
-          </choice-menu>
+          <div class="new-group-box"> 
+            <h4 class="new-group-box__heading">[Add new group]</h4>
+            <choice-menu v-bind="{hasTextInput: true, placeholder: 'new group name'}" @submit="addNewGroup">
+              <span class="stud-button">+</span>
+            </choice-menu>
+          </div>
+
 
         </div>
       </div>
@@ -186,14 +192,11 @@ export default {
     methods : {
 
       setDragData (datum, index) {
-        console.log('drag', datum, index)
         this.dragData = {datum, index}
       },
 
       handleDropOn (target) {
         if (!this.dragData) {return false}
-        console.log('dropped ', this.dragData)
-        console.log(' on', target)
 
         if (typeof target.group !== 'undefined') {
           this.dragData.datum.groupName = target.group ? target.group.name : undefined;
@@ -206,7 +209,6 @@ export default {
         }
 
         if (target.special && target.special === 'bin') {
-          console.log('BIN')
           this.localCharacterSheet.removeValue(this.dragData.datum.keyName)
           this.localCharacterSheet = this.localCharacterSheet.clone()
         }
@@ -216,15 +218,19 @@ export default {
       },
 
       handleTypeChange(datum) {
-        //will create new type number_with_max (or similar)
+        //will create new type NUM_&_MAX (or similar)
 
         let oldType = this.history[this.history.length-1].valuesAsObject[datum.keyName].type
-        console.log(`value is a ${oldType}, type is now ${datum.type}`)
+        //console.log(`value is a ${oldType}, type is now ${datum.type}`)
 
         switch (datum.type) {
           case 'number' :
-            datum.value = 1
-            if (datum.max) { datum.max = 5}
+            datum.value = isNaN(Number(datum.value)) ? 1 : Number(datum.value)
+            break;
+
+          case 'NUM_&_MAX' :
+            datum.value = isNaN(Number(datum.value)) ? 1 : Number(datum.value)
+            datum.max =   isNaN(Number(datum.value)) ? 5 : Number(datum.value)
             break;
 
           case 'string' :
@@ -359,6 +365,9 @@ export default {
   td {
     padding: .2em;
     vertical-align: baseline;
+  }
+
+  .datum-row td {
     background-color: antiquewhite;
   }
 
@@ -366,9 +375,29 @@ export default {
     cursor: grab;
   }
 
-  thead>tr:last-child td {
-    border-bottom: 2px dotted black;
+
+  input[type=number] {
+    width: 3rem;
+    text-align: right;
   }
 
+  .waste-bin {
+    background-color: antiquewhite;
+    width: 8rem; 
+    border: 
+    1px dotted black;
+    text-align: center;
+  }
+
+  .new-group-box {
+    border: 1px solid black;
+    padding: .2em;
+    margin-top: .5rem;
+  }
+
+  .new-group-box__heading {
+    margin: 0 -.2em;
+    border-bottom: 1px solid black;
+  }
 
 </style>

@@ -1,5 +1,5 @@
 
-const validDatumValueTypes = ['string', 'number', 'list', 'QUANTIFIED_LIST']
+const validDatumValueTypes = ['string', 'number', 'list', 'QUANTIFIED_LIST', 'NUM_&_MAX']
 const validGroupLayouts = ['2-col', 'full-width']
 const keyPrefix = 'k_'
 
@@ -13,8 +13,8 @@ class SheetDatum {
         this.groupName = config.groupName || undefined
         this.group = false;
 
-        if (this.type === 'number' && config.max) {
-            this.max = config.max
+        if (this.type === 'NUM_&_MAX') {
+            this.max = config.max || value
         }
 
         if (this.type === 'QUANTIFIED_LIST') {
@@ -52,7 +52,7 @@ class SheetDatum {
     }
 
     static getDisplaySuffix (serialisedDatum) {
-        if (serialisedDatum.type === 'number' && serialisedDatum.max) {
+        if (serialisedDatum.type === 'NUM_&_MAX') {
             return ` / ${serialisedDatum.max}`
         }
         return ''

@@ -1,6 +1,6 @@
 <template>
   <form @submit="emitData" ref="form">
-      <input v-if="hasTextInput" name="text" type="text"/>
+      <input v-if="hasTextInput" name="text" type="text" v-bind:placeholder="placeholder"/>
       <select v-if="choices" name="choice">
           <option v-for="choice in choices" v-bind:key="choice" v-bind:value="choice">{{choice}}</option>
       </select>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    props: ["choices","hasTextInput"],
+    props: ["choices","hasTextInput", "placeholder"],
 
     methods: {
         emitData(event) {
@@ -35,6 +35,7 @@ export default {
         display: flex;
         align-items: center;
         padding: .25em 0;
+        justify-content: flex-end;
     }
 
     input+select {
