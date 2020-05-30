@@ -1,3 +1,27 @@
+@mixin button-hover($size) {
+    transition: transform .5s, box-shadow .5s;
+    transform: translateY(-1px);
+
+    @if $size == 'small' {
+        box-shadow: $shadow-5;
+    } @else {
+        box-shadow: $shadow-6;
+    }
+
+    &:not(.button--disabled){
+        &:hover,&:focus {
+            outline: none;
+            @if $size == 'small' {
+                box-shadow: $shadow-4;
+            } @else {
+                box-shadow: $shadow-5;
+            }
+        
+            transform: translateY(0);
+        }
+    }
+}
+
 .button {
     display: inline-block;
     min-width: 6em;
@@ -6,7 +30,47 @@
     cursor: pointer;
     padding: ($std-space/2);
     margin: ($std-space/2) $std-space;
-    background-color: $color-shade;
-    box-shadow: $shadow-1;
     border: none;
+    background-color: $color-shade;
+
+    @include button-hover(medium);
+
+    &--disabled {
+        background-color: gray;
+    }
 }
+
+
+.stud-button {
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 50%;
+    width: 1em;
+    flex-shrink: 0;
+
+    height: 1em;
+    line-height: .1em;
+    margin-left: .2em;
+
+    &>span {
+        font-size: small;
+        text-align: center;
+    } 
+
+    background-color: $color-contrast;
+
+    @include button-hover(small);
+
+    &--red {
+        background-color: red;
+    }
+
+    &--green {
+        background-color: green;
+    }
+}
+
+

@@ -9,12 +9,12 @@
             v-bind:value="datum.quantity[index]"/>
 
             <input @change="(event)=> {handleChange(event, index)}" type="text" v-bind:value="item"/>
-            <span class="list-control__button list-control__button--red" @click="()=> {handleDelete(index)}">
+            <span class="stud-button stud-button--red" @click="()=> {handleDelete(index)}">
                 <span>&times;</span>
             </span>
         </p>
         <p class="list-control__item">
-            <span class="list-control__button list-control__button--green" @click="handleAdd">
+            <span class="stud-button stud-button--green" @click="handleAdd">
                 <span>+</span>
             </span>
         </p>
@@ -80,33 +80,6 @@ export default {
         margin-right: .2em;
     }
 
-    .list-control__button {
-        cursor: pointer;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        border-radius: 50%;
-        width: 1em;
-        flex-shrink: 0;
-
-        height: 1em;
-        line-height: 1em;
-        margin-left: .2em;
-    }
-
-    .list-control__button>span {
-        font-size: small;
-        text-align: center;
-    } 
-
-    .list-control__button--red {
-        background-color: red;
-    }
-
-    .list-control__button--green {
-        background-color: green;
-    }
 
 
 </style>
