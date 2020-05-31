@@ -4,10 +4,10 @@ const supportedContent = ['number', 'letter', 'numeral','wrath and glory']
 
 const resultOrientations = {
     4: [
-      [240,0,0],
-      [120,0,60],
-      [120,0,300],
-      [0,0,0],
+      [60,0,0],
+      [60,0,240],
+      [60,0,120],
+      [0,180,0],
     ],
     6: [
       [0,0,0],
