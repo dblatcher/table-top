@@ -2,7 +2,7 @@
   <div id="app">
     <header>
       <h2>{{config.gameName}}</h2>
-      <E3dDice v-bind="{sides:20, result:20, faceClass:'preset-e3d-blue'}" ref="headerDie"/>
+      <E3dDice v-bind="{virtualDie: headerDie}" ref="headerDie"/>
     </header>
 
     <form v-if="!hasEnteredGame && !config.amGamemaster" 
@@ -31,7 +31,9 @@
 </template> 
 
 <script>
-import E3dDice from './components/E3dDice.vue'
+import {VirtualDie} from './modules/virtualDie'
+
+import E3dDice from './components/E3dDiceNew.vue'
 import AdminPanel from "./components/AdminPanel.vue";
 import PlayArea from "./components/PlayArea.vue";
 
@@ -48,6 +50,7 @@ export default {
         players: []
       },
       gameHasClosed:false,
+      headerDie: new VirtualDie({sides:20, color: 'black', content:'numeral'}),
       waitingForRequestEntryResponse: false,
     };
   },
