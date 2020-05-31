@@ -16,6 +16,8 @@
         <DiceButton @dice-result="reportRoll" dice="12,4,8" label="d4 + d8 + d12"/>
       </div>
 
+    <virtual-dice-control></virtual-dice-control>
+
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
   </section>
@@ -25,12 +27,13 @@
 import DiceButton from './play-area/DiceButton.vue'
 import PlayersDisplay from './play-area/PlayersDisplay.vue'
 import MessageBox from './play-area/MessageBox.vue'
+import VirtualDiceControl from './play-area/VirtualDiceControl.vue'
 
 import { CharacterSheet, SheetDatum, DataGroup } from "../modules/characterSheets";
 import * as makeTemplateSheet from "../modules/templateCharacterSheets.js"
 
 export default {
-    components: {DiceButton, PlayersDisplay, MessageBox},
+    components: {DiceButton, PlayersDisplay, MessageBox, VirtualDiceControl},
     props: ['displayName', 'socket', 'playerId', 'gameState', 'config'],
 
     data() {
