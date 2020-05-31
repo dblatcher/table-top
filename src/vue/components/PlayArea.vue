@@ -16,7 +16,7 @@
         <DiceButton @dice-result="reportRoll" dice="12,4,8" label="d4 + d8 + d12"/>
       </div>
 
-    <virtual-dice-control></virtual-dice-control>
+        <virtual-dice-control @virtual-dice-roll="reportVirtualRoll"/>
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
@@ -50,6 +50,10 @@ export default {
     },
 
     methods : {
+        reportVirtualRoll(diceList) {
+            console.log(diceList)
+        },
+
         reportRoll(rollData) {
             const {diceList, results, total, message} = rollData
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', rollData)

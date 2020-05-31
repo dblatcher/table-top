@@ -86,9 +86,13 @@ export default {
     },
 
     rollDie () {
-
-      const{size, sides, result} = this.virtualDie;
+      const{size, sides, result, resultFaceClass} = this.virtualDie;
       const scatter = 20 * (size / 75)
+
+      let i;
+      for (i=0; i< this.shape.children.length; i++) {
+        this.shape.children[i].classList.remove(resultFaceClass)
+      }
 
       this.shape.gradual.moveAndSpin ({
           move:{x: this.shape.move.x/2, y: randomInt(scatter), z:0},
@@ -105,7 +109,7 @@ export default {
       })
 
       .then( () => {
-        this.shape.children[result-1].classList.add("flash")
+        this.shape.children[result-1].classList.add(resultFaceClass)
       })
     }
   },

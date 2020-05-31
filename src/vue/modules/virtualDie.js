@@ -92,16 +92,17 @@ class VirtualDie {
         this.sides   = supportedSideNumbers.includes(config.sides) ? config.sides : 6
         this.color   = supportedColors.includes(config.color) ? config.color : 'white'
         this.content = supportedContent.includes(config.content) ? config.content : 'number'
+        this.useResultClass = !!config.useResultClass
 
         this.result = (config.result && config.result > 0 && config.result <= this.sides) ? config.result : this.sides
         this.size   = config.size || 60
     }
 
     get faceClass() { return `preset-e3d-${this.color}` }
-    get resultFaceClass() { return `preset-e3d-${this.color} flash` }
+    get resultFaceClass() { return `flash` }
 
     get faceContentFunction() {
-        const {sides, result, faceClass, resultFaceClass, content} = this;
+        const {sides, result, faceClass, resultFaceClass, content, useResultClass} = this;
         const getFaceString = {
             'number': function(faceIndex) {
                 const numbersToUnderline = [9, 6, 16, 19]
@@ -113,7 +114,7 @@ class VirtualDie {
             },
             'numeral': function(faceIndex) {
                 const faceStrings = ['I','II','III','IV','V','VI','VII', 'VIII', 'IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX']
-                return `<p style="font-size: ${shapeTypes[sides].fontSize * 70}%;">${faceStrings[faceIndex] || '-'}</p>`
+                return `<p style="font-size: ${shapeTypes[sides].fontSize * 50}%;">${faceStrings[faceIndex] || '-'}</p>`
             },
             'wrath and glory': function(faceIndex) {
                 const faceStrings = ['!',' ',' ','*','*','**']
@@ -125,12 +126,17 @@ class VirtualDie {
             if ( !(shapeTypes[sides].shape === 'TruncatedCube' && faceIndex >= 6 ) ) {
                 face.innerHTML = getFaceString[content](faceIndex)
             }
-            if ( faceIndex+1 === result ) {
-                face.classList = resultFaceClass
+            if ( faceIndex+1 === result && useResultClass ) {
+                face.classList = faceClass + " " + resultFaceClass
             } else {
                 face.classList = faceClass
             }
         }
+    }
+
+    randomiseResult() {
+        this.result = 1 + Math.floor(Math.random()*this.sides)
+        return this.result
     }
 
     static get supportedColors() {return supportedColors}

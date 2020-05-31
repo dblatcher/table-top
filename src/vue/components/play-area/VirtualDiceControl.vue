@@ -23,6 +23,8 @@
         </div>
     </div>
 
+    <button @click="rollDice">Roll!</button> 
+
   </div>
 </template>
 
@@ -36,15 +38,9 @@ export default {
     data() {
         return {
             dice : [
-                new VirtualDie({sides:20, color:'red', content:'numeral', size:150}),
+                new VirtualDie({sides:8, color:'red', content:'numeral', result:'18', size:100}),
                 new VirtualDie({sides:6, color:'blue', size:60}),
                 new VirtualDie({sides:6, color:'red', size:60}),
-                new VirtualDie({sides:6, result:1, color:'green', size:60, content:'wrath and glory'}),
-                new VirtualDie({sides:6, result:2, color:'green', size:60, content:'wrath and glory'}),
-                new VirtualDie({sides:6, result:3, color:'green', size:60, content:'wrath and glory'}),
-                new VirtualDie({sides:6, result:4, color:'green', size:60, content:'wrath and glory'}),
-                new VirtualDie({sides:6, result:5, color:'green', size:60, content:'wrath and glory'}),
-                new VirtualDie({sides:6, result:6, color:'green', size:60, content:'wrath and glory'}),
                 new VirtualDie({sides:10, color:'black', size:60}),
             ]
         }
@@ -58,7 +54,6 @@ export default {
     methods: {
         addDie(event) {
             event.preventDefault()
-            console.log(event.target.elements)
 
             this.dice.push( new VirtualDie({
                 sides: Number(event.target.elements.sides.value),
@@ -67,10 +62,20 @@ export default {
         },
 
         removeDie(index) {
-           console.log('removeDie',index)
            this.dice.splice(index,1)
            this.$nextTick( ()=>{
                this.$refs.dice.forEach(die => {die.renderDie()})
+           })
+        },
+
+        rollDice() {
+            this.dice.forEach(virtualDie => {
+                virtualDie.randomiseResult()
+                virtualDie.useResultClass = true;
+            })
+            this.$emit('virtual-dice-roll', this.dice)
+            this.$nextTick( ()=>{
+               this.$refs.dice.forEach(die => {die.rollDie()})
            })
         }
     },
