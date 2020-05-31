@@ -12,7 +12,7 @@
         </folding-panel>
       </div>
 
-      <roll-zone v-bind="{rollData, size:40}"/>
+      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
   </article>
 </template>
 

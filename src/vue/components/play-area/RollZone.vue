@@ -1,9 +1,7 @@
 <template>
     <div class="roll-zone"
     v-bind:style="styleObject">
-      <E3dDice  
-      v-for="(die, index) in rollData"  
-      v-bind:key="index"  
+      <E3dDice v-for="(die, index) in rollData" v-bind:key="index"  
       v-bind="{virtualDie: die, index}" 
       ref="dice"/>
       <s>{{dataString}}</s>
@@ -16,36 +14,20 @@ import E3dDice from '../E3dDiceNew.vue'
 export default {
     components: {E3dDice},
 
-    props: ['rollData','size','zoneHeight'],
+    props: ['rollData','zoneHeight'],
 
     computed: {
-        displayDice() {
-            if (!this.rollData) return []
-            const {diceList, results} = this.rollData
+      dataString() {
+          if (!this.rollData) return new Date().toString()
+          const {diceList, results} = this.rollData
+          return new Date().toString() + (diceList ? diceList.toString() : '-n-') + (results ? results.toString() : '-n-')
+      },
 
-            let list = [], i
-            for (i = 0; i< diceList.length; i++) {
-                list.push ({
-                index: i,
-                sides:diceList[i],
-                result:results[i],
-                size:this.size, 
-                })
-            }
-            return list
-        },
-
-        dataString() {
-            if (!this.rollData) return new Date().toString()
-            const {diceList, results} = this.rollData
-            return new Date().toString() + (diceList ? diceList.toString() : '-n-') + (results ? results.toString() : '-n-')
-        },
-
-        styleObject() {
-          return {
-            'height': `${this.zoneHeight || this.size*2 || 150}px`,
-          }
-        },
+      styleObject() {
+        return {
+          'height': `${this.zoneHeight || 100}px`,
+        }
+      },
     },
 
     updated() {

@@ -95,7 +95,7 @@ class VirtualDie {
         this.useResultClass = !!config.useResultClass
 
         this.result = (config.result && config.result > 0 && config.result <= this.sides) ? config.result : this.sides
-        this.size   = config.size || 60
+        this.size   = config.size || 50
     }
 
     get faceClass() { return `preset-e3d-${this.color}` }

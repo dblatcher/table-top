@@ -52,7 +52,7 @@
 
       </folding-panel>
 
-      <roll-zone v-bind="{rollData, size:40}"/>
+      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 

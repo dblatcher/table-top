@@ -3,13 +3,13 @@
     <form @submit="addDie"
     style="display:flex;">
         <select name='sides'>
-            <option v-for="(color,index) in supportedSideNumbers" v-bind:key="index" v-bind:value="color">
-                {{color}}
+            <option v-for="(number,index) in supportedSideNumbers" v-bind:key="index" v-bind:value="number">
+                d{{number}}
             </option>
         </select>
         <select name='color'>
-            <option v-for="(number,index) in supportedColors" v-bind:key="index" v-bind:value="number">
-                {{number}}
+            <option v-for="(color,index) in supportedColors" v-bind:key="index" v-bind:value="color">
+                {{color}}
             </option>
         </select>
         <button>add</button>
@@ -38,10 +38,9 @@ export default {
     data() {
         return {
             dice : [
-                new VirtualDie({sides:8, color:'red', content:'numeral', result:'18', size:100}),
-                new VirtualDie({sides:6, color:'blue', size:60}),
-                new VirtualDie({sides:6, color:'red', size:60}),
-                new VirtualDie({sides:10, color:'black', size:60}),
+                new VirtualDie({sides:6, color:'blue'}),
+                new VirtualDie({sides:6, color:'red'}),
+                new VirtualDie({sides:10, color:'black'}),
             ]
         }
     },
