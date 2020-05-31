@@ -139,6 +139,10 @@ class VirtualDie {
         return this.result
     }
 
+    clone() {
+        return new VirtualDie(this)
+    }
+
     static get supportedColors() {return supportedColors}
     static get supportedSideNumbers() {return supportedSideNumbers}
     static get supportedContent() {return supportedContent}

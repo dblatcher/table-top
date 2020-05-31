@@ -16,7 +16,7 @@
         <DiceButton @dice-result="reportRoll" dice="12,4,8" label="d4 + d8 + d12"/>
       </div>
 
-        <virtual-dice-control @virtual-dice-roll="reportVirtualRoll"/>
+      <virtual-dice-control @virtual-dice-roll="reportVirtualRoll"/>
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 
@@ -29,6 +29,7 @@ import PlayersDisplay from './play-area/PlayersDisplay.vue'
 import MessageBox from './play-area/MessageBox.vue'
 import VirtualDiceControl from './play-area/VirtualDiceControl.vue'
 
+import {VirtualDie} from '../modules/virtualDie';
 import { CharacterSheet, SheetDatum, DataGroup } from "../modules/characterSheets";
 import * as makeTemplateSheet from "../modules/templateCharacterSheets.js"
 
@@ -52,6 +53,9 @@ export default {
     methods : {
         reportVirtualRoll(diceList) {
             console.log(diceList)
+            this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', diceList.map(virtualDie => virtualDie.clone()))
+            this.messages.push("I rolled " + diceList.length+(" dice."))
+            this.socket.emit('game-event', this.playerId, 'VIRTUAL_ROLL', diceList)
         },
 
         reportRoll(rollData) {
@@ -68,6 +72,10 @@ export default {
 
         handleGameEvent (report) {
             console.log('game event:', report)
+            if (report.type === 'VIRTUAL_ROLL') {
+                this.messages.push  (report.player.playerName + " rolled " + report.data.length)
+                this.$set(this.diceRolls, report.player.playerId, report.data.map(serialisedDie => new VirtualDie(serialisedDie)))
+            }
             if (report.type === 'ROLL') {
                 this.messages.push  (report.player.playerName + " " + report.data.message)
                 this.$set(this.diceRolls, report.player.playerId, report.data)

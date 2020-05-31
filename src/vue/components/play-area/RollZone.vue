@@ -2,16 +2,16 @@
     <div class="roll-zone"
     v-bind:style="styleObject">
       <E3dDice  
-      v-for="(die, key) in displayDice"  
-      v-bind:key="key"  
-      v-bind="die" 
+      v-for="(die, index) in rollData"  
+      v-bind:key="index"  
+      v-bind="{virtualDie: die, index}" 
       ref="dice"/>
       <s>{{dataString}}</s>
     </div>
 </template>
 
 <script>
-import E3dDice from '../E3dDice.vue'
+import E3dDice from '../E3dDiceNew.vue'
 
 export default {
     components: {E3dDice},
