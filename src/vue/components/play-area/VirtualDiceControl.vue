@@ -19,7 +19,7 @@
         <div v-for="(virtualDie, index) in dice" v-bind:key="index"
         @click="removeDie(index)"
         style="cursor:not-allowed;"> 
-            <e3d-dice-new v-bind="{virtualDie, index}" ref="dice"/> 
+            <e3d-dice v-bind="{virtualDie, index}" ref="dice"/> 
         </div>
     </div>
 
@@ -30,10 +30,10 @@
 
 <script>
 import {VirtualDie} from '../../modules/virtualDie'
-import E3dDiceNew from '../E3dDiceNew.vue'
+import E3dDice from '../E3dDice.vue'
 export default {
 
-    components: {E3dDiceNew},
+    components: {E3dDice},
 
     data() {
         return {

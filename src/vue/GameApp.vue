@@ -33,7 +33,7 @@
 <script>
 import {VirtualDie} from './modules/virtualDie'
 
-import E3dDice from './components/E3dDiceNew.vue'
+import E3dDice from './components/E3dDice.vue'
 import AdminPanel from "./components/AdminPanel.vue";
 import PlayArea from "./components/PlayArea.vue";
 
