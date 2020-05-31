@@ -1,21 +1,6 @@
 const supportedSideNumbers = [4, 6, 8, 10, 12, 20]
 const supportedColors = ['red','blue','yellow','green','black','white']
-
-class VirtualDie {
-
-    constructor (config) {
-        this.sides  = supportedSideNumbers.includes(config.sides) ? config.sides : 6
-        this.size   = config.size || 60
-        this.color  = supportedColors.includes(config.color) ? config.color : 'white'
-        this.result = (config.result && config.result > 0 && config.result <= this.sides) ? config.result : this.sides
-    }
-
-    get faceClass() { return `preset-e3d-${this.color}` }
-    get resultFaceClass() { return `preset-e3d-${this.color} flash` }
-
-    static get supportedColors() {return supportedColors}
-    static get supportedSideNumbers() {return supportedSideNumbers}
-}
+const supportedContent = ['number', 'letter', 'numeral','wrath and glory']
 
 const resultOrientations = {
     4: [
@@ -100,5 +85,58 @@ const shapeTypes = {
     12: {scale: 1.2, shape: 'Dodecahedron', fontSize:1.25},
     20: {scale: 1.5, shape: 'Icosahedron', fontSize:1},
 } 
+
+class VirtualDie {
+
+    constructor (config) {
+        this.sides   = supportedSideNumbers.includes(config.sides) ? config.sides : 6
+        this.color   = supportedColors.includes(config.color) ? config.color : 'white'
+        this.content = supportedContent.includes(config.content) ? config.content : 'number'
+
+        this.result = (config.result && config.result > 0 && config.result <= this.sides) ? config.result : this.sides
+        this.size   = config.size || 60
+    }
+
+    get faceClass() { return `preset-e3d-${this.color}` }
+    get resultFaceClass() { return `preset-e3d-${this.color} flash` }
+
+    get faceContentFunction() {
+        const {sides, result, faceClass, resultFaceClass, content} = this;
+        const getFaceString = {
+            'number': function(faceIndex) {
+                const numbersToUnderline = [9, 6, 16, 19]
+                const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
+                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%; ${underline ? 'text-decoration:underline;' :''}">${faceIndex+1}</p>`
+            },
+            'letter': function(faceIndex) {
+                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${String.fromCharCode(65+faceIndex)}</p>`
+            },
+            'numeral': function(faceIndex) {
+                const faceStrings = ['I','II','III','IV','V','VI','VII', 'VIII', 'IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX']
+                return `<p style="font-size: ${shapeTypes[sides].fontSize * 70}%;">${faceStrings[faceIndex] || '-'}</p>`
+            },
+            'wrath and glory': function(faceIndex) {
+                const faceStrings = ['!',' ',' ','*','*','**']
+                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${faceStrings[faceIndex] || '-'}</p>`
+            },
+        }
+
+        return function(face, faceIndex) {
+            if ( !(shapeTypes[sides].shape === 'TruncatedCube' && faceIndex >= 6 ) ) {
+                face.innerHTML = getFaceString[content](faceIndex)
+            }
+            if ( faceIndex+1 === result ) {
+                face.classList = resultFaceClass
+            } else {
+                face.classList = faceClass
+            }
+        }
+    }
+
+    static get supportedColors() {return supportedColors}
+    static get supportedSideNumbers() {return supportedSideNumbers}
+    static get supportedContent() {return supportedContent}
+}
+
 
 export {VirtualDie, resultOrientations, shapeTypes}

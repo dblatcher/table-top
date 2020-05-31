@@ -9,8 +9,6 @@ import {resultOrientations, shapeTypes} from '../modules/virtualDie'
 import * as e3d from '3d-elements'
 
 
-const numbersToUnderline = [9, 6, 16, 19]
-
 const randomInt = function (n) {
   return  1 + Math.floor(Math.random()*n)
 }
@@ -62,7 +60,7 @@ export default {
 
   methods: {
     renderDie (forRolling) {
-      const {size, sides, result, faceClass, resultFaceClass} = this.virtualDie
+      const {size, sides, result, faceClass, resultFaceClass, faceContentFunction} = this.virtualDie
 
       if (this.shape) {
         this.$el.removeChild(this.shape)
@@ -76,17 +74,7 @@ export default {
         units: 'px',
         spin: forRolling ? [0,0,0] : resultOrientations[sides][result-1],
         move: forRolling ? [-this.getFrameWidth(),0,500] : [0,0,0],
-        faceContent: function(face, faceIndex) {
-          if (faceIndex < 6 || shapeTypes[sides].shape !== 'TruncatedCube') {
-            const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
-            face.innerHTML = `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%; ${underline ? 'text-decoration:underline;' :''}">${faceIndex+1}</p>`
-          }
-          if ( faceIndex+1 === result && resultFaceClass) {
-            face.classList = resultFaceClass
-          } else {
-            face.classList = faceClass
-          }
-        }
+        faceContent: faceContentFunction
       })
 
       this.$el.appendChild(this.shape)
