@@ -111,6 +111,52 @@ export default {
       .then( () => {
         this.shape.children[result-1].classList.add(resultFaceClass)
       })
+    },
+
+    rollDieVertically() {
+      const{size, sides, result, resultFaceClass} = this.virtualDie;
+      const scatter = 30 * (size / 75)
+
+      let i;
+      for (i=0; i< this.shape.children.length; i++) {
+        this.shape.children[i].classList.remove(resultFaceClass)
+      }
+// to do - shadow effect?? circular div on the frame that grows and shrinks in time with z??
+      this.shape.gradual.moveAndSpin ({
+          move:{x: 0, y: 0, z:200},
+          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
+        },{duration: 40 }
+      )
+
+      .then( () => {
+        return this.shape.gradual.moveAndSpin (
+        {
+          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:0},
+          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
+        },{duration: 30 + randomInt(10)})
+      })
+
+      .then( () => {
+        return this.shape.gradual.moveAndSpin (
+        {
+          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:100},
+          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
+        },{duration: 15 + randomInt(10)})
+      })
+
+// to do - 'normalised' random spins - keep within the 0-360 range so this last spin isnt' too jerky
+      .then( () => {
+        return this.shape.gradual.moveAndSpin (
+        {
+          move:{x: 0, y: 0, z:0},
+          spin:resultOrientations[sides][result-1]
+        },{duration: 15 + randomInt(10)})
+      })
+
+      .then( () => {
+        this.shape.children[result-1].classList.add(resultFaceClass)
+      })
+
     }
   },
 
