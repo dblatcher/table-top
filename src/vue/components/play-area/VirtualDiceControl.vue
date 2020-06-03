@@ -20,7 +20,7 @@
         <p @click="()=>{addSpecialDie('success') }" class="button">Add success die</p>
     </div>
 
-    <div style="display:flex; flex-wrap:wrap; min-height:60px;">
+    <div class="dice-area">
         <div v-for="(virtualDie, index) in dice" v-bind:key="index"
         @click="removeDie(index)"
         style="cursor:not-allowed;"> 
@@ -94,5 +94,17 @@ export default {
 
 
 <style>
+
+    .dice-area {
+        display:flex;
+        flex-wrap:wrap; 
+        min-height:120px; 
+        background-color:#3C7218; 
+        overflow:scroll; 
+        resize: both;
+        margin: .5rem; 
+        width: 360px;
+        max-width: 100%;
+    }
 
 </style>
