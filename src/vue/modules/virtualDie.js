@@ -1,5 +1,5 @@
 const supportedSideNumbers = [4, 6, 8, 10, 12, 20]
-const supportedColors = ['red','blue','yellow','green','black','white']
+const supportedColors = ['red','blue','green','black','white']
 const supportedContent = ['number', 'letter', 'numeral','wrath and glory']
 
 const resultOrientations = {
@@ -148,5 +148,17 @@ class VirtualDie {
     static get supportedContent() {return supportedContent}
 }
 
+const specialDice = {
+    wrath : {
+        color: 'red',
+        sides: 6,
+        content: 'wrath and glory',
+    },
+    success : {
+        color: 'black',
+        sides: 6,
+        content: 'wrath and glory',
+    },
+}
 
-export {VirtualDie, resultOrientations, shapeTypes}
+export {VirtualDie, resultOrientations, shapeTypes, specialDice}

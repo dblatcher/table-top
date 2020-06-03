@@ -15,6 +15,11 @@
         <button>add</button>
     </form>
 
+    <div>
+        <p @click="()=>{addSpecialDie('wrath') }" class="button">Add Wrath die</p>
+        <p @click="()=>{addSpecialDie('success') }" class="button">Add success die</p>
+    </div>
+
     <div style="display:flex; flex-wrap:wrap; min-height:60px;">
         <div v-for="(virtualDie, index) in dice" v-bind:key="index"
         @click="removeDie(index)"
@@ -29,7 +34,7 @@
 </template>
 
 <script>
-import {VirtualDie} from '../../modules/virtualDie'
+import {VirtualDie, specialDice} from '../../modules/virtualDie'
 import E3dDice from '../E3dDice.vue'
 export default {
 
@@ -58,6 +63,11 @@ export default {
                 sides: Number(event.target.elements.sides.value),
                 color: event.target.elements.color.value,
             }))
+        },
+
+        addSpecialDie(type) {
+            if (!specialDice[type]) {return false}
+            this.dice.push( new VirtualDie(specialDice[type]) )
         },
 
         removeDie(index) {
