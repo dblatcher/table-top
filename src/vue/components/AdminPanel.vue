@@ -6,7 +6,7 @@
             <CloseGameButton  @close-game="requestGameClose"/>
 
             <transition-group name="list" tag="span">
-                <entry-request-prompt v-for="(request,index) in pendingEntryRequests" v-bind:key="index"
+                <entry-request-prompt v-for="request in pendingEntryRequests" v-bind:key="request.player.playerId"
                 @answer="handleEntryRequestAnswer"
                 v-bind="{request: request}"/>
             </transition-group>
