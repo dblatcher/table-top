@@ -84,7 +84,7 @@ export default {
             })
             this.$emit('virtual-dice-roll', this.dice)
             this.$nextTick( ()=>{
-               this.$refs.dice.forEach(die => {die.rollDie()})
+               this.$refs.dice.forEach(die => {die.rollDieVertically()})
            })
         }
     },
@@ -97,10 +97,15 @@ export default {
 
     .dice-area {
         display:flex;
-        flex-wrap:wrap; 
-        min-height:120px; 
+        flex-wrap:wrap;
+        align-items: center;
+        justify-content:center;
+        perspective: 75vw;
+        padding: 1.5em; 
+        min-height:100px; 
+        box-sizing: content-box;
         background-color:#3C7218; 
-        overflow:scroll; 
+        overflow: auto; 
         resize: both;
         margin: .5rem; 
         width: 360px;
