@@ -127,7 +127,7 @@ export default {
       }
 // to do - shadow effect?? circular div on the frame that grows and shrinks in time with z??
       this.shape.gradual.moveAndSpin ({
-          move:{x: -10-randomInt(20), y: 0, z:250 + randomInt(50)},
+          move:{x: -10-randomInt(20), y: 0, z:400 + randomInt(50)},
           spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
         },{duration: 40 }
       )
@@ -142,14 +142,20 @@ export default {
       })
 
 
-      //to do - instead of random spin here, move half way from current spin to the resultOrientation
       .then( () => {
         this.shape.spin = normalisedSpin(this.shape.spin)
+
+        const halfWay = [
+          (resultOrientations[sides][result-1][0] - this.shape.spin.x)/2,
+          (resultOrientations[sides][result-1][1] - this.shape.spin.y)/2,
+          (resultOrientations[sides][result-1][2] - this.shape.spin.z)/2,
+        ]
+
         return this.shape.gradual.moveAndSpin (
         {
-          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:100},
-          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
-        },{duration: 15 + randomInt(10)})
+          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:200},
+          spinBy: halfWay
+        },{duration: 25 + randomInt(10)})
       })
 
       .then( () => {
@@ -158,7 +164,7 @@ export default {
         {
           move:{x: 0, y: 0, z:0},
           spin:resultOrientations[sides][result-1]
-        },{duration: 15 + randomInt(10)})
+        },{duration: 25 + randomInt(10)})
       })
 
       .then( () => {
