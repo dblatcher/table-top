@@ -18,7 +18,7 @@
 
 <script>
 
-import RollZone from './RollZone.vue'
+import RollZone from './RollZoneNew.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
 import FoldingPanel from '../FoldingPanel.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
