@@ -1,37 +1,38 @@
 <template>
-  <div class="frame">
-    <form @submit="addDie"
-    style="display:flex;">
-        <select name='sides'>
-            <option v-for="(number,index) in supportedSideNumbers" v-bind:key="index" v-bind:value="number">
-                d{{number}}
-            </option>
-        </select>
-        <select name='color'>
-            <option v-for="(color,index) in supportedColors" v-bind:key="index" v-bind:value="color">
-                {{color}}
-            </option>
-        </select>
-        <button>add</button>
-    </form>
 
-    <div>
-        <p @click="()=>{addSpecialDie('wrath') }" class="button">Add Wrath die</p>
-        <p @click="()=>{addSpecialDie('success') }" class="button">Add success die</p>
-    </div>
+    <article class="roll-zone roll-zone--control">
+        <form @submit="addDie" class="dice-form">
+            <select name='sides' v-bind:disabled="currentSpecialDie !== ''">
+                <option v-for="(number,index) in supportedSideNumbers" v-bind:key="index" v-bind:value="number">
+                    d{{number}}
+                </option>
+            </select>
+            <select name='color' v-bind:disabled="currentSpecialDie !== ''">
+                <option v-for="(color,index) in supportedColors" v-bind:key="index" v-bind:value="color">
+                    {{color}}
+                </option>
+            </select>
+            <select name='special' v-model="currentSpecialDie">
+                <option value="">-special dice-</option>
+                <option v-for="(name,index) in specialDiceOptions" v-bind:key="index" v-bind:value="name">
+                    {{name}}
+                </option>
+            </select>
+            <button>add</button>
+        </form>
 
-    <div class="roll-zone roll-zone--control">
         <div v-for="(virtualDie, index) in dice" v-bind:key="index"
         @click="removeDie(index)"
         style="cursor:not-allowed;"> 
             <e3d-dice v-bind="{virtualDie, index}" ref="dice"/> 
         </div>
-    </div>
 
-    <button @click="()=>{rollDice(false)}">Roll!</button> 
-    <button v-if="amGamemaster" @click="()=>{rollDice(true)}">Roll behind screen</button> 
+        <div class="roll-button-holder">
+            <button @click="()=>{rollDice(false)}">Roll</button> 
+            <button v-if="amGamemaster" @click="()=>{rollDice(true)}">Roll behind screen</button> 
+        </div>
+    </article>
 
-  </div>
 </template>
 
 <script>
@@ -46,18 +47,26 @@ export default {
         return {
             dice : [
                 new VirtualDie({sides:20, color:'black'}),
-            ]
+            ],
+            currentSpecialDie: '',
         }
     },
 
     computed: {
         supportedSideNumbers() {return VirtualDie.supportedSideNumbers},
-        supportedColors() {return VirtualDie.supportedColors}
+        supportedColors() {return VirtualDie.supportedColors},
+        specialDiceOptions() {return Object.keys(specialDice)},
     },
 
     methods: {
         addDie(event) {
             event.preventDefault()
+
+            if (this.currentSpecialDie !== '') {
+                if (!specialDice[this.currentSpecialDie]) {return false}
+                this.dice.push( new VirtualDie(specialDice[this.currentSpecialDie]) )
+                return
+            }
 
             this.dice.push( new VirtualDie({
                 sides: Number(event.target.elements.sides.value),
@@ -65,9 +74,8 @@ export default {
             }))
         },
 
-        addSpecialDie(type) {
-            if (!specialDice[type]) {return false}
-            this.dice.push( new VirtualDie(specialDice[type]) )
+        handleSpecialOptionChange(event) {
+            console.log(event.target.value)
         },
 
         removeDie(index) {
@@ -102,5 +110,23 @@ export default {
 
 <style>
 
+    .dice-form {
+        position:absolute; 
+        top:0; 
+        left:0;
+        width: 100%;
+        max-width: 20rem;
+        padding: .25em;
+        display:flex; 
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .roll-button-holder {
+        position:absolute; 
+        bottom:0; 
+        right:1em;
+        padding: .25em;
+    }
 
 </style>

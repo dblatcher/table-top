@@ -2,7 +2,8 @@
     display:flex;
     flex-wrap:wrap;
     align-items: center;
-    justify-content:center;
+    justify-content:space-around;
+    justify-content:space-evenly;
     perspective: 75vw;
     background-color: $color-contrast;
     overflow: auto; 
@@ -17,5 +18,6 @@
         margin: .5rem; 
         min-height:100px; 
         width: 360px;
+        padding: 1.4em 0;
     }
 }

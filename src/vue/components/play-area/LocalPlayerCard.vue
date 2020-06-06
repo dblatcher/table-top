@@ -2,6 +2,8 @@
   <article v-bind:class="`${color} card`">
       <h2>{{player.playerName}}</h2>
 
+      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
+
       <folding-panel v-bind="{ title:true, holderClass:'bordered', transitionClass:'corner-fold'}">
 
         <template v-slot:title>
@@ -51,8 +53,6 @@
         </character-sheet-section>
 
       </folding-panel>
-
-      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 

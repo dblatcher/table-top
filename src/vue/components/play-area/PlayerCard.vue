@@ -2,8 +2,9 @@
   <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
       <h2>{{gm? 'GAME MASTER - ': ''}}{{player.playerName}}</h2>
 
-      <div v-if="!gm">
+      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
 
+      <div v-if="!gm">
         <folding-panel v-bind="{title:'Character Sheet', holderClass:'bordered', transitionClass:'corner-fold'}">
           <template v-slot:title>
             <h3 class="character-sheet-title">{{'Character Sheet'}}</h3>
@@ -12,7 +13,6 @@
         </folding-panel>
       </div>
 
-      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
   </article>
 </template>
 

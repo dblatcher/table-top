@@ -153,9 +153,4 @@ export default {
     margin: 0;
   }
 
-  .roll-button-holder {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
 </style>
