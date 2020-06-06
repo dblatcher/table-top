@@ -6,13 +6,10 @@
       v-bind:playerId="playerId" 
       v-bind:gameMasterId="config.gameMasterId"
       v-bind="{diceRolls, characterSheets}"
-      @update-character-sheet = "reportCharacterSheetUpdate"
-      />
-
-      <virtual-dice-control 
+      @update-character-sheet="reportCharacterSheetUpdate"
       @virtual-dice-roll="reportVirtualRoll" 
       @secret-dice-roll="reportSecretRoll"
-      v-bind="{amGamemaster: config.amGamemaster}"/>
+      />
 
       <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
 

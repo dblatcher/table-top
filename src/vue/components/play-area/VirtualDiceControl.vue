@@ -120,9 +120,11 @@ export default {
         display:flex; 
         flex-wrap: wrap;
         justify-content: space-between;
+        box-sizing: border-box;
     }
 
     .roll-button-holder {
+        box-sizing: border-box;
         position:absolute; 
         bottom:0; 
         right:1em;

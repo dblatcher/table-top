@@ -7,7 +7,7 @@
     perspective: 75vw;
     background-color: $color-contrast;
     overflow: auto; 
-    resize: both;
+    resize: vertical;
     max-width: 100%;
 
     padding: 0; 
@@ -15,9 +15,7 @@
     box-sizing: border-box;
 
     &--control {
-        margin: .5rem; 
         min-height:100px; 
-        width: 360px;
         padding: 1.4em 0;
     }
 }

@@ -189,8 +189,8 @@ class CharacterSheet {
     }
 
     static deserialise (serialisedSheet) {
-        const data   = serialisedSheet.values.map(value => SheetDatum.deserialise(value) )
-        const groups = serialisedSheet.groups.map(group => DataGroup.deserialise(group) )
+        const data   = serialisedSheet.values ? serialisedSheet.values.map(value => SheetDatum.deserialise(value) ) : []
+        const groups = serialisedSheet.groups ? serialisedSheet.groups.map(group => DataGroup.deserialise(group) ) : []
         return new CharacterSheet( data , groups)
     }
 

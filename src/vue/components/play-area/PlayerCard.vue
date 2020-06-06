@@ -1,6 +1,6 @@
 <template>
   <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
-      <h2>{{gm? 'GAME MASTER - ': ''}}{{player.playerName}}</h2>
+      <h2>{{gm? 'GM:': ''}}{{player.playerName}}</h2>
 
       <roll-zone v-bind="{rollData, zoneHeight:100}"/>
 

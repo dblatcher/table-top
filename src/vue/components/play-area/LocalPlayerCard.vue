@@ -1,10 +1,10 @@
 <template>
   <article v-bind:class="`${color} card`">
-      <h2>{{player.playerName}}</h2>
+      <h2>{{gm?'GM:':''}}{{player.playerName}}</h2>
 
-      <roll-zone v-bind="{rollData, zoneHeight:100}"/>
+      <slot name="dice-control"></slot>
 
-      <folding-panel v-bind="{ title:true, holderClass:'bordered', transitionClass:'corner-fold'}">
+      <folding-panel v-if="!gm" v-bind="{ title:true, holderClass:'bordered', transitionClass:'corner-fold'}">
 
         <template v-slot:title>
           <h3 class="character-sheet-title">{{ currentSheetItemName || 'My Sheet'}}</h3>
@@ -54,7 +54,7 @@
 
       </folding-panel>
 
-      <storage-dialogue v-bind="storageDialogueProps" 
+      <storage-dialogue v-if="!gm"  v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
       @item-delete="handleDeletedSheet"
       @item-load="handleLoadedSheet"
@@ -64,7 +64,6 @@
 
 <script>
 
-import RollZone from './RollZone.vue'
 import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
@@ -81,7 +80,7 @@ import {
 
 
 export default {
-    components : {RollZone, StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel},
+    components : {StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
         return {
@@ -159,7 +158,9 @@ export default {
     },
 
     mounted() {
-      this.$emit('update-character-sheet', this.localCharacterSheet)
+      if( !this.gm) {
+        this.$emit('update-character-sheet', this.localCharacterSheet)
+      }
     }
 
 }
