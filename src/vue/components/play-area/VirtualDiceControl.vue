@@ -84,7 +84,7 @@ export default {
             })
             this.$emit('virtual-dice-roll', this.dice)
             this.$nextTick( ()=>{
-               this.$refs.dice.forEach(die => {die.rollDieVertically()})
+               this.$refs.dice.forEach(die => {die.rollDieVertically(400)})
            })
         }
     },

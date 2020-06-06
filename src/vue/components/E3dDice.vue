@@ -13,7 +13,11 @@ const randomInt = function (n) {
   return  1 + Math.floor(Math.random()*n)
 }
 
-const normalisedSpin = function(spinValueObject) {
+const randomSpin = function (maxDegrees) {
+  return [ randomInt(maxDegrees*2)-maxDegrees, randomInt(maxDegrees*2)-maxDegrees, randomInt(maxDegrees*2)-maxDegrees ]
+}
+
+const normaliseSpin = function(spinValueObject) {
   return [spinValueObject.x, spinValueObject.y, spinValueObject.z].map( value => value%360 < 0 ? value%360+360 : value%360 )
 }
 
@@ -117,58 +121,62 @@ export default {
       })
     },
 
-    rollDieVertically() {
+    rollDieVertically(throwHeight = 300, throwDistance = 0, jumpToStartPosition = false) {
       const{size, sides, result, resultFaceClass} = this.virtualDie;
+      const e3dDie = this.shape;
+
       const scatter = 30 * (size / 75)
+      // to do - shadow effect?? circular div on the frame that grows and shrinks in time with z??
 
       let i;
-      for (i=0; i< this.shape.children.length; i++) {
-        this.shape.children[i].classList.remove(resultFaceClass)
+      for (i=0; i< e3dDie.children.length; i++) {
+        e3dDie.children[i].classList.remove(resultFaceClass)
       }
-// to do - shadow effect?? circular div on the frame that grows and shrinks in time with z??
-      this.shape.gradual.moveAndSpin ({
-          move:{x: -10-randomInt(20), y: 0, z:400 + randomInt(50)},
-          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
-        },{duration: 40 }
-      )
 
+      function moveToStart() {
+        if (jumpToStartPosition) {
+          e3dDie.move = {x: -throwDistance, y: 0, z:throwHeight}
+          e3dDie.spin = randomSpin(90)
+          return Promise.resolve()
+        }
+        return e3dDie.gradual.moveAndSpin ({
+          move:{x: -throwDistance, y: 0, z:throwHeight},
+          spinBy:randomSpin(90)
+        },{duration: 40 })
+      }
+
+
+      moveToStart()
       .then( () => {
-        this.shape.spin = normalisedSpin(this.shape.spin)
-        return this.shape.gradual.moveAndSpin (
+        e3dDie.spin = normaliseSpin(e3dDie.spin)
+        return e3dDie.gradual.moveAndSpin (
         {
-          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:0},
-          spinBy:[ randomInt(180)-90, randomInt(180)-90, randomInt(180)-90 ]
+          move:{x: -throwDistance*2/3, y: randomInt(scatter/2), z:0},
+          spinBy:randomSpin(360)
         },{duration: 30 + randomInt(10)})
       })
-
-
       .then( () => {
-        this.shape.spin = normalisedSpin(this.shape.spin)
-
-        const halfWay = [
-          (resultOrientations[sides][result-1][0] - this.shape.spin.x)/2,
-          (resultOrientations[sides][result-1][1] - this.shape.spin.y)/2,
-          (resultOrientations[sides][result-1][2] - this.shape.spin.z)/2,
-        ]
-
-        return this.shape.gradual.moveAndSpin (
+        e3dDie.spin = normaliseSpin(e3dDie.spin)
+        return e3dDie.gradual.moveAndSpin (
         {
-          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:200},
-          spinBy: halfWay
+          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:throwHeight/2},
+          spinBy:  [
+            (resultOrientations[sides][result-1][0] - e3dDie.spin.x)/2,
+            (resultOrientations[sides][result-1][1] - e3dDie.spin.y)/2,
+            (resultOrientations[sides][result-1][2] - e3dDie.spin.z)/2,
+          ]
         },{duration: 25 + randomInt(10)})
       })
-
       .then( () => {
-        this.shape.spin = normalisedSpin(this.shape.spin)
-        return this.shape.gradual.moveAndSpin (
+        e3dDie.spin = normaliseSpin(e3dDie.spin)
+        return e3dDie.gradual.moveAndSpin (
         {
           move:{x: 0, y: 0, z:0},
           spin:resultOrientations[sides][result-1]
         },{duration: 25 + randomInt(10)})
       })
-
       .then( () => {
-        this.shape.children[result-1].classList.add(resultFaceClass)
+        e3dDie.children[result-1].classList.add(resultFaceClass)
       })
 
     }
