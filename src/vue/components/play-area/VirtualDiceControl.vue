@@ -28,7 +28,8 @@
         </div>
     </div>
 
-    <button @click="rollDice">Roll!</button> 
+    <button @click="()=>{rollDice(false)}">Roll!</button> 
+    <button v-if="amGamemaster" @click="()=>{rollDice(true)}">Roll behind screen</button> 
 
   </div>
 </template>
@@ -39,13 +40,12 @@ import E3dDice from '../E3dDice.vue'
 export default {
 
     components: {E3dDice},
+    props: ['amGamemaster'],
 
     data() {
         return {
             dice : [
-                new VirtualDie({sides:6, color:'blue'}),
-                new VirtualDie({sides:6, color:'red'}),
-                new VirtualDie({sides:10, color:'black'}),
+                new VirtualDie({sides:20, color:'black'}),
             ]
         }
     },
@@ -77,12 +77,19 @@ export default {
            })
         },
 
-        rollDice() {
+        rollDice(behindScreen = false) {
+
             this.dice.forEach(virtualDie => {
                 virtualDie.randomiseResult()
                 virtualDie.useResultClass = true;
             })
-            this.$emit('virtual-dice-roll', this.dice)
+            
+            if(behindScreen) {
+                this.$emit('secret-dice-roll', this.dice)
+            } else {
+                this.$emit('virtual-dice-roll', this.dice)
+            }
+            
             this.$nextTick( ()=>{
                this.$refs.dice.forEach(die => {die.rollDieVertically(400)})
            })

@@ -176,6 +176,9 @@ export default {
         },{duration: 25 + randomInt(10)})
       })
       .then( () => {
+        for (i=0; i< e3dDie.children.length; i++) {
+          e3dDie.children[i].classList.remove(resultFaceClass)
+        }
         e3dDie.children[result-1].classList.add(resultFaceClass)
       })
 

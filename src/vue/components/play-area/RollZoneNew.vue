@@ -34,7 +34,7 @@ export default {
         if (this.$refs.dice) {
             this.$refs.dice.forEach(die => {
                die.renderDie()
-               die.rollDieVertically(300,150,true)
+               die.rollDieVertically(600,150,true)
             } )
         }
     },
