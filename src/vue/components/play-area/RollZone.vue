@@ -25,7 +25,7 @@ export default {
 
       styleObject() {
         return {
-          'height': `${this.zoneHeight || 100}px`,
+          'min-height': `${this.zoneHeight || 100}px`,
         }
       },
     },
@@ -33,8 +33,8 @@ export default {
     updated() {
         if (this.$refs.dice) {
             this.$refs.dice.forEach(die => {
-               die.renderDie(true)
-               die.rollDie()
+               die.renderDie()
+               die.rollDie(600,150,true)
             } )
         }
     },
@@ -43,10 +43,6 @@ export default {
 </script>
 
 <style scoped>
-  .roll-zone {
-    position: relative;
-    perspective: 75vw;
-  }
 
   s {
     display: none;

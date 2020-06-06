@@ -27,47 +27,27 @@ export default {
   data() {
     return{
       shape: null,
-      forRolling: false,
     }
   },
 
   computed: {
-    placement() {
-      return {
-        x: this.index/2, 
-        y: this.index%2 ? 1 : 0
-      }
-    },
 
     styleObject() {
-      const {placement,forRolling} = this;
       const {size} = this.virtualDie;
       const baseFontSize = 16 * (size / 75)
 
-        if (forRolling) {
-          return{
-            'position': 'absolute',
-            'justify-content': 'flex-end',
-            'height':`${size}px`, 
-            'width': `calc(100% - ${size*placement.x}px)`,
-            'padding-right': `${size*.5}px`,
-            'top' :  `${size*placement.y}px`,
-            'font-size': `${baseFontSize}px`,
-          }
-        } else {
-          return {
-            'position': 'relative',
-            'justify-content': 'center',
-            'height':`${size}px`, 
-            'width': `${size}px`,
-            'font-size': `${baseFontSize}px`,
-          }
-        }
+      return {
+        'position': 'relative',
+        'justify-content': 'center',
+        'height':`${size}px`, 
+        'width': `${size}px`,
+        'font-size': `${baseFontSize}px`,
+      }
     }
   },
 
   methods: {
-    renderDie (forRolling) {
+    renderDie () {
       const {size, sides, result, faceClass, resultFaceClass, faceContentFunction} = this.virtualDie
 
       if (this.shape) {
@@ -75,13 +55,11 @@ export default {
         this.shape = null;
       }
 
-      this.forRolling = forRolling
-
       this.shape = e3d.make[shapeTypes[sides].shape]({
         size: [size * 0.6 * shapeTypes[sides].scale, size * 0.075 * shapeTypes[sides].scale  ],
         units: 'px',
-        spin: forRolling ? [0,0,0] : resultOrientations[sides][result-1],
-        move: forRolling ? [-this.getFrameWidth(),0,500] : [0,0,0],
+        spin: resultOrientations[sides][result-1],
+        move: [0,0,0],
         faceContent: faceContentFunction
       })
 
@@ -93,35 +71,7 @@ export default {
       return this.$el.clientWidth 
     },
 
-    rollDie () {
-      const{size, sides, result, resultFaceClass} = this.virtualDie;
-      const scatter = 20 * (size / 75)
-
-      let i;
-      for (i=0; i< this.shape.children.length; i++) {
-        this.shape.children[i].classList.remove(resultFaceClass)
-      }
-
-      this.shape.gradual.moveAndSpin ({
-          move:{x: this.shape.move.x/2, y: randomInt(scatter), z:0},
-          spin:[ randomInt(6)*45, randomInt(6)*45, randomInt(6)*45 ]
-        },{duration: 50 + randomInt(30)}
-      )
-
-      .then( () => {
-        return this.shape.gradual.moveAndSpin (
-        {
-          move:{x: randomInt(scatter) - scatter/2, y: randomInt(scatter/2), z:0},
-          spin:resultOrientations[sides][result-1]
-        },{duration: 30 + randomInt(40)})
-      })
-
-      .then( () => {
-        this.shape.children[result-1].classList.add(resultFaceClass)
-      })
-    },
-
-    rollDieVertically(throwHeight = 300, throwDistance = 0, jumpToStartPosition = false) {
+    rollDie(throwHeight = 300, throwDistance = 0, jumpToStartPosition = false) {
       const{size, sides, result, resultFaceClass} = this.virtualDie;
       const e3dDie = this.shape;
 

@@ -91,7 +91,7 @@ export default {
             }
             
             this.$nextTick( ()=>{
-               this.$refs.dice.forEach(die => {die.rollDieVertically(400)})
+               this.$refs.dice.forEach(die => {die.rollDie(400)})
            })
         }
     },

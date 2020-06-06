@@ -64,7 +64,7 @@
 
 <script>
 
-import RollZone from './RollZoneNew.vue'
+import RollZone from './RollZone.vue'
 import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
