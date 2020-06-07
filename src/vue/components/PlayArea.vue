@@ -23,7 +23,7 @@
 
         <PlayerCard v-for="(player, index) in otherPlayers" v-bind:key="index"
         v-bind="{
-            player, 
+            player, messages,
             rollData: diceRolls[player.playerId] || null,  
             characterSheet: characterSheets[player.playerId] || {},  
             color: player.playerId === config.gameMasterId ? 'blue' : 'red', 
@@ -33,7 +33,7 @@
     </div>
 
     <div class="frame sidebar">
-        <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
+        <MessageBox v-bind="{messages}" @write-message="sendMessage" />
     </div>
 
   </section>
