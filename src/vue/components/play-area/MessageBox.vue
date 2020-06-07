@@ -1,7 +1,15 @@
 <template>
   <article> 
       <ul ref="list">
-        <li v-for="(message, index) in messages" v-bind:key="index">{{message}}</li>
+        <li v-for="(message, index) in messages" v-bind:key="index"
+        v-bind:class="{'text-message-holder': message.isTextMessage, 'update-message-holder': !message.isTextMessage}">
+            <span v-if="message.isTextMessage" class="speaker-name">
+                {{formatSpeaker(message)}}
+            </span>
+            <span v-bind:class="{'text-message': message.isTextMessage, 'update-message': !message.isTextMessage}">
+                {{formatMessage(message)}}
+            </span>
+        </li>
       </ul>
       <form @submit="writeMessage">
         <input type="text" name="messageText" autocomplete="false"/>
@@ -22,7 +30,27 @@ export default {
             const messageText = form.elements.messageText.value
             this.$emit('write-message', messageText)
             form.elements.messageText.value = ""
-        }
+        },
+
+        formatSpeaker(message) {
+            if (message.isFromSelf) {
+                return 'me: '
+            }
+            return `${message.player ? message.player.playerName : '??'}: `
+        },
+
+        formatMessage(message) {
+
+            if (message.isTextMessage) {return message.text}
+            let playerName = message.player ? message.player.playerName : '??'
+            if (message.isFromSelf) { playerName = 'I'}
+
+            if (message.text.includes('$playerName$')) {
+                return message.text.replace('$playerName$', playerName) 
+            }
+
+            return `${playerName} ${message.text}`
+        },
     },
 
     updated() {
@@ -34,6 +62,18 @@ export default {
 
 <style scoped>
 
+    .speaker-name {
+        font-weight: bold;
+    }
+
+    .text-message {
+        font-style: italic;
+    }
+
+    .update-message {
+        font-style: italic;
+    }
+
     article {
         min-width: 10rem;
     }
@@ -42,12 +82,13 @@ export default {
         height: 10rem;
         overflow-y: scroll;
         margin: 0;
-        padding-inline-start: 1.5rem;
+        list-style: none;
+        padding: 0;
     }
 
     li {
         font-size: small;
-        margin-right: 1.5rem;
+        margin: .2rem .5rem;
     }
 
     li:last-child {

@@ -80,13 +80,21 @@ export default {
     methods : {
         reportVirtualRoll(diceList) {
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', diceList.map(virtualDie => virtualDie.clone()))
-            this.messages.push("I rolled " + diceList.length+(" dice."))
+            this.messages.push({
+                text:"rolled " + diceList.length+(" dice."),
+                player: this.localPlayer,
+                isFromSelf: true,
+            })
             this.socket.emit('game-event', this.playerId, 'VIRTUAL_ROLL', diceList)
         },
 
         reportSecretRoll(diceList) {
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', [])
-            this.messages.push("I rolled " + diceList.length+(" dice behind the screen."))
+            this.messages.push({
+                text: `rolled ${diceList.length} dice behind the screen.`,
+                player: this.localPlayer,
+                isFromSelf: true,
+            })
             this.socket.emit('game-event', this.playerId, 'SECRET_ROLL', {number: diceList.length})
         },
 
@@ -98,11 +106,17 @@ export default {
         handleGameEvent (report) {
             console.log('game event:', report)
             if (report.type === 'VIRTUAL_ROLL') {
-                this.messages.push  (`${report.player.playerName} rolled ${report.data.length} dice.`)
+                this.messages.push  ({
+                    text: `rolled ${report.data.length} dice.`,
+                    player: report.player,
+                })
                 this.$set(this.diceRolls, report.player.playerId, report.data.map(serialisedDie => new VirtualDie(serialisedDie)))
             }
             if (report.type === 'SECRET_ROLL') {
-                this.messages.push  (`${report.player.playerName} rolled ${report.data.number} dice behind the GM screen.`)
+                this.messages.push  ({
+                    text: `Behind the GM screen, $playerName$ rolls ${report.data.number} dice.`,
+                    player: report.player
+                })
                 this.$set(this.diceRolls, report.player.playerId, [])
             }
             if (report.type === 'CHARACTER_SHEET' && report.data) {
@@ -116,12 +130,22 @@ export default {
         },
 
         sendMessage (messageText) {
-            this.messages.push(`${'me'}: ${messageText}`,)
+            this.messages.push({
+                text: messageText,
+                player: this.localPlayer,
+                isFromSelf: true,
+                isTextMessage: true,
+            },)
             this.socket.send(this.playerId, messageText)
         },
 
         handleMessage (messageData) {
-            this.messages.push(`${messageData.playerName}: ${messageData.messageText}`,)
+            let player = this.gameState.players.filter(player => player.playerId === messageData.playerId)[0]
+            this.messages.push({
+                text: messageData.messageText,
+                player,
+                isTextMessage: true,
+            })
         },
     },
 
