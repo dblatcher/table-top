@@ -1,6 +1,10 @@
 <template>
   <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
-    <q v-show="bubbleText" class="message-bubble">{{bubbleText}}</q>
+
+      <transition name="fade">
+        <q v-if="bubbleTimer" class="message-bubble">{{bubbleTimer.text}}</q>
+      </transition>
+
       <h2>{{gm? 'GM:': ''}}{{player.playerName}}</h2>
 
       <roll-zone v-bind="{rollData, zoneHeight:100}"/>
@@ -24,13 +28,40 @@ import CharacterSheetSection from './CharacterSheetSection.vue'
 import FoldingPanel from '../FoldingPanel.vue'
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 
+class BubbleTimer {
+
+  constructor(text, lifespan) {
+    this.text = text
+    this.frame = lifespan * 100
+  }
+
+  start(vm) {
+    const animation = this
+    animation.timer = setInterval( function(){
+      animation.frame -= 1
+      if (animation.frame <= 0) { 
+        clearInterval(animation.timer)
+        vm.handleBubbleTimerFinish(this)
+      }
+    }, 10)
+    return this
+  }
+
+}
+
 export default {
     components : {RollZone, CharacterSheetSection,FoldingPanel},
     props: ["player","messages", "color","gm", "rollData","characterSheet"],
 
     data() {
       return {
-        bubbleText: "",
+        bubbleTimer: null
+      }
+    },
+
+    methods: {
+      handleBubbleTimerFinish(bubbleTimer) {
+        this.bubbleTimer = null
       }
     },
 
@@ -57,7 +88,7 @@ export default {
         let mostRecentMessage = updatedMessages[updatedMessages.length-1]
 
         if (mostRecentMessage.player.playerId === this.player.playerId && mostRecentMessage.isTextMessage) {
-          this.bubbleText = mostRecentMessage.text
+          this.bubbleTimer = new BubbleTimer(mostRecentMessage.text, 4).start(this)
         }
 
       } 
@@ -77,10 +108,25 @@ export default {
     width: 8rem;
     padding: .75rem;
     border-radius: 40%;
-    transform: translate(0%, -50%);
     box-shadow: 2px 2px 4px 1px black;
     text-align: center;
     font-size: small;
+    transform: translateY(-50%);
   }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s, transform 1s;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-150%);
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(3em);
+}
+
 
 </style>
