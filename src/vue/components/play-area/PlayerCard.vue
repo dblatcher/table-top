@@ -25,7 +25,7 @@ import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 
 export default {
     components : {RollZone, CharacterSheetSection,FoldingPanel},
-    props: ["player", "color","gm","local", "rollData","characterSheet"],
+    props: ["player", "color","gm", "rollData","characterSheet"],
 
     computed : {
       groupedData() {

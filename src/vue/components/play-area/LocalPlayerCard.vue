@@ -1,5 +1,5 @@
 <template>
-  <article v-bind:class="`${color} card`">
+  <article v-bind:class="`${color} card ${gm ? 'card--gm' : 'card--local'}`">
       <h2>{{gm?'GM:':''}}{{player.playerName}}</h2>
 
       <slot name="dice-control"></slot>

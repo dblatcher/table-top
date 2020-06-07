@@ -1,24 +1,48 @@
 <template>
   <section>
 
-      <PlayersDisplay 
-      v-bind:players="this.gameState.players" 
-      v-bind:playerId="playerId" 
-      v-bind:gameMasterId="config.gameMasterId"
-      v-bind="{diceRolls, characterSheets}"
-      @update-character-sheet="reportCharacterSheetUpdate"
-      @virtual-dice-roll="reportVirtualRoll" 
-      @secret-dice-roll="reportSecretRoll"
-      />
 
-      <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
+    <div class="frame main">
+
+        <local-player-card v-if="localPlayer"
+        @update-character-sheet="reportCharacterSheetUpdate"
+        v-bind="{
+            player: localPlayer,
+            rollData: this.diceRolls[localPlayer.playerId] || null,  
+            characterSheet: this.characterSheets[localPlayer.playerId] || {},  
+            color:'green', 
+            gm: localPlayer.playerId === config.gameMasterId
+        }">
+            <template v-slot:dice-control>
+                <virtual-dice-control 
+                @virtual-dice-roll="reportVirtualRoll" 
+                @secret-dice-roll="reportSecretRoll"
+                v-bind="{amGamemaster: localPlayer.playerId === config.gameMasterId}"/>
+            </template>
+        </local-player-card>
+
+        <PlayerCard v-for="(player, index) in otherPlayers" v-bind:key="index"
+        v-bind="{
+            player, 
+            rollData: diceRolls[player.playerId] || null,  
+            characterSheet: characterSheets[player.playerId] || {},  
+            color: player.playerId === config.gameMasterId ? 'blue' : 'red', 
+            gm:    player.playerId === config.gameMasterId, 
+        }" />
+
+    </div>
+
+    <div class="frame sidebar">
+        <MessageBox v-bind:messages="messages" @write-message="sendMessage" />
+    </div>
 
   </section>
 </template>
 
 <script>
 
-import PlayersDisplay from './play-area/PlayersDisplay.vue'
+import PlayerCard from "./play-area/PlayerCard.vue";
+import LocalPlayerCard from "./play-area/LocalPlayerCard.vue";
 import MessageBox from './play-area/MessageBox.vue'
 import VirtualDiceControl from './play-area/VirtualDiceControl.vue'
 
@@ -27,7 +51,7 @@ import { CharacterSheet, SheetDatum, DataGroup } from "../modules/characterSheet
 import * as makeTemplateSheet from "../modules/templateCharacterSheets.js"
 
 export default {
-    components: {PlayersDisplay, MessageBox, VirtualDiceControl},
+    components: { MessageBox, VirtualDiceControl, PlayerCard, LocalPlayerCard},
     props: ['displayName', 'socket', 'playerId', 'gameState', 'config'],
 
     data() {
@@ -40,6 +64,17 @@ export default {
     },
 
     computed : {
+
+        localPlayer: function() {
+            return this.gameState.players.filter(player => player.playerId === this.playerId)[0]
+        },
+
+        otherPlayers: function() {
+            return this.gameState.players.filter(
+                player => player.playerId !== this.playerId
+            )
+        }
+
     },
 
     methods : {
@@ -103,6 +138,23 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+    section {
+        display:flex; 
+        max-width:100%; 
+        flex-wrap:wrap;
+    }
+
+    .main {
+        display: flex;
+        flex-wrap: wrap; 
+        flex-basis: 50rem;
+        flex-grow: 1;
+    }
+
+    .sidebar {  
+        flex-basis: 10rem;
+    }
 
 </style>

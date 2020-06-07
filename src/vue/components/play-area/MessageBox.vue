@@ -1,5 +1,5 @@
 <template>
-  <section class="frame"> 
+  <article> 
       <ul ref="list">
         <li v-for="(message, index) in messages" v-bind:key="index">{{message}}</li>
       </ul>
@@ -7,7 +7,7 @@
         <input type="text" name="messageText" autocomplete="false"/>
         <input type="submit" value="send"/>
       </form>
-  </section>
+  </article>
 </template>
 
 <script>
@@ -34,8 +34,12 @@ export default {
 
 <style scoped>
 
+    article {
+        min-width: 10rem;
+    }
+
     ul {
-        height: 6rem;
+        height: 10rem;
         overflow-y: scroll;
         margin: 0;
         padding-inline-start: 1.5rem;
