@@ -32,8 +32,16 @@
     margin: ($std-space/2) $std-space;
     border: none;
     background-color: $color-shade;
+    font-family: $font-main;
+    font-size: small;
 
     @include button-hover(medium);
+
+    &--dice {
+        min-width: unset;
+        margin: $std-space/2;
+        padding: 0;
+    }
 
     &--disabled {
         background-color: gray;
