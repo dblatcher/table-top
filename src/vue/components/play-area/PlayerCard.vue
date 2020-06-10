@@ -2,7 +2,7 @@
   <article v-bind:class="`${color} card ${gm ? 'card--gm':''}`">
 
       <transition name="fade">
-        <q v-if="bubbleTimer" class="message-bubble">{{bubbleTimer.text}}</q>
+        <q v-if="bubbleTimer[0] && bubbleTimer[0].hasStarted" class="message-bubble">{{bubbleTimer[0].text}}</q>
       </transition>
 
       <h2>{{gm? 'GM:': ''}}{{player.playerName}}</h2>
@@ -33,20 +33,25 @@ class BubbleTimer {
   constructor(text, lifespan) {
     this.text = text
     this.frame = lifespan * 100
+    this.hasStarted = false
   }
 
-  start(vm) {
+  start(vm, delay) {
     const animation = this
-    animation.timer = setInterval( function(){
-      animation.frame -= 1
-      if (animation.frame <= 0) { 
-        clearInterval(animation.timer)
-        vm.handleBubbleTimerFinish(this)
-      }
-    }, 10)
+
+    setTimeout (function(){
+      animation.hasStarted = true
+      animation.timer = setInterval( function(){
+        animation.frame -= 1
+        if (animation.frame <= 0) { 
+          clearInterval(animation.timer)
+          vm.handleBubbleTimerFinish(animation)
+        }
+      }, 10)
+    }, delay*1000)
+
     return this
   }
-
 }
 
 export default {
@@ -55,13 +60,14 @@ export default {
 
     data() {
       return {
-        bubbleTimer: null
+        bubbleTimer: []
       }
     },
 
     methods: {
       handleBubbleTimerFinish(bubbleTimer) {
-        this.bubbleTimer = null
+        this.bubbleTimer.shift();
+        if (this.bubbleTimer[0]) {this.bubbleTimer[0].start(this, 1.5)}
       }
     },
 
@@ -88,7 +94,11 @@ export default {
         let mostRecentMessage = updatedMessages[updatedMessages.length-1]
 
         if (mostRecentMessage.player.playerId === this.player.playerId && mostRecentMessage.isTextMessage) {
-          this.bubbleTimer = new BubbleTimer(mostRecentMessage.text, 4).start(this)
+          if (this.bubbleTimer[0]) {
+            this.bubbleTimer.push(new BubbleTimer(mostRecentMessage.text, 4))
+            return
+          }
+          this.bubbleTimer.push (new BubbleTimer(mostRecentMessage.text, 4).start(this, 0))
         }
 
       } 
