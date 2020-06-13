@@ -1,10 +1,23 @@
-import {CharacterSheet, SheetDatum, DataGroup} from './characterSheets'
+import {CharacterSheet, SheetDatum, DataGroup, DerivedStat} from './characterSheets'
 
 const blank = function() {return new CharacterSheet(
     [
         new SheetDatum('Action',"wait"),
+        new SheetDatum('test_a',1,{type:'number'}),
+        new SheetDatum('test_b',2,{type:'number'}),
     ],
-    []
+    [
+
+    ],
+    [
+        new DerivedStat(
+            'test_2a+b+1', 
+            {
+                sum: [{datumName:'test_a', multiplier:2}, {datumName:'test_b'},1 ]
+            },
+            {})
+    ],
+
 )}
 
 const dungeons = function() {return new CharacterSheet(
