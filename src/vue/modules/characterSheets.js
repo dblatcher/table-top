@@ -14,11 +14,11 @@ class SheetDatum {
         this.group = false;
 
         if (this.type === 'NUM_&_MAX') {
-            this.max = config.max || value
+            this.max = config.max || this.value
         }
 
         if (this.type === 'QUANTIFIED_LIST') {
-            this.quantity = config.quantity || value.map(item => 1)
+            this.quantity = config.quantity || this.value.map(item => 1)
         }
 
         function getDefaultValue(type) {
@@ -29,7 +29,7 @@ class SheetDatum {
                 return 0
                 case 'list':
                 case 'QUANTIFIED_LIST':
-                return []
+                return ["?"]
             }
         }
     }
