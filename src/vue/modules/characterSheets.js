@@ -33,8 +33,9 @@ class SheetDatum {
             }
         }
     }
-    get keyName() {return keyPrefix + this.name}
 
+    get keyName() {return keyPrefix + this.name}
+    get isDerived() {return false}
     get isListType() { return (this.type === 'list' || this.type === 'QUANTIFIED_LIST') }
 
     serialise() {
@@ -89,12 +90,72 @@ class DataGroup {
     } 
 }
 
+class DerivedStat {
+    constructor (name, formula, config) {
+        this.name = name
+        this.formula = formula
+        this.sheet = null
+        this.groupName = config.groupName || undefined
+        this.group = false;
+    }
+
+    get keyName() {return keyPrefix + this.name}
+    get isDerived() {return true}
+    get value () {
+        if (!this.sheet) {return undefined}
+        if (!this.formula.sum) { return 0 }
+
+        let value = 0
+
+        this.formula.sum.forEach(item => {
+
+            if (typeof item === 'number') {
+                value = value + item
+                return
+            }
+
+            if (item.datumName) {
+                let itemKey = keyPrefix + item.datumName
+                if (!this.sheet.valuesAsObject[itemKey]) {
+                    console.warn(`${item.datumName} is not a vale of the sheet`)
+                    return
+                }
+                let datum = this.sheet.valuesAsObject[itemKey]
+                if (datum.type !== 'number') {
+                    console.warn(`${datum.name} is a ${datum.type}, not a number`)
+                    return
+                }
+
+                value = value + ((item.multiplier || 1) * datum.value)
+            }
+        })
+
+
+        return value
+    }
+
+
+    serialise() {
+        const keysToLeaveOut = ['group', 'sheet']
+        let output = {isDerived:true}
+        let keys = Object.keys(this).filter(key => keysToLeaveOut.indexOf(key) === -1)
+
+        keys.forEach(key => output[key] = this[key])
+        return output
+    }
+
+    static deserialise(serialisedStat) {
+        const stat =  new DerivedStat( serialisedStat.name, serialisedStat.formula, serialisedStat)
+        return stat
+    }
+}
+
 class CharacterSheet {
-    constructor (sheetData = [], groups =[]) {
+    constructor (values = [], groups =[] ) {
         this.groups = groups
         this.values = []
-        sheetData.forEach(sheetDatum => {
-            this.addDatum(sheetDatum)
+        values.forEach(value => {
+            this.addValue(value)
         })
     }
     get type() {return 'CharacterSheet'}
@@ -105,12 +166,26 @@ class CharacterSheet {
         return output
     }
 
+    addValue(value) {
+        if (value.isDerived) {return this.addDerivedStat(value)}
+        return this.addDatum(value)
+    }
+
     addDatum( sheetDatum) {
         if (sheetDatum.groupName && this.groups.map(group => group.name).includes(sheetDatum.groupName)) {
             sheetDatum.group = this.groups.filter(group => group.name === sheetDatum.groupName)[0]
         }
         this.values.push (sheetDatum)
     }
+
+    addDerivedStat (derivedStat) {
+        if (derivedStat.groupName && this.groups.map(group => group.name).includes(derivedStat.groupName)) {
+            derivedStat.group = this.groups.filter(group => group.name === derivedStat.groupName)[0]
+        }
+        derivedStat.sheet = this
+        this.values.push (derivedStat)
+    }
+
 
     removeValue (keyName) {
         let validatedKeyName = keyName.startsWith(keyPrefix) ? keyName : keyPrefix + keyName
@@ -140,10 +215,8 @@ class CharacterSheet {
 
         const data = this.values
         .filter(datum => datum.groupName === groupName)
-
         return data
     }
-
 
     static groupedData (serialisedSheet) {
         let output = []
@@ -189,7 +262,9 @@ class CharacterSheet {
     }
 
     static deserialise (serialisedSheet) {
-        const data   = serialisedSheet.values ? serialisedSheet.values.map(value => SheetDatum.deserialise(value) ) : []
+        const data   = serialisedSheet.values ? serialisedSheet.values.map(
+            value => value.isDerived ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 
+        ) : []
         const groups = serialisedSheet.groups ? serialisedSheet.groups.map(group => DataGroup.deserialise(group) ) : []
         return new CharacterSheet( data , groups)
     }
@@ -198,4 +273,4 @@ class CharacterSheet {
 
 CharacterSheet.Datum = SheetDatum 
 
-export {CharacterSheet, SheetDatum, DataGroup}
+export {CharacterSheet, SheetDatum, DataGroup, DerivedStat}
