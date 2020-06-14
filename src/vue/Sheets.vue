@@ -111,7 +111,15 @@
                   <tr>
                     <td colspan="3">
                       <choice-menu v-bind="{choices:datumTypeOptions, hasTextInput: true, placeholder: 'new value name'}" 
-                      @submit="($event) => { addNewItem(section, $event)}">
+                      @submit="($event) => { addNewDatum(section, $event)}">
+                        <span class="stud-button">+</span>
+                      </choice-menu>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <choice-menu v-bind="{hasTextInput: true, placeholder: 'new derived stat'}" 
+                      @submit="($event) => { addNewDerivedStat(section, $event)}">
                         <span class="stud-button">+</span>
                       </choice-menu>
                     </td>
@@ -134,6 +142,9 @@
       </div>
 
 
+      <formula-dialogue v-bind="formulaDialogueProps"
+      @close="cancelNewDerivedStat" />
+
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
       @item-delete="handleDeletedSheet"
@@ -148,6 +159,7 @@ import StorageDialogue from "./components/StorageDialogue.vue";
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
+import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
@@ -160,7 +172,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue},
     props: ["config"],
 
     data() {
@@ -172,6 +184,9 @@ export default {
             storageDialogueProps :{
                 isOpen: false,
                 folderName: "storedSheets"
+            },
+            formulaDialogueProps :{
+                isOpen: false,
             },
             dragData: null,
         }
@@ -266,7 +281,7 @@ export default {
         this.history.push(this.localCharacterSheet.clone())
       },
 
-      addNewItem(section, dataInput ) {
+      addNewDatum(section, dataInput ) {
         const name = dataInput.text
         if (!name) {return false}
         const type = dataInput.choice
@@ -275,6 +290,15 @@ export default {
         this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
         this.localCharacterSheet = this.localCharacterSheet.clone()
         this.handleUpdate()
+      },
+
+      addNewDerivedStat(section, dataInput) {
+        console.log({section, dataInput})
+        this.formulaDialogueProps.isOpen = true
+      },
+
+      cancelNewDerivedStat() {
+        this.formulaDialogueProps.isOpen = false
       },
 
       addNewGroup(dataInput ) {
