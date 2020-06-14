@@ -49,6 +49,15 @@
             @delete-item="(event)=>{handleListItemDelete(event, datum)}"
             @new-item="(event)=>{handleListItemAdd(datum)}"
             v-bind="{datum}"/>
+
+            <span class="display-cs-group__datum"
+            v-if="datum.isDerived">
+              <span class="display-cs-group__key">{{datum.name}}:</span> 
+              <span class="display-cs-group__value display-cs-group__value--derived">
+                  {{datum.value}}
+              </span>
+            </span>
+
           </div>
         </character-sheet-section>
 
