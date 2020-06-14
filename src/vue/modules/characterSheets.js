@@ -94,7 +94,7 @@ class DerivedStat {
     constructor (name, formula, config) {
         this.name = name
         this.formula = formula
-        this.sheet = null
+        this.getSheet = function() {return undefined}
         this.groupName = config.groupName || undefined
         this.group = false;
     }
@@ -102,7 +102,9 @@ class DerivedStat {
     get keyName() {return keyPrefix + this.name}
     get isDerived() {return true}
     get value () {
-        if (!this.sheet) {return undefined}
+
+        const mySheet = this.getSheet()
+        if (!mySheet) {return undefined}
         if (!this.formula.sum) { return 0 }
 
         let value = 0
@@ -116,11 +118,11 @@ class DerivedStat {
 
             if (item.datumName) {
                 let itemKey = keyPrefix + item.datumName
-                if (!this.sheet.valuesAsObject[itemKey]) {
-                    console.warn(`${item.datumName} is not a vale of the sheet`)
+                if (!mySheet.valuesAsObject[itemKey]) {
+                    console.warn(`${item.datumName} is not a value of the sheet`)
                     return
                 }
-                let datum = this.sheet.valuesAsObject[itemKey]
+                let datum = mySheet.valuesAsObject[itemKey]
                 if (datum.type !== 'number') {
                     console.warn(`${datum.name} is a ${datum.type}, not a number`)
                     return
@@ -179,10 +181,11 @@ class CharacterSheet {
     }
 
     addDerivedStat (derivedStat) {
+        const sheet = this
         if (derivedStat.groupName && this.groups.map(group => group.name).includes(derivedStat.groupName)) {
             derivedStat.group = this.groups.filter(group => group.name === derivedStat.groupName)[0]
         }
-        derivedStat.sheet = this
+        derivedStat.getSheet = function() {return sheet}
         this.values.push (derivedStat)
     }
 
@@ -263,7 +266,7 @@ class CharacterSheet {
 
     static deserialise (serialisedSheet) {
         const data   = serialisedSheet.values ? serialisedSheet.values.map(
-            value => value.isDerived ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 
+            value => (value.isDerived || value.formula ) ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 
         ) : []
         const groups = serialisedSheet.groups ? serialisedSheet.groups.map(group => DataGroup.deserialise(group) ) : []
         return new CharacterSheet( data , groups)
