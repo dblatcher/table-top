@@ -95,10 +95,13 @@
                         @delete-item="(event)=>{handleListItemDelete(event, datum)}"
                         @new-item="(event)=>{handleListItemAdd(datum)}"
                         v-bind="{datum}"/>
+
+                        <span v-if="datum.isDerived">{{datum.value}}</span>
                     </td>
 
                     <td>
-                      <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
+                      <select  v-if="!datum.isDerived"
+                      @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
                           <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
                           >{{optionName}}</option>
                       </select>
