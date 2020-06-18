@@ -91,54 +91,44 @@ class DataGroup {
 }
 
 class DerivedStat {
-    constructor (name, formula, config) {
+    constructor (name, expressions, config) {
         this.name = name
-        this.formula = formula
-        this.getSheet = function() {return undefined}
+
+        this.getSheetValues = function() {return undefined}
         this.groupName = config.groupName || undefined
         this.group = false;
+
+        this.expressions = []
+        expressions.forEach(formulaExpression => {
+            this.addFormulaExpression(formulaExpression)
+        })
     }
 
     get keyName() {return keyPrefix + this.name}
     get isDerived() {return true}
     get value () {
 
-        const mySheet = this.getSheet()
-        if (!mySheet) {return undefined}
-        if (!this.formula.sum) { return 0 }
+        const mySheetValues = this.getSheetValues()
+        if (!mySheetValues) {return undefined}
+        if (!this.expressions) { return 0 }
 
         let value = 0
-
-        this.formula.sum.forEach(item => {
-
-            if (typeof item === 'number') {
-                value = value + item
-                return
-            }
-
-            if (item.datumName) {
-                let itemKey = keyPrefix + item.datumName
-                if (!mySheet.valuesAsObject[itemKey]) {
-                    console.warn(`${item.datumName} is not a value of the sheet`)
-                    return
-                }
-                let datum = mySheet.valuesAsObject[itemKey]
-                if (datum.type !== 'number') {
-                    console.warn(`${datum.name} is a ${datum.type}, not a number`)
-                    return
-                }
-
-                value = value + ((item.multiplier || 1) * datum.value)
-            }
+        this.expressions.forEach(item => {
+            value = value + item.value
         })
-
-
         return value
     }
 
+    addFormulaExpression(formulaExpression) {
+        const myStat = this
+        formulaExpression.getSheetValues = function () {
+            return myStat.getSheetValues()
+        }
+        this.expressions.push(formulaExpression)
+    }
 
     serialise() {
-        const keysToLeaveOut = ['group', 'sheet']
+        const keysToLeaveOut = ['group', 'sheet', 'getSheetValues']
         let output = {isDerived:true}
         let keys = Object.keys(this).filter(key => keysToLeaveOut.indexOf(key) === -1)
 
@@ -147,10 +137,31 @@ class DerivedStat {
     }
 
     static deserialise(serialisedStat) {
-        const stat =  new DerivedStat( serialisedStat.name, serialisedStat.formula, serialisedStat)
+        const stat =  new DerivedStat( serialisedStat.name, serialisedStat.expressions, serialisedStat)
         return stat
     }
 }
+
+class FormulaExpression {
+    constructor (datumName, multiplier, sheet) {
+        this.datumName = datumName
+        this.multiplier = multiplier
+        this.getSheetValues = function() {return sheet.valuesAsObject}
+    }
+    get value() {
+        let mySheetValues = this.getSheetValues()
+        return (this.datumName ? mySheetValues[keyPrefix+this.datumName].value : 1) * (this.multiplier || 1)
+    }
+    get displayName() {
+        return this.datumName ? `${this.datumName} x ` : ""
+    }
+    get evaluation() {
+        let mySheetValues = this.getSheetValues()
+        if (!this.datumName) return `(${this.multiplier})`
+        return `(${mySheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
+    }
+}
+
 
 class CharacterSheet {
     constructor (values = [], groups =[] ) {
@@ -185,7 +196,7 @@ class CharacterSheet {
         if (derivedStat.groupName && this.groups.map(group => group.name).includes(derivedStat.groupName)) {
             derivedStat.group = this.groups.filter(group => group.name === derivedStat.groupName)[0]
         }
-        derivedStat.getSheet = function() {return sheet}
+        derivedStat.getSheetValues = function() {return sheet.valuesAsObject}
         this.values.push (derivedStat)
     }
 
@@ -276,4 +287,4 @@ class CharacterSheet {
 
 CharacterSheet.Datum = SheetDatum 
 
-export {CharacterSheet, SheetDatum, DataGroup, DerivedStat}
+export {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression}

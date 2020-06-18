@@ -142,7 +142,11 @@
       </div>
 
 
-      <formula-dialogue v-bind="formulaDialogueProps"
+      <formula-dialogue v-bind="{
+        isOpen:formulaDialogueIsOpen, 
+        localCharacterSheet,
+        stat: pendingDerivedStat,
+        }"
       @close="cancelNewDerivedStat" />
 
       <storage-dialogue v-bind="storageDialogueProps" 
@@ -161,7 +165,7 @@ import FoldingPanel from "./components/FoldingPanel.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
-import {CharacterSheet, SheetDatum, DataGroup} from "./modules/characterSheets"
+import {CharacterSheet, SheetDatum, DataGroup, DerivedStat} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
 import {
   handleListItemQuantityChange, 
@@ -185,9 +189,8 @@ export default {
                 isOpen: false,
                 folderName: "storedSheets"
             },
-            formulaDialogueProps :{
-                isOpen: false,
-            },
+            formulaDialogueIsOpen: false,
+            pendingDerivedStat:null,
             dragData: null,
         }
     },
@@ -294,11 +297,17 @@ export default {
 
       addNewDerivedStat(section, dataInput) {
         console.log({section, dataInput})
-        this.formulaDialogueProps.isOpen = true
+
+        const name = dataInput.text
+        if (!name) {return false}
+
+        this.pendingDerivedStat = new DerivedStat(name,[],{})
+        this.localCharacterSheet.addValue (this.pendingDerivedStat)
+        this.formulaDialogueIsOpen = true
       },
 
       cancelNewDerivedStat() {
-        this.formulaDialogueProps.isOpen = false
+        this.formulaDialogueIsOpen = false
       },
 
       addNewGroup(dataInput ) {

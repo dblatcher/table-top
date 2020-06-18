@@ -1,13 +1,15 @@
-import {CharacterSheet, SheetDatum, DataGroup, DerivedStat} from './characterSheets'
+import {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression} from './characterSheets'
 
 const blank = function() {return new CharacterSheet(
     [
         new SheetDatum('Action',"wait"),
         new SheetDatum('test_a',1,{type:'number'}),
         new SheetDatum('test_b',2,{type:'number'}),
-        new DerivedStat( 'test_2a+b+1', {
-            sum: [{datumName:'test_a', multiplier:2}, {datumName:'test_b'},1 ]
-        },{})
+        new DerivedStat( 'test_2a+b+1', [
+            new FormulaExpression('test_a',2,{}),
+            new FormulaExpression('test_b',1,{}),
+            new FormulaExpression(undefined,1,{}),
+        ],{})
     ],
     [
 
