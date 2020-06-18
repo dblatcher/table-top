@@ -122,14 +122,6 @@
                     </td>
                   </tr>
 
-                  <tr>
-                    <td colspan="3">
-                      <choice-menu v-bind="{hasTextInput: true, placeholder: 'new derived stat'}" 
-                      @submit="($event) => { addNewDerivedStat(section, $event)}">
-                        <span class="stud-button">+</span>
-                      </choice-menu>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
 
@@ -210,7 +202,7 @@ export default {
         return DataGroup.layoutOptions
       },
       datumTypeOptions() {
-        return SheetDatum.validTypes
+        return SheetDatum.validTypes.concat('DERIVED')
       },
       templateChoices() {
         return Object.keys(templates)
@@ -297,14 +289,19 @@ export default {
         const type = dataInput.choice
         const groupName = section.group ? section.group.name : undefined
 
-        this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
-        this.localCharacterSheet = this.localCharacterSheet.clone()
+        if (type === 'DERIVED') {
+          this.pendingDerivedStat = new DerivedStat(name,[],{groupName})
+          this.localCharacterSheet.addValue (this.pendingDerivedStat)
+          this.formulaDialogueIsOpen = true
+        } else {
+          this.localCharacterSheet.addDatum(new SheetDatum(name, undefined,{type, groupName}))
+          this.localCharacterSheet = this.localCharacterSheet.clone()
+        }
+
         this.handleUpdate()
       },
 
       addNewDerivedStat(section, dataInput) {
-        console.log({section, dataInput})
-
         const name = dataInput.text
         if (!name) {return false}
 
@@ -314,7 +311,6 @@ export default {
       },
 
       editDervivedStat(stat) {
-        console.log(stat)
         this.pendingDerivedStat = stat
         this.formulaDialogueIsOpen = true
       },
