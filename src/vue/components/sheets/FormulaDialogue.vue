@@ -33,6 +33,8 @@
             </span>
         </p>
 
+        <button class="button" @click="$emit('confirm')">DONE</button>
+
       </div>
     </aside>
 </template>

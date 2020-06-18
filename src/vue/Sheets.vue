@@ -74,7 +74,8 @@
                     <td>
                       <span>{{datum.name}}:</span> 
                     </td>
-                    <td>
+
+                    <td v-if="!datum.isDerived">
                         <span v-if="datum.type ==='string'" >
                           <input @change="handleUpdate" type="text" v-model="datum.value"/>
                         </span>
@@ -95,17 +96,21 @@
                         @delete-item="(event)=>{handleListItemDelete(event, datum)}"
                         @new-item="(event)=>{handleListItemAdd(datum)}"
                         v-bind="{datum}"/>
-
-                        <span v-if="datum.isDerived">{{datum.value}}</span>
                     </td>
 
-                    <td>
-                      <select  v-if="!datum.isDerived"
-                      @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
+                    <td v-if="!datum.isDerived">
+                      <select @change="()=>{handleTypeChange(datum)}" v-model="datum.type">
                           <option v-for="(optionName, index) in datumTypeOptions" v-bind:key="optionName+index" 
                           >{{optionName}}</option>
                       </select>
                     </td>
+
+                    <td v-if="datum.isDerived" colspan="2">
+                      <span>{{datum.value}}</span>
+                      <button @click="()=>{editDervivedStat(datum)}">edit formula</button>
+                    </td>
+
+
                   </tr>
 
                   <tr>
@@ -116,6 +121,7 @@
                       </choice-menu>
                     </td>
                   </tr>
+
                   <tr>
                     <td colspan="3">
                       <choice-menu v-bind="{hasTextInput: true, placeholder: 'new derived stat'}" 
@@ -147,7 +153,8 @@
         localCharacterSheet,
         stat: pendingDerivedStat,
         }"
-      @close="cancelNewDerivedStat" />
+      @close="cancelNewDerivedStat" 
+      @confirm="confirmNewDerivedStat" />
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
@@ -306,8 +313,23 @@ export default {
         this.formulaDialogueIsOpen = true
       },
 
+      editDervivedStat(stat) {
+        console.log(stat)
+        this.pendingDerivedStat = stat
+        this.formulaDialogueIsOpen = true
+      },
+
       cancelNewDerivedStat() {
         this.formulaDialogueIsOpen = false
+        this.localCharacterSheet.removeValue(this.pendingDerivedStat.name)
+        this.pendingDerivedStat = null
+      },
+
+      confirmNewDerivedStat() {
+        this.formulaDialogueIsOpen = false
+        this.pendingDerivedStat = null
+        this.localCharacterSheet = this.localCharacterSheet.clone()
+        this.handleUpdate()
       },
 
       addNewGroup(dataInput ) {
