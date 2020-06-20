@@ -124,10 +124,21 @@ class DerivedStat {
         let total = 0, index=0, value;
         for (index = 0; index < this.expressions.length; index++) {
             value = this.expressions[index].calculate(mySheetValues)
-            if (typeof value === 'undefined') {return "[ERROR]"}
+            if (typeof value !== 'number') {return "[ERROR]"}
             total += value
         }
         return total
+    }
+
+    get missingExpressionValues() {
+        let output = []
+        const mySheetValues = this.getSheetValues()
+        this.expressions.forEach( formulaExpression => {
+            if (!formulaExpression.datumName) {return}
+            if (mySheetValues[keyPrefix + formulaExpression.datumName]) {return}
+            output.push(formulaExpression.datumName)
+        })
+        return output
     }
 
     addFormulaExpression(formulaExpression) {
@@ -160,12 +171,14 @@ class FormulaExpression {
     }
     calculate(sheetValues) {
         if (!this.datumName) {return this.multiplier || 1}
-        if (!sheetValues[keyPrefix+this.datumName]) return undefined
+        if (!sheetValues[keyPrefix+this.datumName] ) return undefined
+        if (typeof sheetValues[keyPrefix+this.datumName].value !== 'number') return undefined
         return sheetValues[keyPrefix+this.datumName].value * (this.multiplier || 1)
     }
     evaluate(sheetValues) {
         if (!this.datumName) return `(${this.multiplier})`
         if (!sheetValues[keyPrefix+this.datumName]) return `[error - no ${this.datumName}]`
+        if (typeof sheetValues[keyPrefix+this.datumName].value !== 'number') return `[error - ${this.datumName} is not a number]`
         return `(${sheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
     }
     get description() {
