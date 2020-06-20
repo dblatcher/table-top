@@ -38,38 +38,47 @@ const dungeons = function() {return new CharacterSheet(
     ]
 )}
 
-const wrathAndGlory = function() {return new CharacterSheet(
+
+const wrathAndGlory = function() {
+
+    const attributeSkillMap = {
+        'S':['Athletics'],
+        'T':[],
+        'A':['Ballistic Skill','Pilot'],
+        'I':['Weapon Skill'],
+        'Wil':['Leadership','Psychic Mastery','Survival'],
+        'Int':['Awareness','Medicae','Scholar','Stealth','Tech'],
+        'Fel':['Cunning','Deception','Insight','Intimidation','Investigation','Persuation'],
+    }
+
+    const makeAttributeStat = (attribute) => new SheetDatum(attribute,1,{type:'number', groupName:'attributes'});
+    const makeSkillStat = (skill) => new SheetDatum(skill,0,{type:'number', groupName:'skills'});
+    const makeSkillPoolStat = (skill, attribute) => new DerivedStat(`${skill}(${attribute})`,[ new FormulaExpression(attribute,1), new FormulaExpression(skill,1)],{groupName:'skillsDice'});
+
+    const skillPoolStats = [], attributeStats = [], skillStats = []
+
+
+    Object.keys(attributeSkillMap).forEach(attribute => {
+        attributeStats.push (makeAttributeStat(attribute))
+        attributeSkillMap[attribute].forEach (skill => {
+            skillStats.push(makeSkillStat(skill))
+            skillPoolStats.push(makeSkillPoolStat(skill, attribute))
+        })
+    })
+
+    skillStats.sort( (a,b) => a.name<b.name ? -1 : 1 )
+    skillPoolStats.sort( (a,b) => a.name<b.name ? -1 : 1 )
+
+    return new CharacterSheet(
     [
         new SheetDatum('Character Name',""),
         new SheetDatum('Faction',""),
         new SheetDatum('Rank',1,{type:Number}),
         new SheetDatum('Archetype',""),
-        new SheetDatum('S',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('T',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('A',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('I',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('Wil',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('Int',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('Fel',1,{type:'number', groupName:'attributes'}),
-        new SheetDatum('Athletics(s)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Awareness(Int)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Ballistic Skill(A)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Cunning(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Deception(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Insight(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Intimidation(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Investigation(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Leadership(Wil)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Medicae(Int)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Persuation(Fel)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Pilot(A)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Psychic Mastery(Wil)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Scholar(Int)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Stealth(Int)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Survival(Will)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Tech(Int)',0,{type:'number', groupName:'skills'}),
-        new SheetDatum('Weapon Skill(I)',0,{type:'number', groupName:'skills'}),
-    ],[
+    ].concat(
+        ...skillPoolStats, ...attributeStats, ...skillStats
+    ),[
+        new DataGroup('skillsDice',{priority:1, layout: 'full-width', label:"Skills Dice Pools"}),
         new DataGroup('attributes',{priority:1, layout: '2-col', label:"Attributes"}),
         new DataGroup('skills',{priority:1, layout: 'full-width', label:"Skills", onlyDisplayNonEmpty:true}),
     ]
