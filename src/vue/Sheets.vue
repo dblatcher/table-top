@@ -106,7 +106,7 @@
                     </td>
 
                     <td v-if="datum.isDerived" colspan="2">
-                      <span>{{datum.value}}</span>
+                      <span>{{datum.description}} = {{datum.value}}</span>
                       <button @click="()=>{editDervivedStat(datum)}">edit formula</button>
                     </td>
 
@@ -145,8 +145,7 @@
         localCharacterSheet,
         stat: pendingDerivedStat,
         }"
-      @close="cancelNewDerivedStat" 
-      @confirm="confirmNewDerivedStat" />
+      @done="handleDerivedStatEditDone" />
 
       <storage-dialogue v-bind="storageDialogueProps" 
       @close="cancelStorageAction" 
@@ -301,27 +300,12 @@ export default {
         this.handleUpdate()
       },
 
-      addNewDerivedStat(section, dataInput) {
-        const name = dataInput.text
-        if (!name) {return false}
-
-        this.pendingDerivedStat = new DerivedStat(name,[],{})
-        this.localCharacterSheet.addValue (this.pendingDerivedStat)
-        this.formulaDialogueIsOpen = true
-      },
-
       editDervivedStat(stat) {
         this.pendingDerivedStat = stat
         this.formulaDialogueIsOpen = true
       },
 
-      cancelNewDerivedStat() {
-        this.formulaDialogueIsOpen = false
-        this.localCharacterSheet.removeValue(this.pendingDerivedStat.name)
-        this.pendingDerivedStat = null
-      },
-
-      confirmNewDerivedStat() {
+      handleDerivedStatEditDone() {
         this.formulaDialogueIsOpen = false
         this.pendingDerivedStat = null
         this.localCharacterSheet = this.localCharacterSheet.clone()

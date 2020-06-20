@@ -106,8 +106,18 @@ class DerivedStat {
 
     get keyName() {return keyPrefix + this.name}
     get isDerived() {return true}
-    get value () {
 
+    get description() {
+        let descriptionString = ""
+        this.expressions.forEach(formulaExpression => {
+            descriptionString += formulaExpression.description
+        })
+        if (descriptionString.startsWith('+')) {descriptionString = descriptionString.substr(1)}
+        
+        return descriptionString
+    }
+
+    get value () {
         const mySheetValues = this.getSheetValues()
         if (!mySheetValues) {return undefined}
         if (!this.expressions) { return 0 }
@@ -159,6 +169,10 @@ class FormulaExpression {
         let mySheetValues = this.getSheetValues()
         if (!this.datumName) return `(${this.multiplier})`
         return `(${mySheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
+    }
+    get description() {
+        return this.datumName ? `${this.multiplier >0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})` :
+        `${this.multiplier >0 ? '+':'-'}${Math.abs(this.multiplier)}` 
     }
 }
 

@@ -3,7 +3,6 @@
       <div class="modal-content">
         <div class="close-button-holder">
             <h3>New Derived Stat</h3>
-            <div  @click="$emit('close')" class="stud-button stud-button--red">&times;</div> 
         </div> 
 
         <ul>
@@ -33,7 +32,7 @@
             </span>
         </p>
 
-        <button class="button" @click="$emit('confirm')">DONE</button>
+        <button class="button" @click="$emit('done')">DONE</button>
 
       </div>
     </aside>
