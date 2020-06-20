@@ -113,7 +113,6 @@ class DerivedStat {
             descriptionString += formulaExpression.description
         })
         if (descriptionString.startsWith('+')) {descriptionString = descriptionString.substr(1)}
-        
         return descriptionString
     }
 
@@ -122,18 +121,16 @@ class DerivedStat {
         if (!mySheetValues) {return undefined}
         if (!this.expressions) { return 0 }
 
-        let value = 0
-        this.expressions.forEach(item => {
-            value = value + item.value
-        })
-        return value
+        let total = 0, index=0, value;
+        for (index = 0; index < this.expressions.length; index++) {
+            value = this.expressions[index].calculate(mySheetValues)
+            if (typeof value === 'undefined') {return "[ERROR]"}
+            total += value
+        }
+        return total
     }
 
     addFormulaExpression(formulaExpression) {
-        const myStat = this
-        formulaExpression.getSheetValues = function () {
-            return myStat.getSheetValues()
-        }
         this.expressions.push(formulaExpression)
     }
 
@@ -147,25 +144,29 @@ class DerivedStat {
     }
 
     static deserialise(serialisedStat) {
-        const stat =  new DerivedStat( serialisedStat.name, serialisedStat.expressions, serialisedStat)
+        const stat =  new DerivedStat( 
+            serialisedStat.name,
+            serialisedStat.expressions.map(serialisedExpression => new FormulaExpression(serialisedExpression.datumName, serialisedExpression.multiplier)), 
+            serialisedStat
+        )
         return stat
     }
 }
 
 class FormulaExpression {
-    constructor (datumName, multiplier, sheet) {
+    constructor (datumName, multiplier) {
         this.datumName = datumName
         this.multiplier = multiplier
-        this.getSheetValues = function() {return sheet.valuesAsObject}
     }
-    get value() {
-        let mySheetValues = this.getSheetValues()
-        return (this.datumName ? mySheetValues[keyPrefix+this.datumName].value : 1) * (this.multiplier || 1)
+    calculate(sheetValues) {
+        if (!this.datumName) {return this.multiplier || 1}
+        if (!sheetValues[keyPrefix+this.datumName]) return undefined
+        return sheetValues[keyPrefix+this.datumName].value * (this.multiplier || 1)
     }
-    get evaluation() {
-        let mySheetValues = this.getSheetValues()
+    evaluate(sheetValues) {
         if (!this.datumName) return `(${this.multiplier})`
-        return `(${mySheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
+        if (!sheetValues[keyPrefix+this.datumName]) return `[error - no ${this.datumName}]`
+        return `(${sheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
     }
     get description() {
         if (this.multiplier == 0) {return '+ (0)'}
@@ -270,13 +271,10 @@ class CharacterSheet {
     }
 
     serialise () {
-        let output = {
-            groups: [],
-            values: [],
+        return {
+            groups: this.groups.map(group => group.serialise()),
+            values: this.values.map(value => value.serialise()),
         }
-        this.groups.forEach(group => {output.groups.push(group.serialise())})
-        this.values.forEach(value => {output.values.push(value.serialise())})
-        return output
     }
 
     clone () {
@@ -288,11 +286,11 @@ class CharacterSheet {
     }
 
     static deserialise (serialisedSheet) {
-        const data   = serialisedSheet.values ? serialisedSheet.values.map(
-            value => (value.isDerived || value.formula ) ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 
+        const data = serialisedSheet.values ? serialisedSheet.values.map(
+            value => (value.isDerived || value.expressions ) ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 
         ) : []
         const groups = serialisedSheet.groups ? serialisedSheet.groups.map(group => DataGroup.deserialise(group) ) : []
-        return new CharacterSheet( data , groups)
+        return new CharacterSheet(data, groups)
     }
 
 }

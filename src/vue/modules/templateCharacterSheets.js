@@ -6,9 +6,9 @@ const blank = function() {return new CharacterSheet(
         new SheetDatum('test_a',1,{type:'number'}),
         new SheetDatum('test_b',2,{type:'number'}),
         new DerivedStat( 'test_der', [
-            new FormulaExpression('test_a',2,{}),
-            new FormulaExpression('test_b',1,{}),
-            new FormulaExpression(undefined,1,{}),
+            new FormulaExpression('test_a',2),
+            new FormulaExpression('test_b',1),
+            new FormulaExpression(undefined,1),
         ],{})
     ],
     [

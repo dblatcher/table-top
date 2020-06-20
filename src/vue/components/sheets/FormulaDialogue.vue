@@ -24,7 +24,7 @@
 
         <p>
             <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
-                {{formulaExpression.evaluation}}
+                {{getEvaluationFor(formulaExpression)}}
                 <span v-if="index < expressions.length -1 ">&nbsp;+&nbsp;</span>
             </span>
             <span>
@@ -66,11 +66,15 @@ export default {
     methods: {
         addExpression(datum) {
             if (!datum) {
-                this.stat.addFormulaExpression( new FormulaExpression(undefined,1,{}))
+                this.stat.addFormulaExpression( new FormulaExpression(undefined,1))
                 return
             }
-            this.stat.addFormulaExpression( new FormulaExpression(datum.name,1,{}))
-        }
+            this.stat.addFormulaExpression( new FormulaExpression(datum.name,1))
+        },
+        getEvaluationFor(formulaExpression) {
+            if (!this.stat || !this.stat.expressions) {return ""}
+            return formulaExpression.evaluate(this.stat.getSheetValues())
+        },
     },
 }
 </script>
