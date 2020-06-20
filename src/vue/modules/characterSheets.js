@@ -171,14 +171,20 @@ class FormulaExpression {
     }
     calculate(sheetValues) {
         if (!this.datumName) {return this.multiplier || 1}
-        if (!sheetValues[keyPrefix+this.datumName] ) return undefined
-        if (typeof sheetValues[keyPrefix+this.datumName].value !== 'number') return undefined
-        return sheetValues[keyPrefix+this.datumName].value * (this.multiplier || 1)
+        if (!sheetValues[keyPrefix+this.datumName] ) {return undefined}
+
+        const rawValue = sheetValues[keyPrefix+this.datumName].value
+        const castValue = Number (rawValue)
+        if ( isNaN(castValue)) { return undefined }
+
+        return castValue * (this.multiplier || 1)
     }
     evaluate(sheetValues) {
         if (!this.datumName) return `(${this.multiplier})`
         if (!sheetValues[keyPrefix+this.datumName]) return `[error - no ${this.datumName}]`
-        if (typeof sheetValues[keyPrefix+this.datumName].value !== 'number') return `[error - ${this.datumName} is not a number]`
+        const rawValue = sheetValues[keyPrefix+this.datumName].value
+        const castValue = Number (rawValue)
+        if ( isNaN(castValue)) { return `[error - ${this.datumName} is not a number]` }
         return `(${sheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
     }
     get description() {
