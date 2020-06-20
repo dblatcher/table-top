@@ -162,16 +162,14 @@ class FormulaExpression {
         let mySheetValues = this.getSheetValues()
         return (this.datumName ? mySheetValues[keyPrefix+this.datumName].value : 1) * (this.multiplier || 1)
     }
-    get displayName() {
-        return this.datumName ? `${this.datumName} x ` : ""
-    }
     get evaluation() {
         let mySheetValues = this.getSheetValues()
         if (!this.datumName) return `(${this.multiplier})`
         return `(${mySheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
     }
     get description() {
-        return this.datumName ? `${this.multiplier >0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})` :
+        if (this.multiplier == 0) {return '+ (0)'}
+        return this.datumName ? `${this.multiplier >= 0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})` :
         `${this.multiplier >0 ? '+':'-'}${Math.abs(this.multiplier)}` 
     }
 }

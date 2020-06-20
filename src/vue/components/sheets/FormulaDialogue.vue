@@ -16,7 +16,7 @@
 
         <p>
             <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
-               {{formulaExpression.displayName}}
+               {{formulaExpression.datumName ? `${formulaExpression.datumName} x ` : ``}}
                <input class="multiplier-input" type="number" v-model="formulaExpression.multiplier"/>
                <span v-if="index < expressions.length -1 ">&nbsp;+&nbsp;</span>
             </span> 
