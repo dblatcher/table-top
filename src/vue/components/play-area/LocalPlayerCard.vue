@@ -29,7 +29,7 @@
             v-if="datum.type ==='number'">
               <span class="display-cs-group__key">{{datum.name}}:</span> 
               <span class="display-cs-group__value">
-                <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
               </span>
             </span>
 
@@ -37,9 +37,9 @@
             v-if="datum.type ==='NUM_&_MAX'">
               <span class="display-cs-group__key">{{datum.name}}:</span> 
               <span class="display-cs-group__value">
-                <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
                 &nbsp;/&nbsp;
-                <input @change="handleUpdate" type="number" v-model="datum.max"/>
+                <input @change="handleUpdate" type="number" v-model.number="datum.max"/>
               </span>
             </span>
 

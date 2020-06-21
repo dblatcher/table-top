@@ -81,13 +81,13 @@
                         </span>
 
                         <span v-if="datum.type ==='number'">
-                          <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                          <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
                         </span>
 
                         <span v-if="datum.type ==='NUM_&_MAX'">
-                            <input @change="handleUpdate" type="number" v-model="datum.value"/>
+                            <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
                             &nbsp;/&nbsp;
-                            <input @change="handleUpdate" type="number" v-model="datum.max"/>
+                            <input @change="handleUpdate" type="number" v-model.number="datum.max"/>
                         </span>
 
                         <list-control  v-if="datum.isListType"

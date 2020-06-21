@@ -166,20 +166,23 @@ class DerivedStat {
 
 class FormulaExpression {
     constructor (datumName, multiplier) {
-        this.datumName = datumName
+        this.datumName = datumName || false
         this.multiplier = multiplier
     }
     calculate(sheetValues) {
-        if (!this.datumName) {return this.multiplier || 1}
+
+        if (typeof this.multiplier !== 'number') {return undefined}
+        if (!this.datumName) {return this.multiplier}
         if (!sheetValues[keyPrefix+this.datumName] ) {return undefined}
 
         const rawValue = sheetValues[keyPrefix+this.datumName].value
         const castValue = Number (rawValue)
         if ( isNaN(castValue)) { return undefined }
 
-        return castValue * (this.multiplier || 1)
+        return castValue * (this.multiplier)
     }
     evaluate(sheetValues) {
+        if (typeof this.multiplier !== 'number') {return `[error - non numeric multiplier]`}
         if (!this.datumName) return `(${this.multiplier})`
         if (!sheetValues[keyPrefix+this.datumName]) return `[error - no ${this.datumName}]`
         const rawValue = sheetValues[keyPrefix+this.datumName].value

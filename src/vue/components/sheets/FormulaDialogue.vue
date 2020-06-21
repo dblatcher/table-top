@@ -14,13 +14,13 @@
             </li>
         </ul>
 
-        <p>
-            <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
-               {{formulaExpression.datumName ? `${formulaExpression.datumName} x ` : ``}}
-               <input class="multiplier-input" type="number" v-model="formulaExpression.multiplier"/>
-               <span v-if="index < expressions.length -1 ">&nbsp;+&nbsp;</span>
-            </span> 
-        </p>
+        
+        <p v-for="(formulaExpression, index) in expressions" v-bind:key="index"
+        class="expression-control">
+            <span>{{index > 0 ? `+&nbsp;`: `&nbsp;`}}</span>
+            <input class="multiplier-input" type="number" v-model.number="formulaExpression.multiplier"/>
+            {{formulaExpression.datumName ? `x ${formulaExpression.datumName}` : ``}}
+        </p> 
 
         <p>
             <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
@@ -84,4 +84,14 @@ export default {
  .multiplier-input {
     width: 3rem;
  }
+
+ .expression-control {
+    background-color: aqua;
+ }
+
+.expression-control span:first-child {
+    min-width: 1em;
+    display: inline-block;
+}
+
 </style>
