@@ -28,6 +28,8 @@ input:checked+.modal.toggled {
     margin: $std-space;
     padding: $std-space;
     background-color: $color-page;
+    max-height: 80vh;
+    overflow-y: auto;
 
     h2 {
         margin: 0;
