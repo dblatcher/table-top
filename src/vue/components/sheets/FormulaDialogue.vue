@@ -2,25 +2,34 @@
       <aside v-bind:class='{"modal":true, "modal--open":isOpen}'>
       <div class="modal-content">
         <div class="close-button-holder">
-            <h3>New Derived Stat</h3>
+            <h3>{{stat ? stat.name : 'New Derived Stat'}}</h3>
         </div> 
 
-        <ul>
-            <li @click="()=>{addExpression(null)}">[constant]</li>
-            <li v-for="value in numberValues" v-bind:key="value.keyName"
-            @click="()=>{addExpression(value)}"
-            >
-                {{value.name}} = {{value.value}}
-            </li>
-        </ul>
-
-        
         <p v-for="(formulaExpression, index) in expressions" v-bind:key="index"
         class="expression-control">
-            <span>{{index > 0 ? `+&nbsp;`: `&nbsp;`}}</span>
+            <span class="expression-control__operator">{{index > 0 ? `+&nbsp;`: `&nbsp;`}}</span>
             <input class="multiplier-input" type="number" v-model.number="formulaExpression.multiplier"/>
-            {{formulaExpression.datumName ? `x ${formulaExpression.datumName}` : ``}}
+
+            <span class="expression-control__operator">{{formulaExpression.datumName ? `x&nbsp;` : ``}}</span>
+
+            <select v-model="formulaExpression.datumName">
+                <option v-bind:value="false">[constant]</option>
+                <option v-for="value in numberValues" v-bind:key="value.keyName" 
+                v-bind:value="value.name">{{value.name}}</option>
+            </select>
+
+
+            <span class="stud-button stud-button--red" @click="()=> {removeExpression(formulaExpression)}">
+                <span>&times;</span>
+            </span>
         </p> 
+
+        <p class="expression-control">
+            <span class="expression-control__add">Add expression</span>
+            <span class="stud-button" @click="()=> {addExpression()}">
+                <span>+</span>
+            </span>
+        </p>
 
         <p>
             <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
@@ -71,6 +80,10 @@ export default {
             }
             this.stat.addFormulaExpression( new FormulaExpression(datum.name,1))
         },
+        removeExpression(formulaExpression) {
+            if (!this.stat) {return false}
+            this.stat.removeFormulaExpression(formulaExpression)
+        },
         getEvaluationFor(formulaExpression) {
             if (!this.stat || !this.stat.expressions) {return ""}
             return formulaExpression.evaluate(this.stat.getSheetValues())
@@ -81,17 +94,37 @@ export default {
 
 <style>
 
- .multiplier-input {
-    width: 3rem;
- }
 
  .expression-control {
-    background-color: aqua;
+    min-width: 12em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    min-height: 1.4em;
  }
 
-.expression-control span:first-child {
-    min-width: 1em;
-    display: inline-block;
+.expression-control__operator {
+    flex-basis: 1.2em;
+    text-align: center;
+}
+
+ .multiplier-input {
+    width: 3em;
+    margin: 0 .2em;
+ }
+
+.expression-control__add {
+    font-size: small;
+    color: gray;
+    flex-basis: 100%;
+    flex-shrink: 1;
+    text-align: right;
+    margin-right: .2em;
+}
+
+.expression-control .stud-button {
+    margin-left: auto;
 }
 
 </style>

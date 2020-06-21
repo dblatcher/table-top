@@ -145,6 +145,13 @@ class DerivedStat {
         this.expressions.push(formulaExpression)
     }
 
+    removeFormulaExpression (formulaExpression) {
+        const indexOfExpression = this.expressions.indexOf(formulaExpression)
+        if (indexOfExpression !== -1) {
+            this.expressions.splice(indexOfExpression,1)
+        }
+    }
+
     serialise() {
         const keysToLeaveOut = ['group', 'sheet', 'getSheetValues']
         let output = {isDerived:true}
