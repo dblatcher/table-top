@@ -105,11 +105,16 @@
                       </select>
                     </td>
 
-                    <td v-if="datum.isDerived" colspan="2">
-                      <span>{{datum.description}} = {{datum.value}}</span>
-                      <button @click="()=>{editDervivedStat(datum)}">edit formula</button>
+                    <td v-if="datum.isDerived">
+                      <span class="display-cs-group__value display-cs-group__value--derived tool-tip-holder">
+                        {{datum.value}}
+                        <span class="tool-tip">{{datum.description}}</span>
+                      </span>
                     </td>
 
+                    <td v-if="datum.isDerived">
+                      <button @click="()=>{editDervivedStat(datum)}">edit formula</button>
+                    </td>
 
                   </tr>
 
@@ -163,7 +168,7 @@ import FoldingPanel from "./components/FoldingPanel.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
-import {CharacterSheet, SheetDatum, DataGroup, DerivedStat} from "./modules/characterSheets"
+import {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression} from "./modules/characterSheets"
 import * as templates from "./modules/templateCharacterSheets"
 import {
   handleListItemQuantityChange, 
@@ -288,8 +293,8 @@ export default {
         const type = dataInput.choice
         const groupName = section.group ? section.group.name : undefined
 
-        if (type === 'DERIVED') {
-          this.pendingDerivedStat = new DerivedStat(name,[],{groupName})
+        if (type === 'DERIVED') { 
+          this.pendingDerivedStat = new DerivedStat(name,[new FormulaExpression(false, 1)],{groupName})
           this.localCharacterSheet.addValue (this.pendingDerivedStat)
           this.formulaDialogueIsOpen = true
         } else {
@@ -436,6 +441,38 @@ export default {
   .new-group-box__heading {
     margin: 0 -.2em;
     border-bottom: 1px solid black;
+  }
+
+  .tool-tip-holder {
+    position: relative;
+  }
+
+  .tool-tip {
+    display: none;
+    position: absolute;
+    background-color: rgba(50, 200, 70, 1);
+    font-size: small;
+    min-width: 15em;
+    padding: .25em;
+    border-radius: .25em;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%) translateY(-10px);
+  }
+
+  .tool-tip::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(50, 200, 70, 1) transparent transparent transparent;
+  }
+
+  .tool-tip-holder:hover .tool-tip {
+    display: unset;
   }
 
 </style>

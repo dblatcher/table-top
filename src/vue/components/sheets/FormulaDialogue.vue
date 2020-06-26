@@ -1,47 +1,53 @@
 <template>
       <aside v-bind:class='{"modal":true, "modal--open":isOpen}'>
       <div class="modal-content">
+
         <div class="close-button-holder">
             <h3>{{stat ? stat.name : 'New Derived Stat'}}</h3>
         </div> 
 
-        <p v-for="(formulaExpression, index) in expressions" v-bind:key="index"
-        class="expression-control">
-            <span class="expression-control__operator">{{index > 0 ? `+&nbsp;`: `&nbsp;`}}</span>
-            <input class="multiplier-input" type="number" v-model.number="formulaExpression.multiplier"/>
+        <section>
+            <p v-for="(formulaExpression, index) in expressions" v-bind:key="index"
+            class="expression-control">
+                <span class="expression-control__operator">{{index > 0 ? `+&nbsp;`: `&nbsp;`}}</span>
+                <input class="multiplier-input" type="number" v-model.number="formulaExpression.multiplier"/>
 
-            <span class="expression-control__operator">{{formulaExpression.datumName ? `x&nbsp;` : ``}}</span>
+                <span class="expression-control__operator">{{formulaExpression.datumName ? `x&nbsp;` : ``}}</span>
 
-            <select v-model="formulaExpression.datumName">
-                <option v-bind:value="false">[constant]</option>
-                <option v-for="value in numberValues" v-bind:key="value.keyName" 
-                v-bind:value="value.name">{{value.name}}</option>
-            </select>
+                <select v-model="formulaExpression.datumName">
+                    <option v-bind:value="false">[constant]</option>
+                    <option v-for="value in numberValues" v-bind:key="value.keyName" 
+                    v-bind:value="value.name">{{value.name}}</option>
+                </select>
 
 
-            <span class="stud-button stud-button--red" @click="()=> {removeExpression(formulaExpression)}">
-                <span>&times;</span>
-            </span>
-        </p> 
+                <span class="stud-button stud-button--red" @click="()=> {removeExpression(formulaExpression)}">
+                    <span>&times;</span>
+                </span>
+            </p> 
 
-        <p class="expression-control">
-            <span class="expression-control__add">Add expression</span>
-            <span class="stud-button" @click="()=> {addExpression()}">
-                <span>+</span>
-            </span>
-        </p>
+            <p class="expression-control">
+                <span class="expression-control__add">Add expression</span>
+                <span class="stud-button" @click="()=> {addExpression()}">
+                    <span>+</span>
+                </span>
+            </p>
 
-        <p>
-            <span v-for="(formulaExpression, index) in expressions" v-bind:key="index">
-                {{getEvaluationFor(formulaExpression)}}
-                <span v-if="index < expressions.length -1 ">&nbsp;+&nbsp;</span>
-            </span>
-            <span>
-                 = {{total}}
-            </span>
-        </p>
+        </section>
 
-        <button class="button" @click="$emit('done')">DONE</button>
+        <section class="bottom-row">
+
+            <div class="evaluation">
+                <p v-for="(formulaExpression, index) in expressions" v-bind:key="index">
+                    <span>{{getSignFor(formulaExpression, index)}}</span>
+                    <span>{{getEvaluationFor(formulaExpression)}}</span>
+                </p>
+                <p class="evaluation-total">{{total}}</p>
+            </div>
+
+            <button class="button" @click="$emit('done')">DONE</button>
+
+        </section>
 
       </div>
     </aside>
@@ -88,6 +94,11 @@ export default {
             if (!this.stat || !this.stat.expressions) {return ""}
             return formulaExpression.evaluate(this.stat.getSheetValues())
         },
+        getSignFor(formulaExpression, index) {
+            if (index === 0) {return ""}
+            if (formulaExpression.multiplier < 0) {return "-"}
+            return "+"
+        },
     },
 }
 </script>
@@ -125,6 +136,35 @@ export default {
 
 .expression-control .stud-button {
     margin-left: auto;
+}
+
+.bottom-row {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.evaluation {
+    text-align: right;
+    display: inline-block;
+    font-size: smaller;
+    min-width: 4rem;
+    font-family: monospace
+}
+
+.evaluation p {
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.evaluation p span:last-child {
+    margin-left: auto;
+}
+
+.evaluation-total {
+    border-top: 1px solid black;
 }
 
 </style>

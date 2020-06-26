@@ -176,6 +176,7 @@ class FormulaExpression {
         this.datumName = datumName || false
         this.multiplier = multiplier
     }
+
     calculate(sheetValues) {
 
         if (typeof this.multiplier !== 'number') {return undefined}
@@ -188,15 +189,17 @@ class FormulaExpression {
 
         return castValue * (this.multiplier)
     }
+
     evaluate(sheetValues) {
         if (typeof this.multiplier !== 'number') {return `[error - non numeric multiplier]`}
-        if (!this.datumName) return `(${this.multiplier})`
+        if (!this.datumName) return `${Math.abs(this.multiplier)}`
         if (!sheetValues[keyPrefix+this.datumName]) return `[error - no ${this.datumName}]`
         const rawValue = sheetValues[keyPrefix+this.datumName].value
         const castValue = Number (rawValue)
         if ( isNaN(castValue)) { return `[error - ${this.datumName} is not a number]` }
-        return `(${sheetValues[keyPrefix+this.datumName].value} x ${this.multiplier} )`
+        return `${Math.abs(this.multiplier)} x ${sheetValues[keyPrefix+this.datumName].value}`
     }
+
     get description() {
         if (this.multiplier == 0) {return '+ (0)'}
         return this.datumName ? `${this.multiplier >= 0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})` :
@@ -241,7 +244,6 @@ class CharacterSheet {
         derivedStat.getSheetValues = function() {return sheet.valuesAsObject}
         this.values.push (derivedStat)
     }
-
 
     removeValue (keyName) {
         let validatedKeyName = keyName.startsWith(keyPrefix) ? keyName : keyPrefix + keyName
