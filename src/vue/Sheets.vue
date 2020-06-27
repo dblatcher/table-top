@@ -21,6 +21,7 @@
           @drop="handleDropOn({ special:'bin' })" @dragover.prevent
           >
             <p>bin</p>
+            <tool-tip-holder v-bind="{content: 'Drag unwanted values here to delete'}"/>
           </div>
         </div>
 
@@ -106,10 +107,11 @@
                     </td>
 
                     <td v-if="datum.isDerived">
-                      <span class="display-cs-group__value display-cs-group__value--derived tool-tip-holder">
-                        {{datum.value}}
-                        <span class="tool-tip">{{datum.description}}</span>
-                      </span>
+                      <tool-tip-holder v-bind="{content: datum.description}">
+                        <span class="display-cs-group__value display-cs-group__value--derived">
+                          {{datum.value}}
+                        </span>
+                      </tool-tip-holder>
                     </td>
 
                     <td v-if="datum.isDerived">
@@ -165,6 +167,7 @@
 import StorageDialogue from "./components/StorageDialogue.vue";
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
+import ToolTipHolder from "./components/ToolTipHolder.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
@@ -179,7 +182,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder},
     props: ["config"],
 
     data() {
@@ -430,6 +433,15 @@ export default {
     border: 
     1px dotted black;
     text-align: center;
+    position: relative;
+    padding: .25rem;
+  }
+
+  .waste-bin .tool-tip-holder {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: .25rem;
   }
 
   .new-group-box {
@@ -443,36 +455,5 @@ export default {
     border-bottom: 1px solid black;
   }
 
-  .tool-tip-holder {
-    position: relative;
-  }
-
-  .tool-tip {
-    display: none;
-    position: absolute;
-    background-color: rgba(50, 200, 70, 1);
-    font-size: small;
-    min-width: 15em;
-    padding: .25em;
-    border-radius: .25em;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -100%) translateY(-10px);
-  }
-
-  .tool-tip::after {
-    content: " ";
-    position: absolute;
-    top: 100%; /* At the bottom of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgba(50, 200, 70, 1) transparent transparent transparent;
-  }
-
-  .tool-tip-holder:hover .tool-tip {
-    display: unset;
-  }
 
 </style>
