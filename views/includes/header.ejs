@@ -1,14 +1,16 @@
 <header>
-    <h1><a href="/">TableTop</a></h1>
+    <article>
+        <h1><a href="/">TableTop</a></h1>
 
-    <div class="profile-menu">
-        <% if (typeof player === 'object' && player) { %>
-            <p>Player: <%= player.playerName %></p>
-            <p><a href="/sign-out">sign out</a></p>
-        <% } else { %>
-            <p><label for="sign-in-modal">sign in</label></p>
-        <% } %>
-    </div>
+        <div class="profile-menu">
+            <% if (typeof player === 'object' && player) { %>
+                <p>Player: <%= player.playerName %></p>
+                <p><a href="/sign-out">sign out</a></p>
+            <% } else { %>
+                <p><label for="sign-in-modal">sign in</label></p>
+            <% } %>
+        </div>
+    </article>
 </header>
 
 <% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>

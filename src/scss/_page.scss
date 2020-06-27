@@ -21,11 +21,16 @@ body {
         background-color: $color-shade;
         color: $color-page;
         margin: 0 0 ($std-space * 2) 0;
-        padding: $std-space;
 
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        article {
+            padding: $std-space;
+            max-width: $max-layout-width;
+            position: relative;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
         h1 {
             margin: 0;
@@ -39,7 +44,6 @@ body {
                 color: $color-page;
             }
         }
-
     }
 
     &>main {
@@ -48,13 +52,29 @@ body {
 
     .content {
         padding: 0 $std-space;
-        max-width: 100%;
+        max-width: $max-layout-width;
+        position: relative;
+        margin: 0 auto;
     }
 
     &>footer {
         background-color: $color-shade;
         margin: ($std-space * 3) 0 0 0;
-        padding: $std-space;
         color: $color-page;
+
+        article {
+            padding: $std-space;
+            max-width: $max-layout-width;
+            position: relative;
+            margin: 0 auto;
+
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        p {
+            margin: 0;
+        }
     }
 }
