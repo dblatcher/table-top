@@ -14,6 +14,7 @@ var usersRouter = require('./routes/users')(state);
 var gameRouter = require('./routes/game')(state);
 var characterRouter = require('./routes/character')(state);
 var signOutRouter = require('./routes/sign-out')(state);
+var printRouter = require('./routes/print')(state);
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/users', usersRouter);
 app.use('/game', gameRouter);
 app.use('/character', characterRouter);
 app.use('/sign-out', signOutRouter);
+app.use('/print', printRouter);
 
 
 // catch 404 and forward to error handler
@@ -42,6 +44,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

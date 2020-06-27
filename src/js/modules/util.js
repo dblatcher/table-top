@@ -36,4 +36,27 @@ function getCookie(cname) {
     return "";
 }
 
-export {onLoad, setCookie, getCookie}
+function postData(url, data) {
+
+  return new Promise(function(resolve, reject) {
+
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if ( this.status == 200) {
+          resolve(this.responseText);
+        } else {
+          reject(this.responseText)
+        }
+      }
+    };
+  
+    xhttp.open("POST", url, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send( JSON.stringify({postedData: data}) );
+  })
+
+}
+
+export {onLoad, setCookie, getCookie, postData}
