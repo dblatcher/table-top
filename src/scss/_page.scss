@@ -1,29 +1,30 @@
+h1, h2,h3,h4,h5 {
+    font-family: $font-heading;
+    margin: 1em 0 0 0;
+}
+
+a {
+    color: $color-contrast;
+
+    &:visited {
+        color: scale-color($color-contrast, $lightness: -25%);
+    }
+}
+
 body {
     background-color: $color-page;
     color: $color-text;
     font-family: $font-main;
     margin: 0;
 
-    h1, h2,h3,h4,h5 {
-        font-family: $font-heading;
-        margin: 1em 0 0 0;
-    }
-
-    a {
-        color: $color-contrast;
-
-        &:visited {
-            color: scale-color($color-contrast, $lightness: -25%);
-        }
-    }
-
     &>header {
         background-color: $color-shade;
         color: $color-page;
         margin: 0 0 ($std-space * 2) 0;
+        padding: $std-space 0;
 
         article {
-            padding: $std-space;
+            padding: 0 $std-space;
             max-width: $max-layout-width;
             position: relative;
             margin: 0 auto;
@@ -48,9 +49,6 @@ body {
 
     &>main {
         min-height: 25em;
-    }
-
-    .content {
         padding: 0 $std-space;
         max-width: $max-layout-width;
         position: relative;
@@ -61,9 +59,10 @@ body {
         background-color: $color-shade;
         margin: ($std-space * 3) 0 0 0;
         color: $color-page;
+        padding: $std-space 0;
 
         article {
-            padding: $std-space;
+            padding: 0 $std-space;
             max-width: $max-layout-width;
             position: relative;
             margin: 0 auto;
