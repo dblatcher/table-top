@@ -316,6 +316,32 @@ class CharacterSheet {
         return JSON.stringify(this.serialise())
     }
 
+    static validateSerialisedSheet (serialisedSheet) {
+        if (!serialisedSheet) {return false}
+        if (typeof serialisedSheet !== 'object') {return false}
+        if (serialisedSheet.values && !Array.isArray(serialisedSheet.values)) {return false}
+        if (serialisedSheet.groups && !Array.isArray(serialisedSheet.groups)) {return false}
+
+        let index
+        if (serialisedSheet.values) {
+            for (index = 0; index < serialisedSheet.values.length; index++) {
+                if (serialisedSheet.values[index].isDerived) {
+                    // test if is a valid serialised derived stat, if not return false
+                } else {
+                    // test if is a valid datum , if not return false
+                }
+            }
+        }
+
+        if (serialisedSheet.groups) {
+            for (index = 0; index < serialisedSheet.groups.length; index++) {
+                // test if is a valid serialised group stat, if not return false
+            }
+        }
+
+        return true
+    }
+
     static deserialise (serialisedSheet) {
         const data = serialisedSheet.values ? serialisedSheet.values.map(
             value => (value.isDerived || value.expressions ) ? DerivedStat.deserialise(value) : SheetDatum.deserialise(value) 

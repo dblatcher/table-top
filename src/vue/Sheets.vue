@@ -24,7 +24,14 @@
             <tool-tip-holder v-bind="{content: 'Drag unwanted values here to delete'}"/>
           </div>
 
-          <clipboard-button v-bind:stringToCopy="localCharacterSheet.toJson()" buttonText="copy data to clipboard" />
+          <clipboard-button 
+          v-bind:stringToCopy="localCharacterSheet.toJson()" 
+          buttonText="copy sheetdata" />
+          <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share your own characters and templates with other players'}"/>
+
+          <data-import-form @submit="useJson" 
+          placeholder="paste sheetdata here" 
+          buttonText="use data"/>
 
         </div>
 
@@ -172,6 +179,7 @@ import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 import ToolTipHolder from "./components/ToolTipHolder.vue"
 import ClipboardButton from "./components/ClipboardButton.vue"
+import DataImportForm from "./components/DataImportForm.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
@@ -186,7 +194,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton, DataImportForm},
     props: ["config"],
 
     data() {
@@ -382,6 +390,25 @@ export default {
       useTemplate(inputData) {
         const templateName = inputData.choice
         this.localCharacterSheet = templates[templateName]()
+        this.$forceUpdate()
+        this.handleUpdate()
+      },
+
+      useJson(jsonInput) {
+        let data
+        try {
+          data = JSON.parse(jsonInput)
+        } catch (error) {
+          alert('bad JSON string', error)
+          return false
+        }
+
+        if (!CharacterSheet.validateSerialisedSheet(data)) {
+          alert('not valid data')
+          return false
+        }
+
+        this.localCharacterSheet = CharacterSheet.deserialise(data)
         this.$forceUpdate()
         this.handleUpdate()
       },
