@@ -23,6 +23,9 @@
             <p>bin</p>
             <tool-tip-holder v-bind="{content: 'Drag unwanted values here to delete'}"/>
           </div>
+
+          <clipboard-button v-bind:stringToCopy="localCharacterSheet.toJson()" buttonText="copy data to clipboard" />
+
         </div>
 
         <div class="frame">
@@ -168,6 +171,7 @@ import StorageDialogue from "./components/StorageDialogue.vue";
 import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 import ToolTipHolder from "./components/ToolTipHolder.vue"
+import ClipboardButton from "./components/ClipboardButton.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
@@ -182,7 +186,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton},
     props: ["config"],
 
     data() {
