@@ -97,6 +97,8 @@ export default {
             storageDialogueProps: {
               isOpen: false,
               folderName: 'storedSheets',
+              importValidateFunction: CharacterSheet.validateSerialisedSheet,
+              allowCopyPasteControls: true
             },
             currentSheetItemName: undefined
         }
@@ -132,24 +134,19 @@ export default {
           if (this.currentSheetItemName === itemName) {this.currentSheetItemName = undefined}
         },
 
-        openSaveSheetDialogue() {
-          this.storageDialogueProps = {
-              isOpen: true,
-              title: 'Save Sheet',
-              action: 'save',
-              folderName: 'storedSheets',
-              dataToSave: this.localCharacterSheet.serialise(),
-          }
-        },
+      openSaveSheetDialogue() {
+        this.storageDialogueProps.isOpen = true
+        this.storageDialogueProps.title = 'Save Sheet'
+        this.storageDialogueProps.action = 'save'
+        this.storageDialogueProps.dataToSave = this.localCharacterSheet.serialise()
+      },
 
-        openLoadSheetDialogue() {
-          this.storageDialogueProps = {
-              isOpen: true,
-              title: 'Load Sheet',
-              action: 'load',
-              folderName: 'storedSheets',
-          }
-        },
+      openLoadSheetDialogue() {
+        this.storageDialogueProps.isOpen = true
+        this.storageDialogueProps.title = 'Load Sheet'
+        this.storageDialogueProps.action = 'load'
+        this.storageDialogueProps.dataToSave = null
+      },
 
         saveSheet(itemName) {
           storageSave('storedSheets',itemName, this.localCharacterSheet.serialise())
