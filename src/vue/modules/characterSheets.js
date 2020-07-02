@@ -319,6 +319,7 @@ class CharacterSheet {
     static validateSerialisedSheet (serialisedSheet) {
         if (!serialisedSheet) {return false}
         if (typeof serialisedSheet !== 'object') {return false}
+        if (Array.isArray(serialisedSheet)) {return false}
         if (serialisedSheet.values && !Array.isArray(serialisedSheet.values)) {return false}
         if (serialisedSheet.groups && !Array.isArray(serialisedSheet.groups)) {return false}
 

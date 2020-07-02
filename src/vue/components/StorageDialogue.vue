@@ -17,6 +17,12 @@
             <input v-model="newItemName"/>
             <input type="submit" value="save"/>
         </form>
+
+        <data-import-form v-if="action === 'load' && allowCopyPasteControls" 
+        @submit="handleDataImport"
+        placeholder="paste data here" 
+        buttonText="load from data"/>
+
       </div>
     </aside>
 </template>
@@ -24,8 +30,11 @@
 <script>
 import * as storage from "../modules/storage";
 
+import DataImportForm from './DataImportForm.vue'
+
 export default {
-    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave'],
+    components: {DataImportForm},
+    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave', 'importValidateFunction', 'allowCopyPasteControls'],
 
     data() {
         return {
@@ -72,6 +81,24 @@ export default {
                 this.$emit('item-load', {itemName, item})
             }
         },
+
+        handleDataImport(jsonInput) {
+            let data
+            try {
+                data = JSON.parse(jsonInput)
+            } catch (error) {
+                alert('bad JSON string', error)
+                return false
+            }
+console.log('importValidateFunction',this.importValidateFunction)
+            if (typeof this.importValidateFunction === 'function' && !this.importValidateFunction(data)) {
+                alert('not valid data')
+                return false
+            }
+
+            this.$emit('item-load', {itemName:"imported", item:data})
+        }
+
     },
 
 }

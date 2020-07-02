@@ -29,10 +29,6 @@
           buttonText="copy sheetdata" />
           <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share your own characters and templates with other players'}"/>
 
-          <data-import-form @submit="useJson" 
-          placeholder="paste sheetdata here" 
-          buttonText="use data"/>
-
         </div>
 
         <div class="frame">
@@ -179,7 +175,6 @@ import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 import ToolTipHolder from "./components/ToolTipHolder.vue"
 import ClipboardButton from "./components/ClipboardButton.vue"
-import DataImportForm from "./components/DataImportForm.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
@@ -194,7 +189,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton, DataImportForm},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton},
     props: ["config"],
 
     data() {
@@ -205,7 +200,9 @@ export default {
             history: [newSheet.clone()],
             storageDialogueProps :{
                 isOpen: false,
-                folderName: "storedSheets"
+                folderName: "storedSheets",
+                importValidateFunction: CharacterSheet.validateSerialisedSheet,
+                allowCopyPasteControls: true
             },
             formulaDialogueIsOpen: false,
             pendingDerivedStat:null,
@@ -346,22 +343,17 @@ export default {
       handleListItemAdd,
 
       openSaveSheetDialogue() {
-        this.storageDialogueProps = {
-            isOpen: true,
-            title: 'Save Sheet',
-            action: 'save',
-            folderName: 'storedSheets',
-            dataToSave: this.localCharacterSheet.serialise(),
-        }
+        this.storageDialogueProps.isOpen = true
+        this.storageDialogueProps.title = 'Save Sheet'
+        this.storageDialogueProps.action = 'save'
+        this.storageDialogueProps.dataToSave = this.localCharacterSheet.serialise()
       },
 
       openLoadSheetDialogue() {
-        this.storageDialogueProps = {
-            isOpen: true,
-            title: 'Load Sheet',
-            action: 'load',
-            folderName: 'storedSheets',
-        }
+        this.storageDialogueProps.isOpen = true
+        this.storageDialogueProps.title = 'Load Sheet'
+        this.storageDialogueProps.action = 'load'
+        this.storageDialogueProps.dataToSave = null
       },
 
       handleDeletedSheet(itemName) {
