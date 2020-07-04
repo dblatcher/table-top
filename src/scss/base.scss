@@ -7,6 +7,9 @@
 @import './table';
 @import './profile-menu';
 
+.warning {
+    color: $color-warning;
+}
 
 .frame {
     margin: $std-space 0;

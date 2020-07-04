@@ -1,11 +1,13 @@
 <template>
     <form @submit="handleSubmit">
-        <textarea @input="handleInput"
-        v-bind:placeholder="placeholder || ''" 
-        name="data"
-        ></textarea>
-        <button class="button" type="submit">{{buttonText}}</button>
-        <p class="warning" v-show="errorMessage">{{errorMessage}}</p>
+        <div>
+            <textarea @input="handleInput"
+            v-bind:placeholder="placeholder || ''" 
+            name="data"
+            ></textarea>
+            <button class="button" type="submit">{{buttonText}}</button>
+        </div>
+        <p class="warning">{{errorMessage}}</p>
     </form>
 </template>
 
@@ -61,13 +63,36 @@ export default {
 
     form {
         display: block;
+        position: relative;
+        background-color: black;
         margin: .5em 0;
+        padding: .5em;
+    }
+
+    form>div {
+        background: white;
+        position: relative;
+        margin-top: 1.5em;
+        margin-bottom: .5em;
+    }
+
+    .button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
 
     textarea {
         display: block;
-        margin: 0 .5em;
-        min-height: 6rem;
+        margin: 0;
+        min-height: 5rem;
         resize: none;
+    }
+
+    .warning {
+        margin: 0;
+        min-height: 1.5em;
+        font-size: small;
+        text-align: center;
     }
 </style>
