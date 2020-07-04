@@ -7,8 +7,10 @@
         </div> 
 
         <nav v-if="allowCopyPasteControls && action === 'load'">
-            <input v-model="controlType"  value="BROWSER" type="radio">browser storage</input>
-            <input v-model="controlType"  value="TEXT" type="radio">text</input>
+            <input hidden="" v-model="controlType" id="control-type-browser" value="BROWSER" type="radio"/>
+            <label for="control-type-browser" class="radio-label">storage</label>
+            <input hidden="" v-model="controlType" id="control-type-text" value="TEXT" type="radio"/>
+            <label for="control-type-text" class="radio-label">text</label>
         </nav>
 
         <section v-show="controlType === 'BROWSER'">
@@ -107,12 +109,19 @@ export default {
 
 <style scoped>
 
+    .modal-content {
+        min-height: 20rem;
+    }
+
     section {
         background-color: black;
         width: 100%;
-        min-width: 12rem;
+        min-width: 15rem;
         box-sizing: border-box;
         margin-bottom: .5rem;
+        min-height: 12rem;
+        display: flex;
+        flex-direction: column;
     }
 
     .storage-list {
@@ -120,6 +129,8 @@ export default {
         min-height: 8rem;
         padding: .5em;
         color: white;
+        position: relative;
+        margin: .5em 0;
     }
 
     .storage-list>li {
@@ -148,5 +159,6 @@ export default {
     .file-name-form {
         display: flex;
         justify-content: space-between;
+        margin: 0 .25rem;
     }
 </style>

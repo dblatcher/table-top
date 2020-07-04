@@ -7,7 +7,7 @@
     height: 100vh;
     margin: 0;
     z-index: 1000;
-    
+
     padding: $std-space;
     justify-content: center;
     align-items: center;
@@ -28,6 +28,7 @@ input:checked+.modal.toggled {
     margin: $std-space;
     padding: $std-space;
     background-color: $color-page;
+    box-shadow: $shadow-modal;
     max-height: 80vh;
     overflow-y: auto;
 

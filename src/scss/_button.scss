@@ -48,6 +48,32 @@
     }
 }
 
+.radio-label {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    padding: ($std-space/2) $std-space;
+    margin: ($std-space/2) $std-space;
+    border: none;
+    background-color: $color-shade;
+    font-family: $font-main;
+    font-size: small;
+    border-radius: 1em;
+
+    transition: transform .5s, box-shadow .5s;
+    transform: translateY(-3px);
+    box-shadow: $shadow-6;
+
+    &--disabled {
+        background-color: gray;
+    }
+}
+
+input:checked+.radio-label {
+    transform: translateY(0);
+    box-shadow: none;
+}
 
 .stud-button {
     cursor: pointer;
