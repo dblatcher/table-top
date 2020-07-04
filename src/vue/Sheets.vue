@@ -24,10 +24,22 @@
             <tool-tip-holder v-bind="{content: 'Drag unwanted values here to delete'}"/>
           </div>
 
-          <clipboard-button 
-          v-bind:stringToCopy="localCharacterSheet.toJson()" 
-          buttonText="copy sheetdata" />
-          <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share your own characters and templates with other players'}"/>
+
+          <make-download-button
+          v-bind:fileContents="localCharacterSheet.toJson()" 
+          v-bind:fileName="currentSheetItemName || 'character-sheet'" 
+          >
+
+            <template v-slot:after-content>
+              <tool-tip-holder v-bind="{content: 'download your sheet as a data file you can share with other players'}"/>
+            </template>
+            <template v-slot:fallback-content>
+              <clipboard-button 
+              v-bind:stringToCopy="localCharacterSheet.toJson()" 
+              buttonText="copy sheetdata" />
+              <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share with other players'}"/>
+            </template>
+          </make-download-button>
 
         </div>
 
@@ -175,6 +187,7 @@ import ListControl from "./components/play-area/ListControl.vue"
 import FoldingPanel from "./components/FoldingPanel.vue"
 import ToolTipHolder from "./components/ToolTipHolder.vue"
 import ClipboardButton from "./components/ClipboardButton.vue"
+import MakeDownloadButton from "./components/MakeDownloadButton.vue"
 import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
@@ -189,7 +202,7 @@ import {
 
 
 export default {
-    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton},
+    components: {StorageDialogue, ListControl, FoldingPanel,ChoiceMenu, FormulaDialogue, ToolTipHolder, ClipboardButton, MakeDownloadButton},
     props: ["config"],
 
     data() {
