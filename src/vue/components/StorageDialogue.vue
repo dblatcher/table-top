@@ -20,8 +20,12 @@
 
         <data-import-form v-if="action === 'load' && allowCopyPasteControls" 
         @submit="handleDataImport"
+        v-bind="{
+            importValidateFunction: this.importValidateFunction,
+            convertToJson: true,
+        }"
         placeholder="paste data here" 
-        buttonText="load from data"/>
+        buttonText="load"/>
 
       </div>
     </aside>
@@ -66,7 +70,6 @@ export default {
         },
 
         handleItemNameClick(itemName) {
-
             if (this.action === 'save') {
                 this.newItemName = itemName
             }
@@ -82,23 +85,9 @@ export default {
             }
         },
 
-        handleDataImport(jsonInput) {
-            let data
-            try {
-                data = JSON.parse(jsonInput)
-            } catch (error) {
-                alert('bad JSON string', error)
-                return false
-            }
-console.log('importValidateFunction',this.importValidateFunction)
-            if (typeof this.importValidateFunction === 'function' && !this.importValidateFunction(data)) {
-                alert('not valid data')
-                return false
-            }
-
+        handleDataImport(data) {
             this.$emit('item-load', {itemName:"imported", item:data})
         }
-
     },
 
 }
@@ -134,6 +123,4 @@ console.log('importValidateFunction',this.importValidateFunction)
         margin: 0;
         color: red;
     }
-
-
 </style>

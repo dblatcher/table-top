@@ -1,21 +1,56 @@
 <template>
-    <form @submit="handleImportData">
-        <textarea v-bind:placeholder="placeholder || '' " name="data"></textarea>
+    <form @submit="handleSubmit">
+        <textarea @input="handleInput"
+        v-bind:placeholder="placeholder || ''" 
+        name="data"
+        ></textarea>
         <button class="button" type="submit">{{buttonText}}</button>
+        <p class="warning" v-show="errorMessage">{{errorMessage}}</p>
     </form>
 </template>
 
 <script>
 export default {
 
-    props: ['placeholder', 'buttonText'],
+    props: ['placeholder', 'buttonText','importValidateFunction','convertToJson'],
+
+    data() {
+        return {
+            errorMessage:'',
+        }
+    },
 
     methods: {
-        handleImportData(event) {
+        handleSubmit(event) {
             event.preventDefault()
             if (event.target.elements.data) {
-            this.$emit('submit',event.target.elements.data.value)
+
+                this.errorMessage = ""
+                let data
+
+                if (this.convertToJson) {
+                    try {
+                        data = JSON.parse(event.target.elements.data.value)
+                    } catch (error) {
+                        this.errorMessage = "Data is not in JSON format."
+                        return false
+                    }
+                } else {
+                    data = event.target.elements.data.value
+                }
+
+                if (typeof this.importValidateFunction === 'function' && !this.importValidateFunction(data)) {
+                    this.errorMessage = "Incorrect data"
+                    return false
+                }
+
+                this.$emit('submit',data)
             }
+        },
+
+        handleInput(event) {
+            this.errorMessage = ""
+            this.$emit('input', event)
         },
     }
 
