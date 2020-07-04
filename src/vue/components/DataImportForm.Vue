@@ -64,13 +64,13 @@ export default {
     form {
         display: block;
         position: relative;
-        background-color: black;
         margin: .5em 0;
         padding: .5em;
+        min-height: 8rem;
     }
 
     form>div {
-        background: white;
+        display: flex;
         position: relative;
         margin-top: 1.5em;
         margin-bottom: .5em;
@@ -87,6 +87,7 @@ export default {
         margin: 0;
         min-height: 5rem;
         resize: none;
+        width: 100%;
     }
 
     .warning {

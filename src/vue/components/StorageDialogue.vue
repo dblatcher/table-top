@@ -3,29 +3,40 @@
       <div class="modal-content">
         <div class="close-button-holder">
             <h3>{{title}}</h3>
-            <div  @click="$emit('close')" class="close-button">X</div> 
+            <div @click="$emit('close')" class="close-button">X</div> 
         </div> 
 
-        <ul class="storage-list">
-            <li v-for="(itemName, index) in itemNameList" v-bind:key="index">
-                <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
-                <div @click="() => {handleDeleteButtonClick(itemName)}">x</div>
-            </li>
-        </ul>
+        <nav v-if="allowCopyPasteControls && action === 'load'">
+            <input v-model="controlType"  value="BROWSER" type="radio">browser storage</input>
+            <input v-model="controlType"  value="TEXT" type="radio">text</input>
+        </nav>
 
-        <form v-if="action === 'save'" @submit="handleSaveButton">
-            <input v-model="newItemName"/>
-            <input type="submit" value="save"/>
-        </form>
+        <section v-show="controlType === 'BROWSER'">
+            <ul class="storage-list">
+                <li v-for="(itemName, index) in itemNameList" v-bind:key="index">
+                    <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
+                    <div @click="() => {handleDeleteButtonClick(itemName)}">x</div>
+                </li>
+                <li v-if="itemNameList.length === 0" class="empty-list-message">-no saved items-</li>
+            </ul>
 
-        <data-import-form v-if="action === 'load' && allowCopyPasteControls" 
-        @submit="handleDataImport"
-        v-bind="{
-            importValidateFunction: this.importValidateFunction,
-            convertToJson: true,
-        }"
-        placeholder="paste data here" 
-        buttonText="load"/>
+            <form class="file-name-form" v-if="action === 'save'" @submit="handleSaveButton">
+                <input placeholder="enter file name" v-model="newItemName"/>
+                <input type="submit" value="save"/>
+            </form>
+        </section>
+
+        <section v-show="controlType === 'TEXT'">
+            <data-import-form v-if="action === 'load'" 
+            @submit="handleDataImport"
+            v-bind="{
+                importValidateFunction: this.importValidateFunction,
+                convertToJson: true,
+            }"
+            placeholder="paste data here" 
+            buttonText="load"/>
+        </section>
+
 
       </div>
     </aside>
@@ -44,6 +55,7 @@ export default {
         return {
             newItemName: '',
             itemNameList: storage.getItemNames(this.folderName),
+            controlType: 'BROWSER',
         }
     },
 
@@ -95,13 +107,17 @@ export default {
 
 <style scoped>
 
-    .storage-list {
-        list-style: none;
+    section {
         background-color: black;
         width: 100%;
         min-width: 12rem;
-        min-height: 8rem;
         box-sizing: border-box;
+        margin-bottom: .5rem;
+    }
+
+    .storage-list {
+        list-style: none;
+        min-height: 8rem;
         padding: .5em;
         color: white;
     }
@@ -113,6 +129,11 @@ export default {
         margin-bottom: .5em;
     }
 
+    .storage-list>li.empty-list-message {
+        justify-content: center;
+        color: lightgray;
+    }
+
     .storage-list>li>p { 
         cursor: pointer;
         margin: 0;
@@ -122,5 +143,10 @@ export default {
         cursor: pointer;
         margin: 0;
         color: red;
+    }
+
+    .file-name-form {
+        display: flex;
+        justify-content: space-between;
     }
 </style>
