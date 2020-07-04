@@ -14,7 +14,6 @@ var usersRouter = require('./routes/users')(state);
 var gameRouter = require('./routes/game')(state);
 var characterRouter = require('./routes/character')(state);
 var signOutRouter = require('./routes/sign-out')(state);
-var printRouter = require('./routes/print')(state);
 
 var app = express();
 
@@ -34,7 +33,6 @@ app.use('/users', usersRouter);
 app.use('/game', gameRouter);
 app.use('/character', characterRouter);
 app.use('/sign-out', signOutRouter);
-app.use('/print', printRouter);
 
 
 // catch 404 and forward to error handler

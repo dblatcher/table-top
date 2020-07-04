@@ -1,8 +1,6 @@
 import {onLoad} from './modules/util'
 import {initCreateGameForm} from './modules/create-game-form'
 
-import {initTestPrint} from './modules/print-test'
-
 import launchLiveList from "../vue/live-list-launcher";
 var io = require('../../node_modules/socket.io-client/dist/socket.io')
 
