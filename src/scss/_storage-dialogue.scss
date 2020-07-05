@@ -1,0 +1,44 @@
+.storage-control {
+    background-color: black;
+    width: 100%;
+    min-width: 15rem;
+    max-width: 15rem;
+    box-sizing: border-box;
+    margin-bottom: .5rem;
+    position: relative;
+    min-height: 12rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.storage-list {
+    list-style: none;
+    min-height: 8rem;
+    padding: .5em;
+    color: white;
+    position: relative;
+    margin: .5em 0;
+}
+
+.storage-list>li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .5em;
+}
+
+.storage-list>li.empty-list-message {
+    justify-content: center;
+    color: lightgray;
+}
+
+.storage-list>li>p { 
+    cursor: pointer;
+    margin: 0;
+}
+
+.storage-list>li>div { 
+    cursor: pointer;
+    margin: 0;
+    color: red;
+}

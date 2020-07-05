@@ -17,7 +17,7 @@
             <label v-if="allowFileControls" for="control-type-file" class="radio-label">file</label>
         </nav>
 
-        <section v-show="controlType === 'BROWSER'">
+        <section class="storage-control" v-show="controlType === 'BROWSER'">
             <ul class="storage-list">
                 <li v-for="(itemName, index) in itemNameList" v-bind:key="index">
                     <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
@@ -32,7 +32,7 @@
             </form>
         </section>
 
-        <section v-show="controlType === 'TEXT'">
+        <section class="storage-control" v-show="controlType === 'TEXT'">
             <data-import-form v-if="action === 'load'" 
             @submit="handleDataImport"
             v-bind="{
@@ -43,7 +43,7 @@
             buttonText="load"/>
         </section>
 
-        <section v-show="controlType === 'FILE'">
+        <section class="storage-control" v-show="controlType === 'FILE'">
             <FileUploadForm
             @submit="handleDataImport"
             v-bind="{
@@ -125,51 +125,6 @@ export default {
 
     .modal-content {
         min-height: 20rem;
-    }
-
-    section {
-        background-color: black;
-        width: 100%;
-        min-width: 15rem;
-        max-width: 15rem;
-        box-sizing: border-box;
-        margin-bottom: .5rem;
-        position: relative;
-        min-height: 12rem;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .storage-list {
-        list-style: none;
-        min-height: 8rem;
-        padding: .5em;
-        color: white;
-        position: relative;
-        margin: .5em 0;
-    }
-
-    .storage-list>li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: .5em;
-    }
-
-    .storage-list>li.empty-list-message {
-        justify-content: center;
-        color: lightgray;
-    }
-
-    .storage-list>li>p { 
-        cursor: pointer;
-        margin: 0;
-    }
-
-    .storage-list>li>div { 
-        cursor: pointer;
-        margin: 0;
-        color: red;
     }
 
     .file-name-form {
