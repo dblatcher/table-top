@@ -6,11 +6,15 @@
             <div @click="$emit('close')" class="close-button">X</div> 
         </div> 
 
-        <nav v-if="allowCopyPasteControls && action === 'load'">
+        <nav v-if="(allowCopyPasteControls || allowFileControls) && action === 'load'">
             <input hidden="" v-model="controlType" id="control-type-browser" value="BROWSER" type="radio"/>
             <label for="control-type-browser" class="radio-label">storage</label>
-            <input hidden="" v-model="controlType" id="control-type-text" value="TEXT" type="radio"/>
-            <label for="control-type-text" class="radio-label">text</label>
+
+            <input hidden="" v-if="allowCopyPasteControls" v-model="controlType" id="control-type-text" value="TEXT" type="radio"/>
+            <label  v-if="allowCopyPasteControls" for="control-type-text" class="radio-label">text</label>
+
+            <input hidden="" v-if="allowFileControls" v-model="controlType" id="control-type-file" value="FILE" type="radio"/>
+            <label v-if="allowFileControls" for="control-type-file" class="radio-label">file</label>
         </nav>
 
         <section v-show="controlType === 'BROWSER'">
@@ -39,6 +43,15 @@
             buttonText="load"/>
         </section>
 
+        <section v-show="controlType === 'FILE'">
+            <FileUploadForm
+            @submit="handleDataImport"
+            v-bind="{
+                importValidateFunction: this.importValidateFunction,
+                convertToJson: true,
+            }"
+            maxFileSize="100000"/>
+        </section>
 
       </div>
     </aside>
@@ -48,10 +61,11 @@
 import * as storage from "../modules/storage";
 
 import DataImportForm from './DataImportForm.vue'
+import FileUploadForm from './FileUploadForm.vue'
 
 export default {
-    components: {DataImportForm},
-    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave', 'importValidateFunction', 'allowCopyPasteControls'],
+    components: {DataImportForm, FileUploadForm},
+    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave', 'importValidateFunction', 'allowCopyPasteControls', 'allowFileControls'],
 
     data() {
         return {
@@ -117,8 +131,10 @@ export default {
         background-color: black;
         width: 100%;
         min-width: 15rem;
+        max-width: 15rem;
         box-sizing: border-box;
         margin-bottom: .5rem;
+        position: relative;
         min-height: 12rem;
         display: flex;
         flex-direction: column;

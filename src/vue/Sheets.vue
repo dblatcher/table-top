@@ -215,7 +215,8 @@ export default {
                 isOpen: false,
                 folderName: "storedSheets",
                 importValidateFunction: CharacterSheet.validateSerialisedSheet,
-                allowCopyPasteControls: true
+                allowCopyPasteControls: true,
+                allowFileControls: true,
             },
             formulaDialogueIsOpen: false,
             pendingDerivedStat:null,
