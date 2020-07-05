@@ -1,9 +1,10 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form class="storage-control__load-form" @submit.prevent="handleSubmit">
       <input @change="handleFileListChange" type="file" name="file"/>
-      <button class="button" v-bind:class="{'button--disabled': !loadedContent}">load</button>
+
       <p v-show="errorMessage" class="warning">{{errorMessage}}</p>
       <div class="preview"><span>{{loadedContent || '[empty]'}}</span></div>
+      <button class="button" v-bind:class="{'button--disabled': !loadedContent}">load</button>
   </form>
 </template>
 
@@ -94,12 +95,6 @@ export default {
 
 <style scoped>
 
-    form {
-        display: flex;
-        flex-direction: column;
-        min-height: inherit;
-        justify-content: space-between;
-    }
 
     input[type=file] {
         color: white;
@@ -107,10 +102,9 @@ export default {
 
     .preview {
         overflow: auto;
-        background-color: white;
+        background-color: black;
         max-height: 5rem;
         min-height: 5rem;
-        margin: auto .25rem .5rem .25rem;
     }
 
     .preview>span {

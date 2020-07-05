@@ -45,6 +45,9 @@
 
     &--disabled {
         background-color: gray;
+        box-shadow: none;
+        transform: none;
+        cursor: default;
     }
 }
 

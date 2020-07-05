@@ -1,13 +1,13 @@
 <template>
-    <form @submit="handleSubmit">
-        <div>
-            <textarea @input="handleInput"
-            v-bind:placeholder="placeholder || ''" 
-            name="data"
-            ></textarea>
-            <button class="button" type="submit">{{buttonText}}</button>
-        </div>
+    <form class="storage-control__load-form" @submit="handleSubmit">
+
+        <textarea @input="handleInput"
+        v-bind:placeholder="placeholder || ''" 
+        name="data"/>
+
         <p class="warning">{{errorMessage}}</p>
+
+        <button class="button" v-bind:class="{'button--disabled': !currentContent}" type="submit">{{buttonText}}</button>
     </form>
 </template>
 
@@ -18,7 +18,8 @@ export default {
 
     data() {
         return {
-            errorMessage:'',
+            errorMessage: '',
+            currentContent: '',
         }
     },
 
@@ -52,6 +53,7 @@ export default {
 
         handleInput(event) {
             this.errorMessage = ""
+            this.currentContent = event.target.value;
             this.$emit('input', event)
         },
     }
@@ -61,39 +63,11 @@ export default {
 
 <style scoped>
 
-    form {
-        display: block;
-        position: relative;
-        margin: .5em 0;
-        padding: .5em;
-        min-height: 8rem;
-    }
-
-    form>div {
-        display: flex;
-        position: relative;
-        margin-top: 1.5em;
-        margin-bottom: .5em;
-    }
-
-    .button {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-    }
-
     textarea {
         display: block;
         margin: 0;
         min-height: 5rem;
         resize: none;
-        width: 100%;
     }
 
-    .warning {
-        margin: 0;
-        min-height: 1.5em;
-        font-size: small;
-        text-align: center;
-    }
 </style>

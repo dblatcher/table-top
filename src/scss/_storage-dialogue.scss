@@ -1,44 +1,62 @@
 .storage-control {
-    background-color: black;
+    background-color: $color-contrast;
+    box-shadow: $shadow-4;
     width: 100%;
     min-width: 15rem;
     max-width: 15rem;
     box-sizing: border-box;
-    margin-bottom: .5rem;
+    margin-bottom: $std-space;
     position: relative;
     min-height: 12rem;
     display: flex;
     flex-direction: column;
+
+    &__load-form {
+        display: flex;
+        flex-direction: column;
+        min-height: inherit;
+        box-sizing: border-box;
+        justify-content: space-between;
+        padding: $std-space ($std-space/2);
+
+        .warning {
+            margin: 0;
+            min-height: 1.5em;
+            font-size: small;
+            text-align: center;
+        }
+    }
 }
+
 
 .storage-list {
     list-style: none;
     min-height: 8rem;
-    padding: .5em;
+    padding: $std-space;
     color: white;
     position: relative;
-    margin: .5em 0;
-}
+    margin: $std-space 0;
 
-.storage-list>li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: .5em;
-}
+    li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $std-space;
 
-.storage-list>li.empty-list-message {
-    justify-content: center;
-    color: lightgray;
-}
+        &.empty-list-message {
+            justify-content: center;
+            color: lightgray;
+        }
 
-.storage-list>li>p { 
-    cursor: pointer;
-    margin: 0;
-}
+        p { 
+            cursor: pointer;
+            margin: 0;
+        }
 
-.storage-list>li>div { 
-    cursor: pointer;
-    margin: 0;
-    color: red;
+        div { 
+            cursor: pointer;
+            margin: 0;
+            color: red;
+        }
+    }
 }
