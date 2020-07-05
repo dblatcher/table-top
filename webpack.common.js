@@ -5,7 +5,6 @@ module.exports = {
     entry: {
         base: './src/scss/base.scss',
         game: './src/scss/game.scss',
-        sheets: './src/scss/sheets.scss',
         homepage: './src/js/homepage.js',
         gamepage: './src/js/gamepage.js',
         sheetspage: './src/js/sheetspage.js',
