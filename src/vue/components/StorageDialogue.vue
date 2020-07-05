@@ -118,6 +118,14 @@ export default {
         }
     },
 
+    watch: {
+        action(newValue,oldValue) {
+            if (newValue === 'save') {
+                this.controlType = 'BROWSER'
+            }
+        },
+    }
+
 }
 </script>
 
