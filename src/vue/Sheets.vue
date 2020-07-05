@@ -1,7 +1,6 @@
 <template>
   <div>
-      <h2>Sheets App: {{currentSheetItemName || '[unnamed sheet]'}}</h2>
-
+      <h2>Sheets App</h2>
       <div class="frame-row">
         <div class="frame">
           <button class="button" @click="undo">undo {{history.length -1}}</button>
@@ -14,6 +13,7 @@
         </choice-menu>
       </div>
 
+      <h3 class="character-sheet-title">{{currentSheetItemName || '[Untitled Character Sheet]'}}</h3>
       <div class="frame-row">
 
         <div class="frame">
