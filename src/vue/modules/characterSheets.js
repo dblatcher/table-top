@@ -201,9 +201,10 @@ class FormulaExpression {
     }
 
     get description() {
-        if (this.multiplier == 0) {return '+ (0)'}
-        return this.datumName ? `${this.multiplier >= 0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})` :
-        `${this.multiplier >0 ? '+':'-'}${Math.abs(this.multiplier)}` 
+        if (this.multiplier == 0) {return '+ 0'}
+        if (!this.datumName) {return `${this.multiplier >0 ? '+':'-'}${Math.abs(this.multiplier)}`}
+        if (Math.abs(this.multiplier) == 1) {return `${this.multiplier >= 0 ? '+':'-'}${this.datumName}`}
+        return `${this.multiplier >= 0 ? '+':'-'}(${Math.abs(this.multiplier)} x ${this.datumName})`
     }
 }
 
