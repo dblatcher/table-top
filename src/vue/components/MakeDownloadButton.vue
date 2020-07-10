@@ -4,7 +4,7 @@
 
     <span v-if="worksInPresentBrowser">
         <a v-bind:href="myObjectUrl" v-bind:download="fileName || ''">
-            <slot><button class="button">{{buttonText || 'download data file'}}</button></slot>
+            <slot><button class="button">{{buttonText || 'download file'}}</button></slot>
         </a>
         <slot name="after-content"></slot>
     </span>
@@ -35,7 +35,7 @@ export default {
                     URL.revokeObjectURL(this.myObjectUrl)
                 }
                 var file = new File([this.fileContents], "file", {
-                    type: "text/JSON",
+                    type: "text/plain",
                 });
                 this.myObjectUrl = URL.createObjectURL(file)
                 this.worksInPresentBrowser = true
@@ -63,24 +63,9 @@ export default {
 </script>
 
 <style scoped>
-
     article {
         display: inline;
         position: relative;
         margin: 0;
     }
-
-    input {
-       opacity: 0;
-       position: absolute;
-       left: -10000px;
-       padding: 0;
-    }
-
-    textarea {
-        min-width: 20rem;
-        min-height: 8rem;
-    }
-
-
 </style>

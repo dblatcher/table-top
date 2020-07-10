@@ -317,6 +317,111 @@ class CharacterSheet {
         return JSON.stringify(this.serialise())
     }
 
+    toPrintablePlainText (options) {
+        const that = this
+        let output = []
+
+        const table = {
+            keyColumnWidth: 5,
+            valueColumnWidth: 5,
+        }
+        Object.defineProperty(table,'width',{get(){
+            return this.keyColumnWidth+this.valueColumnWidth + 3
+        }})
+
+        setTableSize(table, this.values)
+
+        printGroup()
+        this.groups.forEach(group => {
+            if (options.varyGroupWidth) {
+                table.keyColumnWidth = 5
+                table.valueColumnWidth = 5
+                setTableSize(table, this.values.filter(value => value.groupName === group.name))
+            }
+            printGroup(group.name)
+        })
+
+        if (options.returnArray) {
+            return output
+        }
+
+        let outputString = ""
+        for (var j=0; j<output.length; j++) {
+            outputString += output[j] + '\n'
+        }
+
+        return outputString
+
+        function setTableSize (table, valueList) {
+            valueList.forEach(value => {
+                const keyLength = value.name.length + 2
+                if (keyLength > table.keyColumnWidth) {table.keyColumnWidth = keyLength}
+                let valueLength = 0
+                if (value.isListType) {
+                    for (let i=0; i< value.value.length; i++) {
+                        valueLength = getListItemValueString(value,i).length + 2
+                        if ( valueLength > table.valueColumnWidth) {table.valueColumnWidth = valueLength}
+                    } 
+                    return 
+                }
+                valueLength = getValueString(value).length + 2
+                if ( valueLength > table.valueColumnWidth) {table.valueColumnWidth = valueLength}
+            })
+        }
+
+        function printGroup(groupName) {
+            const titleString = groupName || 'MAIN';
+            let keySpace, valueSpace, extraKeySpace, valueString;
+
+            output.push(`+-${titleString}${'-'.repeat(table.width - titleString.length - 3 )}+`)
+            const groupData = that.getGroupData(groupName)
+            groupData.forEach(value=> {
+
+                keySpace = ' '.repeat(Math.max (1, table.keyColumnWidth - value.name.length))
+
+                if (value.isListType) {
+
+                    if (value.value.length === 0 ) {
+                        valueSpace = ' '.repeat(Math.max (1, table.valueColumnWidth - 5))
+                        output.push(`|${value.name}${keySpace}|${valueSpace}EMPTY|`)
+                        return
+                    }
+
+                    valueString = getListItemValueString(value, 0)
+                    valueSpace = ' '.repeat(Math.max (1, table.valueColumnWidth - valueString.length))
+                    output.push(`|${value.name}${keySpace}|${valueSpace}${valueString}|`)
+
+                    extraKeySpace = ' '.repeat(value.name.length)
+                    for (let i = 1; i< value.value.length; i++) {
+                        valueString = getListItemValueString(value, i)
+                        valueSpace = ' '.repeat(Math.max (1, table.valueColumnWidth - valueString.length))
+                        output.push(`|${extraKeySpace}${keySpace}|${valueSpace}${valueString}|`)
+                    }
+                    return
+                }
+
+                valueString = getValueString(value)
+                valueSpace = ' '.repeat(Math.max (1, table.valueColumnWidth - valueString.length))
+                output.push(`|${value.name}${keySpace}|${valueSpace}${valueString}|`)
+            })
+            output.push(`+${'-'.repeat(table.width - 2 )}+`)
+        }
+
+        function getValueString(value) {
+            if (value.type == 'NUM_&_MAX') {
+                return `${value.value.toString()}/${value.max.toString()}`
+            }
+            return value.value.toString()
+        }
+
+        function getListItemValueString(value, index) {
+            if (value.type == 'QUANTIFIED_LIST') {
+                return `${value.value[index].toString()} x ${value.quantity[index].toString()}`
+            }
+            return value.value[index].toString()
+        }
+    }
+
     static validateSerialisedSheet (serialisedSheet) {
         if (!serialisedSheet) {return false}
         if (typeof serialisedSheet !== 'object') {return false}

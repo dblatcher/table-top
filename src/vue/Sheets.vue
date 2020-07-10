@@ -24,22 +24,42 @@
             <tool-tip-holder v-bind="{content: 'Drag unwanted values here to delete'}"/>
           </div>
 
+          <p>
+            <make-download-button
+            v-bind:fileContents="localCharacterSheet.toJson()" 
+            v-bind:fileName="dataSheetFileName"
+            buttonText="download data"
+            >
 
-          <make-download-button
-          v-bind:fileContents="localCharacterSheet.toJson()" 
-          v-bind:fileName="currentSheetItemName || 'character-sheet'" 
-          >
+              <template v-slot:after-content>
+                <tool-tip-holder v-bind="{content: 'download your sheet as a data file you can share with other players'}"/>
+              </template>
+              <template v-slot:fallback-content>
+                <clipboard-button 
+                v-bind:stringToCopy="localCharacterSheet.toJson()" 
+                buttonText="copy sheetdata" />
+                <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share with other players'}"/>
+              </template>
+            </make-download-button>
+          </p>
 
-            <template v-slot:after-content>
-              <tool-tip-holder v-bind="{content: 'download your sheet as a data file you can share with other players'}"/>
-            </template>
-            <template v-slot:fallback-content>
-              <clipboard-button 
-              v-bind:stringToCopy="localCharacterSheet.toJson()" 
-              buttonText="copy sheetdata" />
-              <tool-tip-holder v-bind="{content: 'Copy all the data about this sheet to your clipboard - you can save it in a file to share with other players'}"/>
-            </template>
-          </make-download-button>
+          <p>
+            <make-download-button
+            v-bind:fileContents="localCharacterSheet.toPrintablePlainText()" 
+            v-bind:fileName="plainSheetFileName"
+            buttonText="download sheet" 
+            >
+              <template v-slot:after-content>
+                <tool-tip-holder v-bind="{content: 'download your sheet in plain text'}"/>
+              </template>
+              <template v-slot:fallback-content>
+                <clipboard-button 
+                v-bind:stringToCopy="localCharacterSheet.toPrintablePlainText()" 
+                buttonText="copy sheet" />
+                <tool-tip-holder v-bind="{content: 'Copy your sheet to clipboard as plain text'}"/>
+              </template>
+            </make-download-button>
+          </p>
 
         </div>
 
@@ -192,6 +212,8 @@ import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression} from "./modules/characterSheets"
+import {convertStringToFileName} from "./modules/convertStringToFileName"
+
 import * as templates from "./modules/templateCharacterSheets"
 import {
   handleListItemQuantityChange, 
@@ -236,7 +258,15 @@ export default {
       },
       templateChoices() {
         return Object.keys(templates)
-      }
+      },
+      dataSheetFileName() {
+        if (!this.currentSheetItemName) {return 'character-data.json'}
+        return convertStringToFileName(this.currentSheetItemName,'json')
+      },
+      plainSheetFileName() {
+        if (!this.currentSheetItemName) {return 'character-sheet.txt'}
+        return convertStringToFileName(this.currentSheetItemName, 'txt') 
+      },
     },
 
     methods : {
