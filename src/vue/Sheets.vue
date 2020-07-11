@@ -208,7 +208,7 @@ import FoldingPanel from "./components/FoldingPanel.vue"
 import ToolTipHolder from "./components/ToolTipHolder.vue"
 import ClipboardButton from "./components/ClipboardButton.vue"
 import MakeDownloadButton from "./components/MakeDownloadButton.vue"
-import ChoiceMenu from "./components/sheets/ChoiceMenu.vue"
+import ChoiceMenu from "./components/ChoiceMenu.vue"
 import FormulaDialogue from "./components/sheets/FormulaDialogue.vue"
 
 import {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression} from "./modules/characterSheets"

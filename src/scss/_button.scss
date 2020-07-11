@@ -85,12 +85,12 @@ input:checked+.radio-label {
     align-items: center;
     color: white;
     border-radius: 50%;
-    width: 1em;
+    width: 1rem;
     flex-shrink: 0;
 
-    height: 1em;
-    line-height: .1em;
-    margin-left: .2em;
+    height: 1rem;
+    line-height: .1rem;
+    margin-left: .2rem;
 
     &>span {
         font-size: small;

@@ -14,6 +14,10 @@
         <button @click="openSaveSheetDialogue" >save as</button>
         <button @click="openLoadSheetDialogue" >load</button>
 
+        <choice-menu style="display:inline-flex" v-bind="{choices: templateChoices}" @submit="useTemplateCharacterSheet">
+          <span class="stud-button" style="font-size:smaller">&#10004;</span>
+        </choice-menu>
+
         <hr/>
 
         <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="'_'+index" v-bind="{section}">
@@ -77,8 +81,10 @@ import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
 import FoldingPanel from '../FoldingPanel.vue'
+import ChoiceMenu from '../ChoiceMenu.vue'
 
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
+import * as characterSheetTemplates from "../../modules/templateCharacterSheets"
 import {save as storageSave} from "../../modules/storage";
 import {
   handleListItemQuantityChange, 
@@ -89,7 +95,7 @@ import {
 
 
 export default {
-    components : {StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel},
+    components : {StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel,ChoiceMenu},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
         return {
@@ -108,6 +114,9 @@ export default {
     computed : {
       groupedData() {
         return CharacterSheet.groupedData(this.localCharacterSheet)
+      },
+      templateChoices() {
+        return Object.keys(characterSheetTemplates)
       }
     },
 
@@ -156,6 +165,11 @@ export default {
 
         cancelStorageAction() {
           this.storageDialogueProps.isOpen = false
+        },
+
+        useTemplateCharacterSheet(event) {
+          this.localCharacterSheet = characterSheetTemplates[event.choice]()
+          this.handleUpdate()
         },
 
         handleListItemQuantityChange, 
