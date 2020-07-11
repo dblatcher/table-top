@@ -317,7 +317,7 @@ class CharacterSheet {
         return JSON.stringify(this.serialise())
     }
 
-    toPrintablePlainText (options) {
+    toPrintablePlainText (options={}) {
         const that = this
         let output = []
 
