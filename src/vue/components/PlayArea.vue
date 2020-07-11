@@ -173,7 +173,7 @@ export default {
     .main {
         display: flex;
         flex-wrap: wrap; 
-        flex-basis: 50rem;
+        flex-basis: 40rem;
         flex-grow: 1;
     }
 

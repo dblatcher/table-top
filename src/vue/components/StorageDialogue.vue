@@ -7,17 +7,17 @@
         </div> 
 
         <nav v-if="(allowCopyPasteControls || allowFileControls) && action === 'load'">
-            <input hidden="" v-model="controlType" id="control-type-browser" value="BROWSER" type="radio"/>
+            <input hidden="" v-model="loadControlType" id="control-type-browser" value="BROWSER" type="radio"/>
             <label for="control-type-browser" class="radio-label">storage</label>
 
-            <input hidden="" v-if="allowCopyPasteControls" v-model="controlType" id="control-type-text" value="TEXT" type="radio"/>
+            <input hidden="" v-if="allowCopyPasteControls" v-model="loadControlType" id="control-type-text" value="TEXT" type="radio"/>
             <label  v-if="allowCopyPasteControls" for="control-type-text" class="radio-label">text</label>
 
-            <input hidden="" v-if="allowFileControls" v-model="controlType" id="control-type-file" value="FILE" type="radio"/>
+            <input hidden="" v-if="allowFileControls" v-model="loadControlType" id="control-type-file" value="FILE" type="radio"/>
             <label v-if="allowFileControls" for="control-type-file" class="radio-label">file</label>
         </nav>
 
-        <section class="storage-control" v-show="controlType === 'BROWSER'">
+        <section class="storage-control" v-show="loadControlType === 'BROWSER' || action === 'save'">
             <ul class="storage-list">
                 <li v-for="(itemName, index) in itemNameList" v-bind:key="index">
                     <p @click="() => {handleItemNameClick(itemName)}" >{{itemName}}</p>
@@ -32,7 +32,16 @@
             </form>
         </section>
 
-        <section class="storage-control" v-show="controlType === 'TEXT'">
+        <section  v-if="action === 'save' && allowFileControls">
+            <DownloadButtonWithClipboardFallback v-bind="{
+                fileContents: dataAsString,
+                fileName: 'new file',
+                downloadButtonText: 'download data file', 
+                clipboardButtonText: 'copy data to clipboard',
+            }"/>
+        </section>
+
+        <section class="storage-control" v-show="loadControlType === 'TEXT'">
             <data-import-form v-if="action === 'load'" 
             @submit="handleDataImport"
             v-bind="{
@@ -43,8 +52,8 @@
             buttonText="load"/>
         </section>
 
-        <section class="storage-control" v-show="controlType === 'FILE'">
-            <FileUploadForm
+        <section class="storage-control" v-show="loadControlType === 'FILE'">
+            <FileUploadForm v-if="action === 'load'"
             @submit="handleDataImport"
             v-bind="{
                 importValidateFunction: this.importValidateFunction,
@@ -62,16 +71,36 @@ import * as storage from "../modules/storage";
 
 import DataImportForm from './DataImportForm.vue'
 import FileUploadForm from './FileUploadForm.vue'
+import DownloadButtonWithClipboardFallback from './DownloadButtonWithClipboardFallback.vue'
+
+
 
 export default {
-    components: {DataImportForm, FileUploadForm},
-    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave', 'importValidateFunction', 'allowCopyPasteControls', 'allowFileControls'],
+    components: {DataImportForm, FileUploadForm,DownloadButtonWithClipboardFallback},
+    props: ['isOpen', 'title', 'action', 'folderName', 'dataToSave', 'specialTextVersionOfDataToSave ', 'importValidateFunction', 'allowCopyPasteControls', 'allowFileControls'],
 
     data() {
         return {
             newItemName: '',
             itemNameList: storage.getItemNames(this.folderName),
-            controlType: 'BROWSER',
+            loadControlType: 'BROWSER',
+        }
+    },
+
+    computed: {
+        dataAsString() {
+            if (this.specialTextVersionOfDataToSave ) {
+                return this.specialTextVersionOfDataToSave 
+            }
+            let stringifiedData
+            try {
+                stringifiedData = JSON.stringify(this.dataToSave)
+                return stringifiedData
+            } 
+            catch (error) {
+                console.warn('StorageDialoge failed to stringify data',error)
+            }
+            return ('ERROR')
         }
     },
 
@@ -121,7 +150,7 @@ export default {
     watch: {
         action(newValue,oldValue) {
             if (newValue === 'save') {
-                this.controlType = 'BROWSER'
+                this.loadControlType = 'BROWSER'
             }
         },
     }
