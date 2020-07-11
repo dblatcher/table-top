@@ -9,5 +9,4 @@ var socket = io()
 onLoad( function() {
     initCreateGameForm()
     launchLiveList('#app',socket)
-    initTestPrint()
 })
