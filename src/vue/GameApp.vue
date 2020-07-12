@@ -10,6 +10,7 @@
     class="enter-game-form">
       <input type="submit" value="go"/>
       <p v-if="waitingForRequestEntryResponse" >waiting for answer...</p>
+      <p class="warning" v-show="entryResponseRefusalMessage">{{entryResponseRefusalMessage}}</p>
     </form>
 
     <admin-panel v-if="hasEnteredGame && config.amGamemaster" 
@@ -19,6 +20,13 @@
     v-bind="{displayName, socket, playerId, gameState, config}"/>
 
 
+    <div v-bind:class='{"modal":true, "modal--open":reconnectRefusalMessage}'>
+      <div class="modal-content">
+        <p>Failed to reconnect:</p>
+        <p class="warning">{{reconnectRefusalMessage}}</p>
+        <p @click="reconnect" class="button">Try again</p>
+      </div>
+    </div>
 
     <div v-bind:class='{"modal":true, "modal--open":gameHasClosed}'>
       <div class="modal-content">
@@ -50,8 +58,10 @@ export default {
         players: []
       },
       gameHasClosed:false,
-      headerDie: new VirtualDie({sides:20, color: 'black', content:'numeral'}),
+      headerDie: new VirtualDie({sides:12, color: 'black', content:'numeral'}),
       waitingForRequestEntryResponse: false,
+      entryResponseRefusalMessage: false,
+      reconnectRefusalMessage: false,
     };
   },
 
@@ -79,6 +89,13 @@ export default {
           return false
       }
       this.$set(this.gameState, 'players', response.players)
+
+      if (this.hasEnteredGame) {
+        if (response.players.map(player=>player.playerId).indexOf(this.playerId) === -1) {
+          this.reconnect()
+        }
+      }
+
     },
 
     requestStateUpdate() {
@@ -87,11 +104,9 @@ export default {
 
     requestEntry(event) {
       event.preventDefault();
+      this.entryResponseRefusalMessage = false;
+      this.reconnectRefusalMessage = false;
 
-      if (this.playerId) {
-        alert (`You are already logged in as ${this.displayName}`)
-        return false
-      }
       const form = event.target
       this.socket.emit('request-entry', {gameId:this.config.gameId}, this.handleRequestEntryResponse)
       this.waitingForRequestEntryResponse = true
@@ -101,7 +116,11 @@ export default {
         this.waitingForRequestEntryResponse = false
         console.log('request-entry response', response)
         if (response.type === 'REFUSAL') {
-          alert(response.message)
+          if (!this.hasEnteredGame) {
+            this.entryResponseRefusalMessage = response.message
+          } else {
+            this.reconnectRefusalMessage = response.message
+          }
           return false
         }
         this.playerName = response.playerName;
@@ -116,9 +135,31 @@ export default {
       this.gameHasClosed = true;
     },
 
+    reconnect () {
+      const {amGamemaster, gameMasterId, gameId} = this.config
+      this.reconnectRefusalMessage = false;
+      if (amGamemaster) {
+        this.socket.emit('gm-enter-game', {gameMasterId,gameId}, this.handleRequestEntryResponse)
+        return
+      }
+      this.socket.emit('request-entry', {gameId}, this.handleRequestEntryResponse)
+    }
+
   },
 
   mounted() {
+
+    window.addEventListener('focus',event => {
+      if(this.hasEnteredGame) {
+        // if the users machine hibernates etc this is treated as a disconnect event by the server
+        // when the user returns to an active game window, need to check the player still has an
+        // active session for the game.
+        // handleStateUpdate triggers reconnect if user hasEnteredGame but they are not listed as
+        // a player in the response from requestStateUpdate
+        this.requestStateUpdate();
+      }
+    })
+
     this.socket.on('state-update', this.handleStateUpdate );
     this.socket.on('game-closed', this.handleGameClosing );
 
