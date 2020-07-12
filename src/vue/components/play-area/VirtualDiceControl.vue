@@ -103,7 +103,6 @@ export default {
         },
 
         handleFavouriteClick(virtualDie) {
-            console.log(virtualDie)
             const clonedDie = virtualDie.clone()
             clonedDie.size = 50
             this.dice.push(clonedDie)
@@ -118,8 +117,6 @@ export default {
                 virtualDie.content === newFavourite.content
             )[0]) {return} 
             this.favourites.push(newFavourite)
-            //to do - chekc for duplictes before pushing
-            console.log(this.favourites)
         },
 
         handleSpecialOptionChange(event) {
@@ -143,7 +140,10 @@ export default {
                 virtualDie.randomiseResult()
                 virtualDie.useResultClass = true;
             })
-            
+
+            let description = VirtualDie.describeCombinedValues(this.dice)
+            console.log(description)
+
             if(behindScreen) {
                 this.$emit('secret-dice-roll', this.dice)
             } else {

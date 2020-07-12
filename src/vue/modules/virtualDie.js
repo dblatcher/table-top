@@ -1,6 +1,99 @@
 const supportedSideNumbers = [4, 6, 8, 10, 12, 20]
 const supportedColors = ['red','blue','green','black','white']
-const supportedContent = ['number', 'letter', 'numeral','wrath and glory']
+
+
+class FaceType  {
+    constructor (config = {}) {
+        this.getFaceString = config.getFaceString || function(faceIndex, sides) {
+            const numbersToUnderline = [9, 6, 16, 19]
+            const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
+            return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%; ${underline ? 'text-decoration:underline;' :''}">${faceIndex+1}</p>`
+        };
+        this.supportedSideNumbers = config.supportedSideNumbers || supportedSideNumbers;
+        this.getFaceValue = config.getFaceValue || function(faceIndex) {
+            return [{quantity:faceIndex}]
+        }
+    }
+}
+
+const supportedFaceTypes = {
+    number: new FaceType (),
+    letter: new FaceType ({
+        getFaceString: function(faceIndex, sides) {
+            return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${String.fromCharCode(65+faceIndex)}</p>`
+        }
+    }),
+    numeral: new FaceType ({
+        getFaceString: function(faceIndex,sides) {
+            const faceStrings = ['I','II','III','IV','V','VI','VII', 'VIII', 'IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX']
+            return `<p style="font-size: ${shapeTypes[sides].fontSize * 50}%;">${faceStrings[faceIndex] || '-'}</p>`
+        }
+    }),
+    success: new FaceType ({
+        getFaceString: function(faceIndex,sides) {
+            const faceStrings = ['!',' ',' ','*','*','**']
+            return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${faceStrings[faceIndex] || '-'}</p>`
+        },
+        supportedSideNumbers: [6],
+        getFaceValue: function(faceIndex) {
+            switch (faceIndex) {
+                case 1: 
+                return [{quantity:1, type:'fail'}]
+                case 4:
+                case 5:
+                return [{quantity:1, type:'success'}]
+                case 6:
+                return [{quantity:2, type:'success'}]
+                default:
+                return []
+            }
+        }
+    }),
+    wrath: new FaceType ({
+        getFaceString: function(faceIndex,sides) {
+            const faceStrings = ['!',' ',' ','*','*','**']
+            return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${faceStrings[faceIndex] || '-'}</p>`
+        },
+        supportedSideNumbers: [6],
+        getFaceValue: function(faceIndex) {
+            switch (faceIndex) {
+                case 1: 
+                return [{quantity:1, type:'critFail'}]
+                case 4:
+                case 5:
+                return [{quantity:1, type:'success'}]
+                case 6:
+                return [{quantity:2, type:'success'}]
+                default:
+                return []
+            }
+        }
+    }),
+    tens: new FaceType({
+        getFaceString: function(faceIndex, sides) {
+            const numbersToUnderline = [9, 6, 16, 19]
+            const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
+            return `<p style="font-size: ${shapeTypes[sides].fontSize*.75 * 100}%; ${underline ? 'text-decoration:underline;' :''}">${faceIndex}0</p>`
+        },
+        getFaceValue: function(faceIndex) {
+            return [{quantity:(faceIndex-1)*10}]
+        }
+    }),
+}
+
+
+class DescribedFaceValue {
+    constructor (description, plural) {
+        this.description = description;
+        this.plural = plural
+    }
+}
+
+const describedFaceValues = {
+    fail: new DescribedFaceValue('failure', 'failures'),
+    critFail: new DescribedFaceValue('critical failure', 'critical failures'),
+    success: new DescribedFaceValue('success','successes'),
+}
 
 const resultOrientations = {
     4: [
@@ -91,7 +184,7 @@ class VirtualDie {
     constructor (config) {
         this.sides   = supportedSideNumbers.includes(config.sides) ? config.sides : 6
         this.color   = supportedColors.includes(config.color) ? config.color : 'white'
-        this.content = supportedContent.includes(config.content) ? config.content : 'number'
+        this.content = Object.keys(supportedFaceTypes).includes(config.content) ? config.content : 'number'
         this.useResultClass = !!config.useResultClass
 
         this.result = (config.result && config.result > 0 && config.result <= this.sides) ? config.result : this.sides
@@ -103,28 +196,10 @@ class VirtualDie {
 
     get faceContentFunction() {
         const {sides, result, faceClass, resultFaceClass, content, useResultClass} = this;
-        const getFaceString = {
-            'number': function(faceIndex) {
-                const numbersToUnderline = [9, 6, 16, 19]
-                const underline = numbersToUnderline.indexOf(faceIndex+1) !== -1 && sides > 6;
-                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%; ${underline ? 'text-decoration:underline;' :''}">${faceIndex+1}</p>`
-            },
-            'letter': function(faceIndex) {
-                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${String.fromCharCode(65+faceIndex)}</p>`
-            },
-            'numeral': function(faceIndex) {
-                const faceStrings = ['I','II','III','IV','V','VI','VII', 'VIII', 'IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX']
-                return `<p style="font-size: ${shapeTypes[sides].fontSize * 50}%;">${faceStrings[faceIndex] || '-'}</p>`
-            },
-            'wrath and glory': function(faceIndex) {
-                const faceStrings = ['!',' ',' ','*','*','**']
-                return `<p style="font-size: ${shapeTypes[sides].fontSize * 100}%;">${faceStrings[faceIndex] || '-'}</p>`
-            },
-        }
 
         return function(face, faceIndex) {
             if ( !(shapeTypes[sides].shape === 'TruncatedCube' && faceIndex >= 6 ) ) {
-                face.innerHTML = getFaceString[content](faceIndex)
+                face.innerHTML = supportedFaceTypes[content].getFaceString(faceIndex,sides)
             }
             if ( faceIndex+1 === result && useResultClass ) {
                 face.classList = faceClass + " " + resultFaceClass
@@ -132,6 +207,13 @@ class VirtualDie {
                 face.classList = faceClass
             }
         }
+    }
+
+    get value() {
+        const {result, content} = this;
+        if (typeof result !== 'number') {return undefined}
+
+        return supportedFaceTypes[content].getFaceValue(result)
     }
 
     randomiseResult() {
@@ -143,21 +225,56 @@ class VirtualDie {
         return new VirtualDie(this)
     }
 
+    static combineValues(virtualDice) {
+        let itemMap = {};
+        virtualDice.forEach(die => {
+            if (!die.value) {return}
+            die.value.forEach(item => {
+                let type = item.type || "_UNIT"
+                itemMap[type] = itemMap[type] ? itemMap[type] + item.quantity : item.quantity
+            })
+        })
+
+        return itemMap
+    }
+
+    static describeCombinedValues(virtualDice) {
+        const itemMap = VirtualDie.combineValues(virtualDice)
+        let output = [];
+        if (itemMap['_UNIT']) {
+            output.push (itemMap['_UNIT'].toString())
+        }
+        for (const type in itemMap) {
+            if (type === '_UNIT') {continue}
+            if (describedFaceValues[type]) {
+                output.push (`${itemMap[type]} ${itemMap[type] === 1 ? describedFaceValues[type].description : describedFaceValues[type].plural}`)
+                continue
+            }
+            output.push (`${itemMap[type]}x ${type}`)
+        }
+        return output
+    }
+
     static get supportedColors() {return supportedColors}
     static get supportedSideNumbers() {return supportedSideNumbers}
-    static get supportedContent() {return supportedContent}
+    static get supportedFaceTypes() {return supportedFaceTypes}
 }
 
 const specialDice = {
     wrath : {
         color: 'red',
         sides: 6,
-        content: 'wrath and glory',
+        content: 'wrath',
     },
     success : {
         color: 'black',
         sides: 6,
-        content: 'wrath and glory',
+        content: 'success',
+    },
+    tens : {
+        color: 'black',
+        sides: 10,
+        content: 'tens',
     },
 }
 

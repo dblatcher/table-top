@@ -81,7 +81,7 @@ export default {
         reportVirtualRoll(diceList) {
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', diceList.map(virtualDie => virtualDie.clone()))
             this.messages.push({
-                text:"rolled " + diceList.length+(" dice."),
+                text:`rolled ${diceList.length} dice and got ${VirtualDie.describeCombinedValues(diceList)}.`,
                 player: this.localPlayer,
                 isFromSelf: true,
             })
@@ -91,7 +91,7 @@ export default {
         reportSecretRoll(diceList) {
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', [])
             this.messages.push({
-                text: `rolled ${diceList.length} dice behind the screen.`,
+                text: `rolled ${diceList.length} dice behind the screen and got ${VirtualDie.describeCombinedValues(diceList)}.`,
                 player: this.localPlayer,
                 isFromSelf: true,
             })
@@ -106,11 +106,12 @@ export default {
         handleGameEvent (report) {
             console.log('game event:', report)
             if (report.type === 'VIRTUAL_ROLL') {
+                const deserialisedDice = report.data.map(serialisedDie => new VirtualDie(serialisedDie))
                 this.messages.push  ({
-                    text: `rolled ${report.data.length} dice.`,
+                    text: `rolled ${report.data.length} dice and got ${VirtualDie.describeCombinedValues(deserialisedDice).toString()}.`,
                     player: report.player,
                 })
-                this.$set(this.diceRolls, report.player.playerId, report.data.map(serialisedDie => new VirtualDie(serialisedDie)))
+                this.$set(this.diceRolls, report.player.playerId, deserialisedDice)
             }
             if (report.type === 'SECRET_ROLL') {
                 this.messages.push  ({
