@@ -1,15 +1,18 @@
 import {CharacterSheet, SheetDatum, DataGroup, DerivedStat, FormulaExpression} from './characterSheets'
 
+import {Action} from './actionTrigger'
+
 const blank = function() {return new CharacterSheet(
     [
         new SheetDatum('Action',"wait"),
         new SheetDatum('test_a',1,{type:'number'}),
         new SheetDatum('test_b',2,{type:'number'}),
+        new SheetDatum('test_actionable',4,{type:'number', action: new Action()}),
         new DerivedStat( 'test_der', [
             new FormulaExpression('test_a',2),
             new FormulaExpression('test_b',1),
             new FormulaExpression(undefined,1),
-        ],{})
+        ],{action: new Action({toolTipContent:'do something'})})
     ],
     [
 

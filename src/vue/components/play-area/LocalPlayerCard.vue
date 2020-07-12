@@ -23,28 +23,23 @@
         <character-sheet-section v-for="(section, index) in groupedData" v-bind:key="'_'+index" v-bind="{section}">
           <div class="display-cs-group__datum-wrapper" v-for="(datum, index2) in section.values" v-bind:key="index2">
 
-            <span class="display-cs-group__datum" 
-            v-if="datum.type ==='string'" >
+            <span class="display-cs-group__datum" v-if="!datum.isListType">
               <span class="display-cs-group__key">{{datum.name}}:</span> 
-              <input class="display-cs-group__value" @change="handleUpdate" type="text" v-model="datum.value"/>
-            </span>
 
-            <span class="display-cs-group__datum"
-            v-if="datum.type ==='number'">
-              <span class="display-cs-group__key">{{datum.name}}:</span> 
-              <span class="display-cs-group__value">
-                <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
+              <span v-if="datum.isDerived" class="display-cs-group__value display-cs-group__value--derived">
+                  <tool-tip-holder v-bind:content="datum.description">{{datum.value}}</tool-tip-holder>
               </span>
-            </span>
 
-            <span class="display-cs-group__datum"
-            v-if="datum.type ==='NUM_&_MAX'">
-              <span class="display-cs-group__key">{{datum.name}}:</span> 
-              <span class="display-cs-group__value">
+              <input v-if="datum.type ==='string'" class="display-cs-group__value" @change="handleUpdate" type="text" v-model="datum.value"/>
+              <input v-if="datum.type ==='number'" class="display-cs-group__value" @change="handleUpdate" type="number" v-model.number="datum.value"/>
+
+              <span v-if="datum.type ==='NUM_&_MAX'" class="display-cs-group__value">
                 <input @change="handleUpdate" type="number" v-model.number="datum.value"/>
                 &nbsp;/&nbsp;
                 <input @change="handleUpdate" type="number" v-model.number="datum.max"/>
               </span>
+
+              <action-button v-if="datum.action" v-bind="{datum}"/>
             </span>
 
             <list-control  v-if="datum.isListType"
@@ -53,14 +48,6 @@
             @delete-item="(event)=>{handleListItemDelete(event, datum)}"
             @new-item="(event)=>{handleListItemAdd(datum)}"
             v-bind="{datum}"/>
-
-            <span class="display-cs-group__datum"
-            v-if="datum.isDerived">
-              <span class="display-cs-group__key">{{datum.name}}:</span> 
-              <span class="display-cs-group__value display-cs-group__value--derived">
-                  {{datum.value}}
-              </span>
-            </span>
 
           </div>
         </character-sheet-section>
@@ -79,9 +66,11 @@
 
 import StorageDialogue from '../StorageDialogue.vue'
 import ListControl from './ListControl.vue'
+import ActionButton from './ActionButton.vue'
 import CharacterSheetSection from './CharacterSheetSection.vue'
 import FoldingPanel from '../FoldingPanel.vue'
 import ChoiceMenu from '../ChoiceMenu.vue'
+import ToolTipHolder from '../ToolTipHolder.vue'
 
 import { SheetDatum, CharacterSheet } from "../../modules/characterSheets";
 import * as characterSheetTemplates from "../../modules/templateCharacterSheets"
@@ -95,7 +84,7 @@ import {
 
 
 export default {
-    components : {StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel,ChoiceMenu},
+    components : {StorageDialogue, ListControl, CharacterSheetSection, FoldingPanel,ChoiceMenu,ToolTipHolder, ActionButton},
     props: ["player", "color","gm", "rollData","characterSheet"],
     data() {
         return {

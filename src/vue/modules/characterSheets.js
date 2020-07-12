@@ -8,6 +8,8 @@ class SheetDatum {
         this.name = name
         this.type = config.type && validDatumValueTypes.indexOf(config.type) !== -1  ? config.type : 'string'
 
+        this.action = config.action || undefined
+
         this.value = value || getDefaultValue(this.type)
 
         this.groupName = config.groupName || undefined
@@ -93,6 +95,8 @@ class DataGroup {
 class DerivedStat {
     constructor (name, expressions, config) {
         this.name = name
+
+        this.action = config.action || undefined
 
         this.getSheetValues = function() {return undefined}
         this.groupName = config.groupName || undefined
