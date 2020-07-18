@@ -22,12 +22,6 @@ function onRequestEntry(state, socket, io) {
         const sessionOfGmInGame = matchingGame.masterPlayer.gameSessions.filter (session => session.game === matchingGame)[0]
         const existingRequestForPlayer = matchingGame.entryRequests.filter(request => request.player === matchingPlayer)[0]
 
-        if (!sessionOfGmInGame) {
-            console.log('GM_NOT_PRESENT')
-            callback (state.makeRefusal('GM_NOT_PRESENT').clientSafeVersion )
-            return
-        }
-
         if (existingRequestForPlayer && existingRequestForPlayer.status === 'REFUSED') {
             console.log('ALREADY_REFUSED')
             callback (state.makeRefusal('ALREADY_REFUSED').clientSafeVersion )
@@ -44,6 +38,12 @@ function onRequestEntry(state, socket, io) {
             matchingPlayer.joinSession(matchingGame, socket)
             callback(matchingPlayer.clientSafeVersion)
             state.sendUpdateGameStateToAllPlayers(gameId)
+            return
+        }
+
+        if (!sessionOfGmInGame) {
+            console.log('GM_NOT_PRESENT')
+            callback (state.makeRefusal('GM_NOT_PRESENT').clientSafeVersion )
             return
         }
 
