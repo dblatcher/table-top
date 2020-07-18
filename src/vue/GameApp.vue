@@ -85,7 +85,9 @@ export default {
     handleStateUpdate (response) {
       console.log('state update:', response)
       if (response.type === 'REFUSAL') {
-          alert (response.message)
+          if (!this.gameHasClosed) {
+            this.reconnectRefusalMessage = response.message
+          }
           return false
       }
       this.$set(this.gameState, 'players', response.players)
