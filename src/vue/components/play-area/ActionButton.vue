@@ -1,9 +1,9 @@
 <template>
   <span>
     <tool-tip-holder v-if="toolTipContent" v-bind:content="toolTipContent">
-        <span @click="handleClick" class="stud-button">a</span>
+        <span @click="handleClick" class="stud-button">{{icon}}</span>
     </tool-tip-holder>
-    <span @click="handleClick"  v-if="!toolTipContent" class="stud-button">a</span>
+    <span @click="handleClick"  v-if="!toolTipContent" class="stud-button">{{icon}}</span>
   </span>
 </template>
 
@@ -13,7 +13,8 @@ export default {
     components: {ToolTipHolder},
     props: ["datum"],
     computed: {
-        toolTipContent() { return this.datum.action ? this.datum.action.toolTipContent : false}
+        toolTipContent() { return this.datum.action ? this.datum.action.toolTipContent : false},
+        icon() {return this.datum.action ? this.datum.action.icon : '?'}
     },
     methods: {
         handleClick() {

@@ -2,6 +2,7 @@
 
 class Action {
     constructor(config={}) {
+        this.icon = config.icon || '!'
         this.type = config.type || 'DICE_ROLL'
         this.customMessageTemplate = config.customMessageTemplate
         this.data = config.data || {}

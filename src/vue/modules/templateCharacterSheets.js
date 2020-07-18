@@ -11,6 +11,7 @@ const blank = function() {return new CharacterSheet(
             type: 'DICE_ROLL',
             toolTipContent: 'roll d100',
             customMessageTemplate: 'rolled d100 for {{name}} and got',
+            icon: "r",
             data: {
                 dice: [
                     {die: 'tens', quantityConstant:1 },
