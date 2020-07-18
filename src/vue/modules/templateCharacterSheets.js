@@ -7,12 +7,22 @@ const blank = function() {return new CharacterSheet(
         new SheetDatum('Action',"wait"),
         new SheetDatum('test_a',1,{type:'number'}),
         new SheetDatum('test_b',2,{type:'number'}),
-        new SheetDatum('test_actionable',4,{type:'number', action: new Action()}),
+        new SheetDatum('test_actionable',4,{type:'number', action: new Action({
+            type: 'DICE_ROLL',
+            toolTipContent: 'roll d100',
+            customMessageTemplate: 'rolled d100 for {{name}} and got',
+            data: {
+                dice: [
+                    {die: 'tens', quantityConstant:1 },
+                    {die: {size: 30, sides:10, color:'blue'}, quantityConstant:1 },
+                ],
+            }
+        })}),
         new DerivedStat( 'test_der', [
             new FormulaExpression('test_a',2),
             new FormulaExpression('test_b',1),
             new FormulaExpression(undefined,1),
-        ],{action: new Action({toolTipContent:'do something'})})
+        ],{})
     ],
     [
 
@@ -54,9 +64,21 @@ const wrathAndGlory = function() {
         'Fel':['Cunning','Deception','Insight','Intimidation','Investigation','Persuation'],
     }
 
+    const skillCheckRoll = new Action({
+        type: 'DICE_ROLL',
+        toolTipContent: 'roll a check against this skill',
+        customMessageTemplate: 'rolled {{value}}d6 for a {{name}} check and got',
+        data: {
+            dice: [
+                {die: 'wrath', quantityConstant:1, quantityVariable:0 },
+                {die: 'success', quantityConstant:-1, quantityVariable:1 },
+            ],
+        }
+    })
+
     const makeAttributeStat = (attribute) => new SheetDatum(attribute,1,{type:'number', groupName:'attributes'});
     const makeSkillStat = (skill) => new SheetDatum(skill,0,{type:'number', groupName:'skills'});
-    const makeSkillPoolStat = (skill, attribute) => new DerivedStat(`${skill}(${attribute})`,[ new FormulaExpression(attribute,1), new FormulaExpression(skill,1)],{groupName:'skillsDice'});
+    const makeSkillPoolStat = (skill, attribute) => new DerivedStat(`${skill}(${attribute})`,[ new FormulaExpression(attribute,1), new FormulaExpression(skill,1)],{groupName:'skillsDice', action: skillCheckRoll});
 
     const skillPoolStats = [], attributeStats = [], skillStats = []
 

@@ -79,14 +79,19 @@ export default {
     },
 
     methods : {
-        reportVirtualRoll(diceList) {
+        reportVirtualRoll(diceList, customMessage) {
             this.$set(this.diceRolls, this.playerId ? this.playerId : 'none', diceList.map(virtualDie => virtualDie.clone()))
+            
+            const text = customMessage ?
+                `${customMessage} ${VirtualDie.describeCombinedValues(diceList)}.` :
+                `rolled ${diceList.length} dice and got ${VirtualDie.describeCombinedValues(diceList)}.`
+
             this.messages.push({
-                text:`rolled ${diceList.length} dice and got ${VirtualDie.describeCombinedValues(diceList)}.`,
+                text,
                 player: this.localPlayer,
                 isFromSelf: true,
             })
-            this.socket.emit('game-event', this.playerId, 'VIRTUAL_ROLL', diceList)
+            this.socket.emit('game-event', this.playerId, 'VIRTUAL_ROLL', {diceList, customMessage})
         },
 
         reportSecretRoll(diceList) {
@@ -107,9 +112,15 @@ export default {
         handleGameEvent (report) {
             console.log('game event:', report)
             if (report.type === 'VIRTUAL_ROLL') {
-                const deserialisedDice = report.data.map(serialisedDie => new VirtualDie(serialisedDie))
+                const {diceList, customMessage} = report.data
+                const deserialisedDice = diceList.map(serialisedDie => new VirtualDie(serialisedDie))
+
+                const text = customMessage ?
+                    `${customMessage} ${VirtualDie.describeCombinedValues(deserialisedDice).toString()}.` :
+                    `rolled ${diceList.length} dice and got ${VirtualDie.describeCombinedValues(deserialisedDice).toString()}.`
+
                 this.messages.push  ({
-                    text: `rolled ${report.data.length} dice and got ${VirtualDie.describeCombinedValues(deserialisedDice).toString()}.`,
+                    text,
                     player: report.player,
                 })
                 this.$set(this.diceRolls, report.player.playerId, deserialisedDice)

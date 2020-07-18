@@ -134,7 +134,9 @@ export default {
             this.dice.splice(0, this.dice.length)
         },
 
-        rollDice(behindScreen = false) {
+        rollDice(behindScreen = false, customMessage=false) {
+
+            if (this.dice.length === 0 ) {return false}
 
             this.dice.forEach(virtualDie => {
                 virtualDie.randomiseResult()
@@ -142,24 +144,47 @@ export default {
             })
 
             let description = VirtualDie.describeCombinedValues(this.dice)
-            console.log(description)
 
             if(behindScreen) {
-                this.$emit('secret-dice-roll', this.dice)
+                this.$emit('secret-dice-roll', this.dice, customMessage)
             } else {
-                this.$emit('virtual-dice-roll', this.dice)
+                this.$emit('virtual-dice-roll', this.dice, customMessage)
             }
-            
+
             this.$nextTick( ()=>{
-               this.$refs.dice.forEach(die => {die.rollDie(400)})
+               if (this.$refs.dice) {
+                   this.$refs.dice.forEach(die => {die.rollDie(400)})
+               }
            })
         },
 
         actionButtonRoll(datum) {
-            console.log('Need to respond to', datum)
+
+            if (datum.action.data.dice) {
+                this.clearDice()
+                datum.action.data.dice.forEach(entry => {
+                    let quantity = 1, dieData
+                    if (entry.quantityConstant) {quantity = entry.quantityConstant}
+                    if (entry.quantityVariable && typeof datum.value === 'number') {
+                        quantity += entry.quantityVariable * datum.value 
+                    }
+
+                    if (typeof entry.die === 'string' && specialDice[entry.die]) {
+                        dieData = Object.assign( {size:30}, specialDice[entry.die] )
+                    } else if (typeof entry.die === 'object') {
+                        dieData = entry.die
+                    }
+
+                    if (!dieData) {return false}
+
+                    for (let r = 0; r< quantity; r++) {
+                        this.dice.push(new VirtualDie(dieData))
+                    }
+
+                })
+                this.rollDice(false, datum.action.getCustomMessage(datum))
+            }
         }
-
-
     },
 
 }
