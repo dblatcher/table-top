@@ -6,6 +6,7 @@
 
         <local-player-card v-if="localPlayer"
         @update-character-sheet="reportCharacterSheetUpdate"
+        @action-button="handleActionButton"
         v-bind="{
             player: localPlayer,
             rollData: this.diceRolls[localPlayer.playerId] || null,  
@@ -14,7 +15,7 @@
             gm: localPlayer.playerId === config.gameMasterId
         }">
             <template v-slot:dice-control>
-                <virtual-dice-control 
+                <virtual-dice-control ref="diceControl"
                 @virtual-dice-roll="reportVirtualRoll" 
                 @secret-dice-roll="reportSecretRoll"
                 v-bind="{amGamemaster: localPlayer.playerId === config.gameMasterId}"/>
@@ -147,6 +148,14 @@ export default {
                 player,
                 isTextMessage: true,
             })
+        },
+
+        handleActionButton(datum) {
+            if (!datum.action) {return false}
+
+            if (datum.action.type === 'DICE_ROLL') {
+                this.$refs.diceControl.actionButtonRoll(datum)
+            }
         },
     },
 

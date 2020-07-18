@@ -39,7 +39,7 @@
                 <input @change="handleUpdate" type="number" v-model.number="datum.max"/>
               </span>
 
-              <action-button v-if="datum.action" v-bind="{datum}"/>
+              <action-button v-if="datum.action" v-bind="{datum}" @click="($event)=>{$emit('action-button',datum)}"/>
             </span>
 
             <list-control  v-if="datum.isListType"

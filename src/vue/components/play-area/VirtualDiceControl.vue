@@ -153,7 +153,13 @@ export default {
             this.$nextTick( ()=>{
                this.$refs.dice.forEach(die => {die.rollDie(400)})
            })
+        },
+
+        actionButtonRoll(datum) {
+            console.log('Need to respond to', datum)
         }
+
+
     },
 
 }

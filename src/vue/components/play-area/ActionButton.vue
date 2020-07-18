@@ -17,7 +17,7 @@ export default {
     },
     methods: {
         handleClick() {
-            console.log('clicked action button for ', this.datum)
+            this.$emit('click',this.datum)
         }
     },
 }
