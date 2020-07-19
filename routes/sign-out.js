@@ -13,7 +13,8 @@ function makeRouter(state) {
       games: state.games, 
       player: req.body.player,
       pageData: {
-        path: req.baseUrl + req.path
+        path: req.baseUrl + req.path,
+        signInTo: '/'
       }
     });
   });
