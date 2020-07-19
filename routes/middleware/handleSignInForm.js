@@ -1,5 +1,10 @@
 function getInputErrors(input,state) {
   const errors = []
+
+  if (input.playerName.length < 2) {
+    errors.push ('NAME IS TOO SHORT')
+  }
+
   if (state.players.filter(player=>player.playerName === input.playerName).length > 0 ) {
     errors.push ('NAME IS TAKEN')
   }
@@ -9,7 +14,14 @@ function getInputErrors(input,state) {
 
 function makeMiddleware(state) {
   return function(req, res, next) {
-    const {playerName, player} = req.body;
+    console.log ('HANDLE SIGN IN FORM', req.body)
+    const {playerName, player, formRole} = req.body;
+
+    if (formRole !== 'sign-in-form') {
+      console.log ('NOT SIGN IN FORM')
+      next()
+      return
+    }
 
     //TO DO - check inputs properly
     const errors = getInputErrors (req.body, state)
@@ -18,7 +30,7 @@ function makeMiddleware(state) {
     }
     else if (errors.length > 0) {
       req.body.formErrors = errors
-      req.body.nameOfFormWithErrors = 'createPlayer'
+      req.body.nameOfFormWithErrors = 'sign-in-form'
     }
     else {
       var newPlayer = state.addPlayer(playerName)

@@ -13,7 +13,7 @@
     </article>
 </header>
 
-<% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>
+<% if (data.formErrors && data.nameOfFormWithErrors === 'sign-in-form') { %>
     <input hidden="" checked="" type="checkbox" id="sign-in-modal"/>
 <% } else { %>
     <input hidden=""  type="checkbox" id="sign-in-modal"/>
@@ -23,13 +23,14 @@
     <div class="modal-content">
         <div class="close-button-holder"><label class="close-button" for="sign-in-modal">X</label></div>
         <form data-role="sign-in-form" method="POST" action="/">
+            <input hidden="true" readonly="true" name="formRole" id="formRole" value="sign-in-form"/>
             <h2>Sign in</h2>
             <div>
                 <label>Name:</label>
                 <input name="playerName" id="playerName" type="text"/>
             </div>
             <input type="submit"/>
-            <% if (data.formErrors && data.nameOfFormWithErrors === 'createPlayer') { %>
+            <% if (data.formErrors && data.nameOfFormWithErrors === 'sign-in-form') { %>
                 <%= data.formErrors.toString() %>
             <% } %>
         </form>

@@ -1,6 +1,6 @@
 var express = require('express');
 var getPlayer = require('./middleware/getPlayer')
-var createPlayer = require('./middleware/createPlayer')
+var handleSignInForm = require('./middleware/handleSignInForm')
 
 function makeRouter(state) {
   var router = express.Router();
@@ -8,7 +8,7 @@ function makeRouter(state) {
   /* GET home page. */
 
   router.use('/', getPlayer(state));
-  router.post('/', createPlayer(state));
+  router.post('/', handleSignInForm(state));
 
   router.all('/', function(req, res, next) {
     res.render('index', { 
