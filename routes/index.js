@@ -15,9 +15,10 @@ function makeRouter(state) {
       title: 'Table-top', 
       games: state.games, 
       player: req.body.player,
-      data: {
+      pageData: {
         formErrors : req.body.formErrors, 
-        nameOfFormWithErrors: req.body.nameOfFormWithErrors, 
+        nameOfFormWithErrors: req.body.nameOfFormWithErrors,
+        path: req.baseUrl + req.path
       },
     });
   });

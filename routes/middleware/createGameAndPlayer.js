@@ -12,6 +12,10 @@ function getInputErrors(input,state) {
 
 function makeMiddleware(state) {
   return function(req, res, next) {
+
+
+    console.log ('CREATE game and PLAYER', req.body)
+
     const {gameName, gmName, rpgName, player} = req.body;
     const matchingGame = state.games.filter(game=>game.gameName === gameName)[0]
     const errors = getInputErrors (req.body, state)

@@ -6,12 +6,10 @@
   <body>
       <%- include('includes/header', {
         player: (typeof player !== 'undefined' ? player : null ),
-        data:   (typeof data !== 'undefined' ? data : {} ),
+        pageData:   (typeof pageData !== 'undefined' ? pageData : {} ),
       }); %>
 
     <main>
-
-
       <form class="create-game-form" data-role="create-game-form" method="POST">
         <% if (!player) { %>
           <h2>Sign in and Create New Game</h2>

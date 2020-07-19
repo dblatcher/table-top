@@ -12,8 +12,9 @@ function makeRouter(state) {
       title: 'Table-top', 
       games: state.games, 
       player: req.body.player,
-      data: {
-      },
+      pageData: {
+        path: req.baseUrl + req.path
+      }
     });
   });
 

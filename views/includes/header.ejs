@@ -13,7 +13,7 @@
     </article>
 </header>
 
-<% if (data.formErrors && data.nameOfFormWithErrors === 'sign-in-form') { %>
+<% if (pageData.formErrors && pageData.nameOfFormWithErrors === 'sign-in-form') { %>
     <input hidden="" checked="" type="checkbox" id="sign-in-modal"/>
 <% } else { %>
     <input hidden=""  type="checkbox" id="sign-in-modal"/>
@@ -30,8 +30,8 @@
                 <input name="playerName" id="playerName" type="text"/>
             </div>
             <input type="submit"/>
-            <% if (data.formErrors && data.nameOfFormWithErrors === 'sign-in-form') { %>
-                <%= data.formErrors.toString() %>
+            <% if (pageData.formErrors && pageData.nameOfFormWithErrors === 'sign-in-form') { %>
+                <%= pageData.formErrors.toString() %>
             <% } %>
         </form>
     </div>

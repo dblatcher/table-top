@@ -7,11 +7,14 @@ function makeRouter(state) {
   router.use('/', getPlayer(state));
 
   router.all('/', function(req, res, next) {
+
+
     res.render('character', { 
       title: 'Table-top', 
       player: req.body.player,
-      data: {
-      },
+      pageData: {
+        path: req.baseUrl + req.path
+      }
     });
   });
 

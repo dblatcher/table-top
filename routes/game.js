@@ -16,7 +16,10 @@ function makeRouter(state) {
     if (formErrors) {
       res.render('error',{
         message: `Input errors: ${JSON.stringify(formErrors)}`,
-        error: {status:403, stack:"create game input errors"}
+        error: {status:403, stack:"create game input errors"},
+        pageData: {
+          path: req.baseUrl + req.path
+        },
       })
       return
     }
@@ -24,7 +27,10 @@ function makeRouter(state) {
     if (!matchingGame) {
       res.render('error',{
         message: `There is no game running called ${gameName}`,
-        error: {status:404, stack:"invalid game name"}
+        error: {status:404, stack:"invalid game name"},
+        pageData: {
+          path: req.baseUrl + req.path
+        },
       })
       return
     }
@@ -33,7 +39,10 @@ function makeRouter(state) {
       title: 'Table-top', 
       game: matchingGame, 
       gmView: matchingGame.masterPlayer === player, 
-      player
+      player,
+      pageData: {
+        path: req.baseUrl + req.path
+      },
     });
   });
 
