@@ -5,13 +5,13 @@ function onDisconnect(state, socket, io){
         const cookies = cookie.parse(socket.request.headers.cookie || '');
         const matchingPlayer = state.getPlayerByCookies(cookies)
 
-        console.log('DISCONNECTION', socket.id)
+        // console.log('DISCONNECTION', socket.id)
 
         if (!matchingPlayer ) {
-            console.log('DISCONNECTION', 'NOT SIGNED IN')
+            // console.log('DISCONNECTION', 'NOT SIGNED IN')
             return
         }
-        console.log('DISCONNECTION', matchingPlayer.playerName)
+        // console.log('DISCONNECTION', matchingPlayer.playerName)
 
         const sessionsLeft = matchingPlayer.leaveSessionBySocket(socket)
 
