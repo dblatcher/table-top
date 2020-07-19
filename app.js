@@ -15,6 +15,8 @@ var gameRouter = require('./routes/game')(state);
 var characterRouter = require('./routes/character')(state);
 var signOutRouter = require('./routes/sign-out')(state);
 
+var getPlayer = require('./routes/middleware/getPlayer')
+
 var app = express();
 
 
@@ -27,6 +29,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(getPlayer(state));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -49,7 +53,11 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error',{
+    player:req.body.player,
+    pageData: {
+    }
+  });
 });
 
 module.exports = {app, state};

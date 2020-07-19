@@ -1,11 +1,9 @@
 var express = require('express');
 var createGameAndPlayer = require('./middleware/createGameAndPlayer')
-var getPlayer = require('./middleware/getPlayer')
 
 function makeRouter(state) {
   var router = express.Router();
 
-  router.use('/:gameName', getPlayer(state) )
   router.post('/:gameName', createGameAndPlayer(state) )
 
   router.use('/:gameName', function(req, res, next) {
@@ -17,6 +15,7 @@ function makeRouter(state) {
       res.render('error',{
         message: `Input errors: ${JSON.stringify(formErrors)}`,
         error: {status:403, stack:"create game input errors"},
+        player,
         pageData: {
           path: req.baseUrl + req.path
         },
@@ -28,6 +27,7 @@ function makeRouter(state) {
       res.render('error',{
         message: `There is no game running called ${gameName}`,
         error: {status:404, stack:"invalid game name"},
+        player,
         pageData: {
           path: req.baseUrl + req.path
         },
