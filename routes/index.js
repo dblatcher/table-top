@@ -1,10 +1,7 @@
 var express = require('express');
-var handleSignInForm = require('./middleware/handleSignInForm')
 
 function makeRouter(state) {
   var router = express.Router();
-
-  router.post('/', handleSignInForm(state));
 
   router.all('/', function(req, res, next) {
     res.render('index', { 

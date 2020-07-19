@@ -15,7 +15,8 @@ var gameRouter = require('./routes/game')(state);
 var characterRouter = require('./routes/character')(state);
 var signOutRouter = require('./routes/sign-out')(state);
 
-var getPlayer = require('./routes/middleware/getPlayer')
+var getPlayer = require('./routes/middleware/getPlayer')(state)
+var handleSignInForm = require('./routes/middleware/handleSignInForm')(state)
 
 var app = express();
 
@@ -30,7 +31,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(getPlayer(state));
+app.use(getPlayer);
+app.post('/',handleSignInForm);
+app.post('/character',handleSignInForm);
+app.post('/game/*',handleSignInForm);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -14,30 +14,28 @@ function getInputErrors(input,state) {
 
 function makeMiddleware(state) {
   return function(req, res, next) {
-    console.log ('HANDLE SIGN IN FORM', req.body)
+    console.log (`HANDLE SIGN IN FORM : ${req.originalUrl}`, req.body)
     const {playerName, player, formRole} = req.body;
 
-    if (formRole !== 'sign-in-form') {
-      console.log ('NOT SIGN IN FORM')
-      next()
-      return
-    }
+    if (formRole === 'sign-in-form') {
 
-    //TO DO - check inputs properly
-    const errors = getInputErrors (req.body, state)
+      //TO DO - check inputs properly
+      const errors = getInputErrors (req.body, state)
 
-    if (player) {
-    }
-    else if (errors.length > 0) {
-      req.body.formErrors = errors
-      req.body.nameOfFormWithErrors = 'sign-in-form'
-    }
-    else {
-      var newPlayer = state.addPlayer(playerName)
-      req.body.player = newPlayer
-      res.cookie('token', newPlayer.token)
-      res.cookie('playerName', newPlayer.playerName)
-      res.cookie('playerId',newPlayer.playerId)
+      if (player) {
+      }
+      else if (errors.length > 0) {
+        req.body.formErrors = errors
+        req.body.nameOfFormWithErrors = 'sign-in-form'
+      }
+      else {
+        var newPlayer = state.addPlayer(playerName)
+        req.body.player = newPlayer
+        res.cookie('token', newPlayer.token)
+        res.cookie('playerName', newPlayer.playerName)
+        res.cookie('playerId',newPlayer.playerId)
+        console.log (`signed in ${newPlayer.playerName}`)
+      }
     }
 
     next()
