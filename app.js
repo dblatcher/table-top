@@ -14,9 +14,9 @@ var usersRouter = require('./routes/users')(state);
 var gameRouter = require('./routes/game')(state);
 var characterRouter = require('./routes/character')(state);
 var signOutRouter = require('./routes/sign-out')(state);
+var signInRouter = require('./routes/sign-in')(state);
 
 var getPlayer = require('./routes/middleware/getPlayer')(state)
-var handleSignInForm = require('./routes/middleware/handleSignInForm')(state)
 
 var app = express();
 
@@ -32,16 +32,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(getPlayer);
-app.post('/',handleSignInForm);
-app.post('/character',handleSignInForm);
-app.post('/game/*',handleSignInForm);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/game', gameRouter);
 app.use('/character', characterRouter);
 app.use('/sign-out', signOutRouter);
-
+app.use('/sign-in',signInRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

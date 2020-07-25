@@ -22,8 +22,9 @@
 <aside class="modal toggled">
     <div class="modal-content">
         <div class="close-button-holder"><label class="close-button" for="sign-in-modal">X</label></div>
-        <form data-role="sign-in-form" method="POST" action="<%= pageData.signInTo || pageData.path || '/' %>">
+        <form data-role="sign-in-form" method="POST" action="/sign-in">
             <input hidden="true" readonly="true" name="formRole" id="formRole" value="sign-in-form"/>
+            <input hidden="true" readonly="true" name="redirectPath" id="redirectPath" value="<%= pageData.signInTo || pageData.path || '/' %>">
             <h2>Sign in</h2>
             <div>
                 <label>Name:</label>
