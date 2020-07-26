@@ -10,6 +10,9 @@ const eventNames = [
     "gm-closing-game",
     "request-game-list",
     "entry-request-response",
+    "game-settings-change",
+    "game-settings-request",
+    "game-settings-report",
 ]
 
 var on = {}

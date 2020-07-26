@@ -14,9 +14,10 @@
     </form>
 
     <admin-panel v-if="hasEnteredGame && config.amGamemaster" 
-    v-bind="{config, socket, playerId}"/>
+    v-bind="{config, socket, playerId}"
+    @game-settings-change="updateLocalPlayAreaGameSettings" />
 
-    <play-area v-if="hasEnteredGame"
+    <play-area v-if="hasEnteredGame" ref="play-area"
     v-bind="{displayName, socket, playerId, gameState, config}"/>
 
 
@@ -145,6 +146,10 @@ export default {
         return
       }
       this.socket.emit('request-entry', {gameId}, this.handleRequestEntryResponse)
+    },
+
+    updateLocalPlayAreaGameSettings(report) {
+      this.$refs['play-area'].handleGameSettingsChange(report)
     }
 
   },

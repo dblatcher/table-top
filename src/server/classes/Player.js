@@ -44,6 +44,11 @@ class Player {
         return matchingSessions.length > 0
     }
 
+    getSessionByGame (gameOrGameId) {
+        const gameId = typeof gameOrGameId === 'object' ? gameOrGameId.gameId : gameOrGameId;
+        return this.gameSessions.filter(gameSession => gameSession.game.gameId === gameId)[0]
+    }
+
     get clientSafeVersion () {
         return {
             type: this.type,

@@ -4,6 +4,9 @@
 
     <div class="frame main">
 
+        <!-- <pre>Test setting: {{gameSettings.random}}</pre>
+        <button @click="requestGameSettings">request game settings</button> -->
+
         <local-player-card v-if="localPlayer"
         @update-character-sheet="reportCharacterSheetUpdate"
         @action-button="handleActionButton"
@@ -61,6 +64,9 @@ export default {
             characterSheets: {},
             messages: [],
             myCharacterSheet: null,
+            gameSettings: {
+                random: 11,
+            },
         }
     },
 
@@ -142,6 +148,12 @@ export default {
             }
         },
 
+        handleGameSettingsChange (report) {
+            console.log('game settings change:', report)
+
+            this.gameSettings.random = report.data.random
+        },
+
         sendMessage (messageText) {
             this.messages.push({
                 text: messageText,
@@ -168,16 +180,21 @@ export default {
                 this.$refs.diceControl.actionButtonRoll(datum)
             }
         },
+
+        requestGameSettings() {
+            this.socket.emit('game-settings-request', this.playerId)
+        }
+
     },
 
     mounted() {
         this.socket.on('game-event', this.handleGameEvent );
+        this.socket.on('game-settings-change', this.handleGameSettingsChange );
         this.socket.on('player-message', this.handleMessage );
 
-        const testCharacterSheet = makeTemplateSheet.blank()
-        window.testCharacterSheet = testCharacterSheet
-        this.$set(this.characterSheets, this.playerId, testCharacterSheet)
+        this.$set(this.characterSheets, this.playerId, makeTemplateSheet.blank())
         this.socket.emit('game-event', this.playerId, 'PLAYER_STATUS_REQUEST', {})
+        this.requestGameSettings();
     },
 
 }

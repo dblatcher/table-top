@@ -1,7 +1,7 @@
 <template>
     <section>
         <h3>Admin</h3>
-
+        <!-- <pre>Test setting: {{gameSettings.random}}</pre> -->
         <div class="frame">
             <CloseGameButton  @close-game="requestGameClose"/>
 
@@ -10,6 +10,8 @@
                 @answer="handleEntryRequestAnswer"
                 v-bind="{request: request}"/>
             </transition-group>
+
+            <!-- <button @click="testGameSettingsChange">test config change</button> -->
         </div>
     </section>
 </template>
@@ -26,6 +28,7 @@ export default {
     data() {
         return {
             entryRequests: [],
+            gameSettings: {random: 6},
         }
     },
 
@@ -57,6 +60,10 @@ export default {
 
 
         handleStateUpDate(update) {
+            if (!update.game) {
+                console.warn ('NO GAME PROPERTY OF UPDATE', update)
+                return false
+            }
             console.log('ALL NEW REQUESTS', update.game.entryRequests)
             const {entryRequests} = this
             const newEntryRequestList = update.game.entryRequests
@@ -77,10 +84,31 @@ export default {
             entryRequests.push(...newEntryRequestsToAdd)
 
         },
+
+        testGameSettingsChange() {
+            const {playerId, gameSettings} = this
+            gameSettings.random = Math.random()*10
+            this.$emit('game-settings-change', {playerId, type:'ALL', data: gameSettings})
+            this.socket.emit('game-settings-change', playerId, 'ALL', gameSettings)
+        },
+
+        handleGameSettingsRequest(settingsRequest) {
+            const {playerId, gameSettings} = this
+            if (!settingsRequest.player) {
+                console.warn ('handleGameSettingsRequest: no requesting player on settingsRequest')
+                return false
+            }
+            console.log(`handleGameSettingsRequest: reporting settings to ${settingsRequest.player.playerName}`)
+            this.socket.emit('game-settings-report', playerId, settingsRequest.player.playerId, gameSettings)
+        },
     },
 
     mounted() {
         this.socket.on('state-update', this.handleStateUpDate);
+        this.socket.on('game-settings-request', this.handleGameSettingsRequest);
+
+        // update local play-area
+        this.$emit('game-settings-change', {playerId: this.playerId, type:'ALL', data: this.gameSettings})
     },
 }
 </script>
